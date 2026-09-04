@@ -120,6 +120,45 @@
   .rank-badge.r2 { background: #c0c0c0; color: #111; }
   .rank-badge.r3 { background: #cd7f32; color: #111; }
   .horse-name { font-weight: 700; font-size: 0.86rem; }
+  .hist-item {
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .hist-item:last-child { border-bottom: none; }
+  .hist-head {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+  }
+  .hist-title {
+    font-weight: 800; font-size: 0.95rem; line-height: 1.25;
+    min-width: 0; flex: 1;
+  }
+  .hist-podium {
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .hist-line {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.84rem; line-height: 1.3;
+  }
+  .hist-rank {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: 800; flex-shrink: 0;
+    background: var(--card2); color: var(--muted);
+  }
+  .hist-rank.r1 { background: #f0c414; color: #111; }
+  .hist-rank.r2 { background: #c0c0c0; color: #111; }
+  .hist-rank.r3 { background: #cd7f32; color: #111; }
+  .hist-num {
+    min-width: 22px; height: 20px; border-radius: 4px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.72rem; font-weight: 800; flex-shrink: 0;
+  }
+  .hist-name { font-weight: 700; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hist-sub { margin-left: auto; font-size: 0.72rem; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+  .hist-meta {
+    margin-top: 8px; font-size: 0.68rem; color: var(--muted);
+  }
+
   .horse-meta { font-size: 0.68rem; color: var(--muted); }
   .prob-bar-wrap { width: 68px; text-align: right; }
   .prob-num { font-size: 0.82rem; font-weight: 800; color: #f0c414; }
@@ -2000,25 +2039,65 @@ function runPredict() {
   });
 }
 
-/** 履歴用の短いレース名 */
+/** 履歴用の短いレース名（レース名のみ・日付なし） */
 function formatRaceTitle(race) {
   if (!race) return "不明なレース";
-  // name が短い表示名（例: 【本日】新潟記念(G3) 2026/8/30）を優先
-  if (race.name && race.name.length <= 40) return race.name;
-  if (race.raceName) {
-    // 「第62回 農林水産省賞典 新潟記念」→「新潟記念」寄りに短縮
-    let t = race.raceName.replace(/^第\d+回\s*/, "").replace(/農林水産省賞典\s*/, "");
-    if (race.grade) t += "(" + race.grade + ")";
-    return t;
-  }
-  return (race.course || "") + " " + (race.surface || "") + (race.distance || "") + "m";
+  let t = race.raceName || race.name || "";
+  if (!t) return (race.course || "") + (race.distance ? " " + race.distance + "m" : "");
+  // 【2026/8/30 新潟記念】や日付・装飾を除去
+  t = t.replace(/[【】]/g, " ").replace(/\s+/g, " ").trim();
+  t = t.replace(/^\d{4}\/\d{1,2}\/\d{1,2}\s*/, "");
+  t = t.replace(/^第\d+回\s*/, "");
+  t = t.replace(/農林水産省賞典\s*/g, "");
+  t = t.replace(/産経賞\s*/g, "");
+  t = t.replace(/\s*\(G[123ⅠⅡⅢ]+\)\s*/gi, "");
+  t = t.replace(/\s*G[123ⅠⅡⅢ]+\s*/gi, " ").trim();
+  // 末尾の日付
+  t = t.replace(/\s*\d{4}\/\d{1,2}\/\d{1,2}\s*$/, "").trim();
+  // 有名レースの短縮
+  t = t.replace(/京成杯オータムハンデキャップ/, "京成杯AH");
+  t = t.replace(/京成杯オータムH/, "京成杯AH");
+  t = t.replace(/札幌2歳ステークス/, "札幌2歳S");
+  t = t.replace(/紫苑ステークス/, "紫苑S");
+  t = t.replace(/セントウルステークス/, "セントウルS");
+  t = t.replace(/新潟記念.*/, "新潟記念");
+  if (race.grade && !/G[123ⅠⅡⅢ]/i.test(t)) t += "(" + race.grade + ")";
+  return t || "レース";
+}
+
+/** 履歴表示用：保存済みタイトルからもレース名だけ抜き出す */
+function historyRaceLabel(title, raceId) {
+  if (!title) return raceId || "レース";
+  let t = String(title).replace(/[【】]/g, " ").replace(/\s+/g, " ").trim();
+  t = t.replace(/^\d{4}\/\d{1,2}\/\d{1,2}\s*/, "");
+  t = t.replace(/\s*\d{4}\/\d{1,2}\/\d{1,2}\s*$/, "");
+  t = t.replace(/^第\d+回\s*/, "");
+  t = t.replace(/農林水産省賞典\s*/g, "");
+  t = t.replace(/産経賞\s*/g, "");
+  t = t.replace(/京成杯オータムハンデキャップ/, "京成杯AH");
+  t = t.replace(/京成杯オータムH/, "京成杯AH");
+  t = t.replace(/札幌2歳ステークス/, "札幌2歳S");
+  t = t.replace(/紫苑ステークス/, "紫苑S");
+  t = t.replace(/セントウルステークス/, "セントウルS");
+  return t.trim() || raceId || "レース";
 }
 
 
 // ========== お知らせ・更新履歴 ==========
-const NEWS_VERSION = "2026-09-04d";
+const NEWS_VERSION = "2026-09-05a";
 const NEWS_SEEN_KEY = "keiba_sim_news_seen";
 const NEWS_ITEMS = [
+  {
+    ver: "2026-09-05a",
+    date: "2026/9/5",
+    title: "履歴表示の改善・お知らせ起動修正",
+    body: [
+      "【履歴】をカード形式のシンプル表示に刷新（レース名・1〜3着・馬場/ペースのみ）",
+      "履歴の開催日と長い正式名をやめ、レース名だけ見やすく表示",
+      "起動時のお知らせポップアップが正しく出るよう修正",
+      "【お知らせ】タブ（右端）に更新履歴を一覧表示"
+    ]
+  },
   {
     ver: "2026-09-04d",
     date: "2026/9/4",
@@ -2086,8 +2165,10 @@ function showNewsModalIfNeeded() {
 function hideNewsModal(markSeen) {
   const modal = document.getElementById("newsModal");
   if (modal) modal.classList.add("hidden");
-  if (markSeen) setSeenNewsVer(NEWS_VERSION);
-  renderNewsPanel();
+  if (markSeen !== false) {
+    setSeenNewsVer(NEWS_VERSION);
+  }
+  try { renderNewsPanel(); } catch (e) {}
 }
 
 
@@ -2170,45 +2251,49 @@ function renderHistory() {
   const list = loadHistory();
   const el = document.getElementById("historyList");
   const cnt = document.getElementById("historyCount");
-  if (cnt) cnt.textContent = `保存件数: ${list.length} / ${HISTORY_MAX}`;
+  if (cnt) cnt.textContent = list.length + "件";
   if (!el) return;
   if (!list.length) {
-    el.innerHTML = `<p class="horse-meta">まだ履歴がありません。予想タブで「予想を実行」するとここに残ります。</p>`;
+    el.innerHTML = '<p class="horse-meta" style="padding:12px 0">まだ履歴がありません。</p>';
     return;
   }
-  el.innerHTML = list.map((e, idx) => {
-    const paceL = e.pace === "high" ? "ハイ" : e.pace === "slow" ? "スロー" : "ミドル";
+  el.innerHTML = list.map((e) => {
     const kind = e.type === "race" ? "映像" : "予想";
-    const kindColor = e.type === "race" ? "#38bdf8" : "#f0c414";
-    const title = e.raceName || e.raceId || "レース";
-    const courseLine = [e.course, e.surface ? e.surface : "", e.distance ? e.distance + "m" : ""].filter(Boolean).join(" ");
-    const tops = (e.top || []).map(t => {
-      const odds = t.odds != null ? ` 単勝${t.odds}倍` : "";
-      const pop = t.popular != null ? `(${t.popular}人)` : "";
-      if (e.type === "race") {
-        const tm = t.time != null ? formatRaceTime(t.time) : "";
-        return `${t.rank}着 ${t.number}.${t.name}${tm ? " " + tm : ""}${odds}`;
-      }
-      return `${t.rank}位 ${t.number}.${t.name} 勝率${((t.win || 0) * 100).toFixed(1)}%${odds}${pop}`;
-    }).join("<br>");
-    const splitNote = e.split1000 != null ? `・1000m ${formatRaceTime(e.split1000)}` : "";
-    const metaBits = [
-      courseLine || null,
-      e.weather || null,
-      e.going ? ("馬場" + e.going) : null,
-      paceL,
-      e.type === "race" ? (splitNote ? splitNote.replace(/^・/, "") : null) : ((e.nSim || 0) + "回")
-    ].filter(Boolean);
-    return `<div class="horse-row" style="flex-direction:column;align-items:stretch;gap:6px;padding:10px 0">
-      <div style="display:flex;align-items:center;gap:8px;min-width:0">
-        <span class="pill" style="background:${kindColor};color:#111;font-weight:700;flex-shrink:0">${kind}</span>
-        <span class="horse-name" style="font-size:0.92rem;line-height:1.3;word-break:break-all">${title}</span>
-      </div>
-      <div class="horse-meta" style="line-height:1.4">${metaBits.join(" ｜ ")}</div>
-      <div class="horse-meta" style="line-height:1.55;padding-left:2px;border-left:2px solid rgba(240,196,20,0.35)">${tops}</div>
-    </div>`;
+    const kindBg = e.type === "race" ? "#38bdf8" : "#f0c414";
+    const title = historyRaceLabel(e.raceName || "", e.raceId);
+    const paceL = e.pace === "high" ? "ハイ" : e.pace === "slow" ? "スロー" : "ミドル";
+    const lines = (e.top || []).slice(0, 3).map((t, i) => {
+      let frameIdx = 0;
+      if (t.frame != null) frameIdx = Math.min(7, Math.max(0, (t.frame | 0) - 1));
+      else if (t.number != null) frameIdx = Math.min(7, Math.max(0, Math.ceil(t.number / 2) - 1));
+      const bg = FRAME_COLORS[frameIdx];
+      const fg = FRAME_TEXT[frameIdx];
+      const border = bg === "#000" ? "border:1px solid #555;" : (bg === "#fff" ? "border:1px solid #888;" : "border:1px solid transparent;");
+      let sub = "";
+      if (e.type === "race" && t.time != null) sub = formatRaceTime(t.time);
+      else if (t.win != null) sub = Math.round((t.win || 0) * 100) + "%";
+      return '<div class="hist-line">' +
+        '<span class="hist-rank r' + (i + 1) + '">' + (i + 1) + '</span>' +
+        '<span class="hist-num" style="background:' + bg + ';color:' + fg + ';' + border + '">' + (t.number != null ? t.number : "-") + '</span>' +
+        '<span class="hist-name">' + (t.name || "") + '</span>' +
+        (sub ? '<span class="hist-sub">' + sub + '</span>' : '') +
+        '</div>';
+    }).join("");
+    const metaParts = [];
+    if (e.going) metaParts.push(e.going);
+    metaParts.push(paceL);
+    if (e.type !== "race" && e.nSim) metaParts.push(e.nSim + "回");
+    return '<div class="hist-item">' +
+      '<div class="hist-head">' +
+        '<span class="pill" style="background:' + kindBg + ';color:#111;font-weight:800">' + kind + '</span>' +
+        '<span class="hist-title">' + title + '</span>' +
+      '</div>' +
+      '<div class="hist-podium">' + lines + '</div>' +
+      (metaParts.length ? '<div class="hist-meta">' + metaParts.join(" · ") + '</div>' : '') +
+      '</div>';
   }).join("");
 }
+
 
 function fillStatsRaceSelect(list) {
   const sel = document.getElementById("statsRaceSelect");
@@ -4877,6 +4962,7 @@ document.querySelectorAll(".tab").forEach(tab => {
       }, 50);
     }
     if (tab.dataset.tab === "history") renderHistory();
+    if (tab.dataset.tab === "news") renderNewsPanel();
     if (tab.dataset.tab === "stats") renderStats();
     // レース映像で選んだレースを他タブへ引き継ぎ
     if (tab.dataset.tab === "entries" || tab.dataset.tab === "ability" || tab.dataset.tab === "pace" || tab.dataset.tab === "predict") {
@@ -4959,6 +5045,20 @@ const _hfModal = document.getElementById("horseFinishModal");
 if (_hfModal) _hfModal.addEventListener("click", (e) => { if (e.target === _hfModal) hideHorseFinishModal(); });
 
 updateRaceInfo();
+try {
+  renderNewsPanel();
+  const _newsClose = document.getElementById("btnCloseNewsModal");
+  if (_newsClose) {
+    _newsClose.onclick = function () { hideNewsModal(true); };
+  }
+  const _newsModal = document.getElementById("newsModal");
+  if (_newsModal) {
+    _newsModal.addEventListener("click", function (e) {
+      if (e.target === _newsModal) hideNewsModal(true);
+    });
+  }
+  setTimeout(function () { showNewsModalIfNeeded(); }, 400);
+} catch (e) { console.warn("news init", e); }
 
 // Canvas polyfill for roundRect
 if (!CanvasRenderingContext2D.prototype.roundRect) {
