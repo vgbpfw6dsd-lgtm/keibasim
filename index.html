@@ -330,8 +330,23 @@
     gap: 8px; padding: 6px 4px; border-bottom: 1px solid rgba(255,255,255,0.08);
     font-size: 0.9rem;
   }
-  .bet-row .comb { font-weight: 800; letter-spacing: 0.02em; }
-  .bet-row .pct { color: #f0c414; font-weight: 700; white-space: nowrap; }
+  .bet-row .comb {
+    font-weight: 800; letter-spacing: 0.02em;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px;
+    min-width: 0; flex: 1;
+  }
+  .bet-row .bet-rank { color: var(--muted, #9aa); font-size: 0.78rem; margin-right: 2px; }
+  .bet-num-chip {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 22px; height: 22px; padding: 0 5px; border-radius: 5px;
+    font-size: 0.78rem; font-weight: 800; line-height: 1;
+  }
+  .bet-arrow, .bet-sep { color: var(--muted, #9aa); font-weight: 700; font-size: 0.75rem; }
+  .bet-names {
+    display: block; width: 100%; font-size: 0.68rem; font-weight: 600;
+    color: var(--muted, #9aa); line-height: 1.25; margin-top: 1px;
+  }
+  .bet-row .pct { color: #f0c414; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
   .bet-modal .btn-close-modal {
     width: 100%; margin-top: 12px; padding: 14px;
     font-size: 1rem; font-weight: 800;
@@ -1833,12 +1848,40 @@ function showBetComboModal(combos, nSim, race) {
   if (!modal || !body || !combos) return;
   const title = race ? (race.name || race.raceName || "") : "";
   if (sub) sub.textContent = (title ? title + " ｜ " : "") + nSim + "回シミュレーションの出現率";
+  const byNum = {};
+  if (race && race.horses) {
+    race.horses.forEach(h => { byNum[String(h.number)] = h; });
+  }
+  function chip(numStr) {
+    const h = byNum[String(numStr)];
+    const fi = h ? Math.min(7, Math.max(0, (h.frame || 1) - 1)) : 0;
+    const bg = FRAME_COLORS[fi];
+    const fg = FRAME_TEXT[fi];
+    const border = bg === "#000" ? "border:1px solid #666;" : (bg === "#fff" ? "border:1px solid #999;" : "");
+    return `<span class="bet-num-chip" style="background:${bg};color:${fg};${border}">${numStr}</span>`;
+  }
+  function formatKey(key) {
+    // "1→2" / "1-2" / "1-2-3" / "1→2→3"
+    if (key.indexOf("→") >= 0) {
+      const parts = key.split("→");
+      return parts.map(chip).join('<span class="bet-arrow">→</span>');
+    }
+    const parts = key.split("-");
+    return parts.map(chip).join('<span class="bet-sep">-</span>');
+  }
+  function namesForKey(key) {
+    const parts = key.split(/[→\-]/).filter(Boolean);
+    return parts.map(n => {
+      const h = byNum[String(n)];
+      return h ? h.name : ("#" + n);
+    }).join(" · ");
+  }
   function section(label, rows) {
     if (!rows || !rows.length) return "";
     return `<div class="bet-section"><h3>${label}</h3>` +
       rows.map((r, i) => {
         const pct = (r.p * 100).toFixed(1);
-        return `<div class="bet-row"><span class="comb">${i + 1}. ${r.key}</span><span class="pct">${pct}%（${r.n}回）</span></div>`;
+        return `<div class="bet-row"><span class="comb"><span class="bet-rank">${i + 1}.</span>${formatKey(r.key)}<span class="bet-names">${namesForKey(r.key)}</span></span><span class="pct">${pct}%（${r.n}回）</span></div>`;
       }).join("") + `</div>`;
   }
   body.innerHTML =
