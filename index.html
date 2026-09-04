@@ -723,7 +723,13 @@
 <!-- ===== 統計 ===== -->
 <div id="panel-stats" class="panel">
   <div class="info-box">
-    保存された履歴から、馬ごとの平均勝率・連対率、ペース別傾向などを集計します。
+    保存された履歴から、馬ごとの平均勝率・連対率、ペース別傾向などを集計します。レースを選ぶと、そのレースだけの統計に絞り込めます。
+  </div>
+  <div class="card">
+    <label class="horse-meta" style="display:block;margin-bottom:4px">レースで絞り込み</label>
+    <select id="statsRaceSelect" class="race-select">
+      <option value="">すべてのレース</option>
+    </select>
   </div>
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
@@ -2106,21 +2112,56 @@ function renderHistory() {
   }).join("");
 }
 
+function fillStatsRaceSelect(list) {
+  const sel = document.getElementById("statsRaceSelect");
+  if (!sel) return;
+  const prev = sel.value;
+  // 登録レース + 履歴にあるレース
+  const map = {};
+  (typeof SAMPLE_RACES !== "undefined" ? SAMPLE_RACES : []).forEach(r => {
+    map[r.id] = r.name || r.raceName || r.id;
+  });
+  (list || []).forEach(e => {
+    if (e.raceId) map[e.raceId] = e.raceName || e.raceId;
+  });
+  const opts = ['<option value="">すべてのレース</option>'];
+  Object.keys(map).sort((a, b) => (map[a] || "").localeCompare(map[b] || "", "ja")).forEach(id => {
+    opts.push(`<option value="${id}">${map[id]}</option>`);
+  });
+  sel.innerHTML = opts.join("");
+  if (prev && map[prev]) sel.value = prev;
+  else if (prev === "") sel.value = "";
+}
+
 function renderStats() {
-  const list = loadHistory();
+  const all = loadHistory();
   const sumEl = document.getElementById("statsSummary");
   const horseEl = document.getElementById("statsByHorse");
   const pgEl = document.getElementById("statsPaceGoing");
   if (!sumEl) return;
+
+  fillStatsRaceSelect(all);
+  const sel = document.getElementById("statsRaceSelect");
+  const raceFilter = sel ? sel.value : "";
+  const list = raceFilter
+    ? all.filter(e => e.raceId === raceFilter || (e.raceName && e.raceName.indexOf(raceFilter) >= 0))
+    : all;
+
   if (!list.length) {
-    sumEl.textContent = "履歴がまだありません。予想を実行すると統計が集まります。";
+    sumEl.textContent = raceFilter
+      ? "このレースの履歴はまだありません。"
+      : "履歴がまだありません。予想を実行すると統計が集まります。";
     if (horseEl) horseEl.innerHTML = "";
     if (pgEl) pgEl.textContent = "";
     return;
   }
   const nPred = list.filter(e => e.type !== "race").length;
   const nRace = list.filter(e => e.type === "race").length;
-  sumEl.innerHTML = `総履歴: <strong>${list.length}</strong>件（予想 ${nPred} / 映像 ${nRace}）<br>
+  const filterLabel = raceFilter
+    ? (sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : raceFilter)
+    : "すべて";
+  sumEl.innerHTML = `対象: <strong>${filterLabel}</strong><br>
+    総履歴: <strong>${list.length}</strong>件（予想 ${nPred} / 映像 ${nRace}）<br>
     直近: ${new Date(list[0].ts).toLocaleString("ja-JP")}<br>
     対象レース数（ユニーク）: ${new Set(list.map(e => e.raceId)).size}`;
 
@@ -2154,7 +2195,7 @@ function renderStats() {
   })).sort((a, b) => b.avgWin - a.avgWin);
 
   if (horseEl) {
-    horseEl.innerHTML = rows.slice(0, 30).map((o, i) => `
+    horseEl.innerHTML = rows.slice(0, 40).map((o, i) => `
       <div class="horse-row">
         <div class="rank-badge ${i < 3 ? "r" + (i + 1) : ""}">${i + 1}</div>
         <div style="flex:1">
@@ -2180,6 +2221,7 @@ function renderStats() {
   }
 }
 
+// ========== 能力値表示 ==========
 // ========== 能力値表示 ==========
 function runAbility() {
   const race = getCurrentRace("abilityRaceSelect");
@@ -4760,6 +4802,8 @@ const btnClearHist = document.getElementById("btnClearHistory");
 if (btnClearHist) btnClearHist.addEventListener("click", clearHistory);
 const btnClearStats = document.getElementById("btnClearStats");
 if (btnClearStats) btnClearStats.addEventListener("click", clearHistory);
+const statsRaceSel = document.getElementById("statsRaceSelect");
+if (statsRaceSel) statsRaceSel.addEventListener("change", renderStats);
 
 // 初期化
 document.getElementById("btnPredict").addEventListener("click", runPredict);
