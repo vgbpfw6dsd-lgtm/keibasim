@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+<!-- GitHub Pages / iPhone ホーム画面用：index.htmlを毎回最新取得しやすくする -->
+<script>
+(function () {
+  try {
+    const url = new URL(window.location.href);
+    if (!url.searchParams.has("v")) {
+      url.searchParams.set("v", Date.now().toString());
+      window.location.replace(url.toString());
+    }
+  } catch (e) {}
+})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -431,6 +443,8 @@
   }
   .analysis-table th { color: var(--muted); font-weight: 600; }
 </style>
+
+<!-- 更新版：GitHub Pagesキャッシュ対策（2026-09-04） -->
 </head>
 <body>
 <header>
