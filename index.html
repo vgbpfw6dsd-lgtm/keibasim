@@ -500,10 +500,10 @@
     <h2>レース選択</h2>
     <label class="horse-meta" style="display:block;margin-bottom:4px">グレード</label>
     <select id="gradeSelect" class="race-select">
-      <option value="ALL">すべて</option>
+      <option value="ALL" selected>すべて</option>
       <option value="G1">GⅠ</option>
       <option value="G2">GⅡ</option>
-      <option value="G3" selected>GⅢ</option>
+      <option value="G3">GⅢ</option>
     </select>
     <label class="horse-meta" style="display:block;margin:8px 0 4px">レース</label>
     <select id="raceSelect" class="race-select"></select>
@@ -519,9 +519,9 @@
     <div style="margin-top:10px">
       <label class="horse-meta" style="display:block;margin-bottom:6px">想定ペース</label>
       <select id="paceSelectPredict" class="race-select">
-        <option value="auto">自動（メンバーから推定）</option>
+        <option value="auto" selected>自動（メンバーから推定）</option>
         <option value="high">ハイペース</option>
-        <option value="mid" selected>ミドルペース</option>
+        <option value="mid">ミドルペース</option>
         <option value="slow">スローペース</option>
       </select>
     </div>
@@ -545,6 +545,7 @@
         <option value="speed">タイム重視</option>
         <option value="last">末脚重視</option>
         <option value="going">馬場重視</option>
+        <option value="frame">馬番重視</option>
         <option value="blood">血統重視</option>
       </select>
     </div>
@@ -581,10 +582,10 @@
     <h2>レース選択</h2>
     <label class="horse-meta" style="display:block;margin-bottom:4px">グレード</label>
     <select id="gradeSelectEntries" class="race-select">
-      <option value="ALL">すべて</option>
+      <option value="ALL" selected>すべて</option>
       <option value="G1">GⅠ</option>
       <option value="G2">GⅡ</option>
-      <option value="G3" selected>GⅢ</option>
+      <option value="G3">GⅢ</option>
     </select>
     <label class="horse-meta" style="display:block;margin:8px 0 4px">レース</label>
     <select id="entriesRaceSelect" class="race-select"></select>
@@ -640,10 +641,10 @@
     <h2>レース選択</h2>
     <label class="horse-meta" style="display:block;margin-bottom:4px">グレード</label>
     <select id="gradeSelectView" class="race-select">
-      <option value="ALL">すべて</option>
+      <option value="ALL" selected>すべて</option>
       <option value="G1">GⅠ</option>
       <option value="G2">GⅡ</option>
-      <option value="G3" selected>GⅢ</option>
+      <option value="G3">GⅢ</option>
     </select>
     <label class="horse-meta" style="display:block;margin:8px 0 4px">レース</label>
     <select id="viewRaceSelect" class="race-select"></select>
@@ -659,9 +660,9 @@
     <div style="margin-top:10px">
       <label class="horse-meta" style="display:block;margin-bottom:6px">想定ペース</label>
       <select id="paceSelectRace" class="race-select">
-        <option value="auto">自動（メンバーから推定）</option>
+        <option value="auto" selected>自動（メンバーから推定）</option>
         <option value="high">ハイペース</option>
-        <option value="mid" selected>ミドルペース</option>
+        <option value="mid">ミドルペース</option>
         <option value="slow">スローペース</option>
       </select>
     </div>
@@ -685,6 +686,7 @@
         <option value="speed">タイム重視</option>
         <option value="last">末脚重視</option>
         <option value="going">馬場重視</option>
+        <option value="frame">馬番重視</option>
         <option value="blood">血統重視</option>
       </select>
     </div>
@@ -1194,6 +1196,7 @@ const WEIGHT_PRESETS = {
   speed:   { rank: 8, time: 70, agari: 12, dist: 5, frame: 3, blood: 2, desc: "タイム重視：タイム指数を最優先（速い時計の馬が上位に）" },
   last:    { rank: 8, time: 12, agari: 70, dist: 5, frame: 3, blood: 2, desc: "末脚重視：上がり指数を最優先（差し・追込向き）" },
   going:   { rank: 12, time: 10, agari: 10, dist: 8, frame: 15, blood: 5, desc: "馬場・枠重視：馬場適性と枠順を強く反映" },
+  frame:   { rank: 8, time: 8, agari: 8, dist: 6, frame: 62, blood: 8, desc: "馬番重視：枠順・コースの内外有利を最優先" },
   blood:   { rank: 8, time: 10, agari: 8, dist: 8, frame: 4, blood: 62, desc: "血統重視：種牡馬の場適性・産駒成績を最優先" }
 };
 
@@ -1323,11 +1326,45 @@ function calcGoingApt(horse, timeN, formScore, consistency, agariN) {
 
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
-function frameBias(frame, course, surface) {
+function frameBias(frame, course, surface, distance) {
   const c = COURSES[course];
   if (!c) return 7;
   const arr = (surface === "ダート") ? c.frameDirt : c.frameTurf;
-  return arr[frame - 1] || 7;
+  let v = arr[Math.min(7, Math.max(0, (frame || 1) - 1))] || 7;
+  const dist = distance || 0;
+  const fi = Math.min(7, Math.max(0, (frame || 1) - 1)); // 0=内〜7=外
+  // コース特性の補正（内側有利 / 外側有利を強めに）
+  // 中山：小回り・短い直線 → 内枠有利（特にマイル以下）
+  if (course === "中山") {
+    if (dist && dist <= 1600) v += (3 - fi) * 0.55;
+    else v += (3 - fi) * 0.35;
+  }
+  // 阪神：内回り短距離は内、外回りは外も伸びる
+  if (course === "阪神") {
+    if (dist && dist <= 1400) v += (3 - fi) * 0.4;
+    else if (dist && dist >= 2000) v += (fi - 3) * 0.15;
+  }
+  // 東京：長い直線 → 外枠不利が弱く、差し向き外も可
+  if (course === "東京") {
+    v += (fi - 3) * 0.12;
+  }
+  // 新潟外回り：長い直線 → 外枠の不利小、むしろポジション次第
+  if (course === "新潟") {
+    if (dist && dist >= 1800) v += (fi - 3) * 0.2;
+  }
+  // 札幌：小回りだが開催後半は外有利の傾向
+  if (course === "札幌") {
+    v += (fi - 3) * 0.25;
+  }
+  // 小倉・函館：小回り内有利
+  if (course === "小倉" || course === "函館") {
+    v += (3 - fi) * 0.35;
+  }
+  // 京都：内回り寄りはやや内
+  if (course === "京都") {
+    v += (3 - fi) * 0.2;
+  }
+  return Math.max(3, Math.min(12, v));
 }
 
 /**
@@ -1457,7 +1494,7 @@ function computeScore(horse, race, opts) {
   const d = (horse.distApt || 5) * 10;
   const course = race ? race.course : "東京";
   const surface = race ? race.surface : "芝";
-  const f = frameBias(horse.frame || 4, course, surface) * 10;
+  const f = frameBias(horse.frame || 4, course, surface, race ? race.distance : 0) * 10;
   const g = ab.goingToday;
   const pedRaw = pedigreeBonus(horse, race);
   const bloodScore = clamp(70 + pedRaw * 6, 40, 98);
@@ -1471,7 +1508,9 @@ function computeScore(horse, race, opts) {
   const base = (r * wRank + t * wTime + a * wAgari + d * wDist + f * wFrame + bloodScore * wBlood) / totalW;
   const goingW = wFrame >= 12 ? 0.55 : 0.18;
   const goingPart = (g - 70) * goingW;
-  const baseAmp = 50 + (base - 50) * 2.4 + goingPart;
+  // 馬番重視時は枠バイアスをさらに強く結果へ
+  const frameExtra = wFrame >= 40 ? (f - 70) * 0.45 : (wFrame >= 20 ? (f - 70) * 0.2 : 0);
+  const baseAmp = 50 + (base - 50) * 2.4 + goingPart + frameExtra;
   const paceB = paceFitBonus(horse, race, opts) * 0.7;
   const abilityAssist = ab.total * 0.02;
   const distCh = distChangePenalty(horse, race) * 0.8;
@@ -1634,6 +1673,28 @@ function racesByGrade(grade) {
   return SAMPLE_RACES.filter(r => r.grade === grade);
 }
 
+/** 今日に日付が最も近いレースを返す */
+function pickNearestRace(list) {
+  if (!list || !list.length) return null;
+  const today = new Date();
+  const t0 = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+  let best = list[0];
+  let bestDiff = Infinity;
+  list.forEach(r => {
+    const ds = r.date || "";
+    const parts = ds.split("-").map(Number);
+    if (parts.length < 3 || !parts[0]) return;
+    const rt = new Date(parts[0], parts[1] - 1, parts[2]).getTime();
+    const diff = Math.abs(rt - t0);
+    // 同日は優先、その後は近い方。同差なら未来を優先
+    if (diff < bestDiff || (diff === bestDiff && rt >= t0)) {
+      bestDiff = diff;
+      best = r;
+    }
+  });
+  return best;
+}
+
 function fillOneRaceSelect(selectId, gradeId) {
   const sel = document.getElementById(selectId);
   if (!sel) return;
@@ -1641,12 +1702,25 @@ function fillOneRaceSelect(selectId, gradeId) {
   const grade = gEl ? gEl.value : "ALL";
   const prev = sel.value;
   const list = racesByGrade(grade);
-  sel.innerHTML = list.map(r => {
+  // 日付の近い順で並べ替え（表示順）
+  const sorted = list.slice().sort((a, b) => {
+    const da = a.date || "";
+    const db = b.date || "";
+    if (da !== db) return da < db ? -1 : 1;
+    return (a.name || "").localeCompare(b.name || "", "ja");
+  });
+  sel.innerHTML = sorted.map(r => {
     const tag = r.yearSrc === "2025" ? "［25年馬］" : "";
     return `<option value="${r.id}">${tag}${r.name}</option>`;
   }).join("");
-  if (list.some(r => r.id === prev)) sel.value = prev;
-  else if (list.length) sel.value = list[0].id;
+  // 初期選択：既存選択が残っていれば維持、なければ日付が最も近いレース
+  if (prev && sorted.some(r => r.id === prev)) {
+    sel.value = prev;
+  } else {
+    const nearest = pickNearestRace(sorted);
+    if (nearest) sel.value = nearest.id;
+    else if (sorted.length) sel.value = sorted[0].id;
+  }
 }
 
 function fillRaceSelects() {
@@ -2119,9 +2193,35 @@ function historyRaceLabel(title, raceId) {
 
 
 // ========== お知らせ・更新履歴 ==========
-const NEWS_VERSION = "2026-09-05e";
+const NEWS_VERSION = "2026-09-05h";
 const NEWS_SEEN_KEY = "keiba_sim_news_seen";
 const NEWS_ITEMS = [
+  {
+    ver: "2026-09-05h",
+    date: "2026/9/5",
+    title: "ペース初期・馬番重視・枠順反映",
+    body: [
+      "想定ペースの初期位置を「自動（メンバーから推定）」に変更",
+      "予想の重視ポイントに「馬番重視」を追加",
+      "各競馬場の内側有利・外側有利を枠順スコアに強く反映（中山は内有利など）"
+    ]
+  },
+  {
+    ver: "2026-09-05g",
+    date: "2026/9/5",
+    title: "グレード初期値をすべてに",
+    body: [
+      "グレードのプルダウン初期位置を「すべて」に変更（全タブ）"
+    ]
+  },
+  {
+    ver: "2026-09-05f",
+    date: "2026/9/5",
+    title: "開催レースの初期選択",
+    body: [
+      "開催レースのプルダウン初期位置を、日付が最も近いレースに変更（全タブ共通）"
+    ]
+  },
   {
     ver: "2026-09-05e",
     date: "2026/9/5",
