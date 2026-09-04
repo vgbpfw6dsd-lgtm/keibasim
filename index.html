@@ -155,6 +155,7 @@
   }
   .hist-name { font-weight: 700; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .hist-sub { margin-left: auto; font-size: 0.72rem; color: var(--muted); white-space: nowrap; flex-shrink: 0; }
+  .hist-item:active { transform: scale(0.99); border-color: rgba(240,196,20,0.5); }
   .hist-meta {
     margin-top: 8px; font-size: 0.68rem; color: var(--muted);
   }
@@ -2016,10 +2017,12 @@ function runPredict() {
     weather: race.weather || getSelectedWeather("weatherSelectPredict"),
     pace: paceKey,
     nSim,
+    combos: sim.combos || null,
     top: baseRank.slice(0, 5).map((x, i) => ({
       rank: i + 1,
       number: x.h.number,
       name: x.h.name,
+      frame: x.h.frame,
       win: winP[x.i],
       quinella: sim.quinellaP[x.i],
       place: sim.placeP[x.i],
@@ -2029,6 +2032,7 @@ function runPredict() {
     horses: race.horses.map((h, i) => ({
       number: h.number,
       name: h.name,
+      frame: h.frame,
       win: winP[i],
       quinella: sim.quinellaP[i],
       place: sim.placeP[i],
@@ -2083,9 +2087,19 @@ function historyRaceLabel(title, raceId) {
 
 
 // ========== お知らせ・更新履歴 ==========
-const NEWS_VERSION = "2026-09-05b";
+const NEWS_VERSION = "2026-09-05c";
 const NEWS_SEEN_KEY = "keiba_sim_news_seen";
 const NEWS_ITEMS = [
+  {
+    ver: "2026-09-05c",
+    date: "2026/9/5",
+    title: "履歴から結果ポップアップを再表示",
+    body: [
+      "【履歴】でまとめて予想の結果をタップすると、多い馬券組合せTOP5を再表示",
+      "【履歴】でレース映像の結果をタップすると、着順結果ポップアップを再表示",
+      "※この更新より前の履歴には詳細データが無い場合があります"
+    ]
+  },
   {
     ver: "2026-09-05b",
     date: "2026/9/5",
@@ -2227,6 +2241,7 @@ function saveRaceVideoHistory(raceMeta, order, pace, leadSplit) {
       rank: i + 1,
       number: r.horse.number,
       name: r.horse.name,
+      frame: r.horse.frame,
       win: i === 0 ? 1 : 0,
       quinella: i < 2 ? 1 : 0,
       place: i < 3 ? 1 : 0,
@@ -2234,9 +2249,21 @@ function saveRaceVideoHistory(raceMeta, order, pace, leadSplit) {
       odds: r.horse.odds,
       popular: r.horse.popular
     })),
+    finishOrder: order.map((r, i) => ({
+      number: r.horse.number,
+      name: r.horse.name,
+      frame: r.horse.frame,
+      jockey: r.horse.jockey,
+      finishTime: r.finishTime,
+      split1000: r.split1000,
+      lateStart: !!r.lateStart,
+      odds: r.horse.odds,
+      popular: r.horse.popular
+    })),
     horses: order.map((r, i) => ({
       number: r.horse.number,
       name: r.horse.name,
+      frame: r.horse.frame,
       jockey: r.horse.jockey,
       win: i === 0 ? 1 : 0,
       quinella: i < 2 ? 1 : 0,
@@ -2258,6 +2285,7 @@ function clearHistory() {
 
 function renderHistory() {
   const list = loadHistory();
+  window.__historyCache = list;
   const el = document.getElementById("historyList");
   const cnt = document.getElementById("historyCount");
   if (cnt) cnt.textContent = list.length + "件";
@@ -2266,7 +2294,7 @@ function renderHistory() {
     el.innerHTML = '<p class="horse-meta" style="padding:12px 0">まだ履歴がありません。</p>';
     return;
   }
-  el.innerHTML = list.map((e) => {
+  el.innerHTML = list.map((e, idx) => {
     const kind = e.type === "race" ? "映像" : "予想";
     const kindBg = e.type === "race" ? "#38bdf8" : "#f0c414";
     const title = historyRaceLabel(e.raceName || "", e.raceId);
@@ -2292,15 +2320,75 @@ function renderHistory() {
     if (e.going) metaParts.push(e.going);
     metaParts.push(paceL);
     if (e.type !== "race" && e.nSim) metaParts.push(e.nSim + "回");
-    return '<div class="hist-item">' +
+    metaParts.push("タップで詳細");
+    return '<div class="hist-item" data-hist-idx="' + idx + '" role="button" tabindex="0" style="cursor:pointer">' +
       '<div class="hist-head">' +
         '<span class="pill" style="background:' + kindBg + ';color:#111;font-weight:800">' + kind + '</span>' +
         '<span class="hist-title">' + title + '</span>' +
       '</div>' +
       '<div class="hist-podium">' + lines + '</div>' +
-      (metaParts.length ? '<div class="hist-meta">' + metaParts.join(" · ") + '</div>' : '') +
+      '<div class="hist-meta">' + metaParts.join(" · ") + '</div>' +
       '</div>';
   }).join("");
+
+  el.querySelectorAll(".hist-item").forEach(node => {
+    node.addEventListener("click", () => openHistoryDetail(parseInt(node.getAttribute("data-hist-idx"), 10)));
+    node.addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter" || ev.key === " ") {
+        ev.preventDefault();
+        openHistoryDetail(parseInt(node.getAttribute("data-hist-idx"), 10));
+      }
+    });
+  });
+}
+
+function openHistoryDetail(idx) {
+  const list = window.__historyCache || loadHistory();
+  const e = list[idx];
+  if (!e) return;
+  if (e.type === "race") {
+    const orderSrc = e.finishOrder && e.finishOrder.length ? e.finishOrder : (e.top || []);
+    if (!orderSrc.length) {
+      alert("この履歴には着順詳細がありません。");
+      return;
+    }
+    const order = orderSrc.map(r => ({
+      horse: {
+        number: r.number,
+        name: r.name,
+        frame: r.frame != null ? r.frame : Math.ceil((r.number || 1) / 2),
+        jockey: r.jockey,
+        odds: r.odds,
+        popular: r.popular
+      },
+      finishTime: r.finishTime != null ? r.finishTime : r.time,
+      split1000: r.split1000,
+      lateStart: r.lateStart
+    }));
+    showHorseFinishModal(order, {
+      id: e.raceId,
+      name: e.raceName,
+      raceName: e.raceName,
+      course: e.course,
+      distance: e.distance
+    });
+  } else {
+    if (!e.combos) {
+      alert("この履歴には馬券組合せデータがありません。\\n（この機能追加前の履歴の可能性があります）");
+      return;
+    }
+    const raceLike = {
+      id: e.raceId,
+      name: e.raceName,
+      raceName: e.raceName,
+      horses: (e.horses || []).map(h => ({
+        number: h.number,
+        name: h.name,
+        frame: h.frame != null ? h.frame : Math.ceil((h.number || 1) / 2)
+      }))
+    };
+    showBetComboModal(e.combos, e.nSim || 0, raceLike);
+  }
 }
 
 
