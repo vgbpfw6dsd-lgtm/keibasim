@@ -447,6 +447,7 @@
   <button class="tab" data-tab="history">履歴</button>
   <button class="tab" data-tab="stats">統計</button>
   <button class="tab" data-tab="settings">設定</button>
+  <button class="tab" data-tab="news">お知らせ</button>
 </div>
 
 <!-- ===== 予想 ===== -->
@@ -748,6 +749,17 @@
   </div>
 </div>
 
+<!-- ===== お知らせ ===== -->
+<div id="panel-news" class="panel">
+  <div class="info-box">
+    アプリの更新内容です。起動時に新しいお知らせがある場合はポップアップで表示されます（確認後は自動では開きません）。
+  </div>
+  <div class="card" id="newsListCard">
+    <h2>更新履歴</h2>
+    <div id="newsListBody" class="horse-meta" style="line-height:1.55"></div>
+  </div>
+</div>
+
 <!-- ===== 設定 ===== -->
 <div id="panel-settings" class="panel">
   <div class="card">
@@ -771,6 +783,15 @@
       ・能力値・展開は過去着順・タイム指数などから簡易算出した相対値です<br>
       ・的中保証はありません。馬券は自己責任でお願いします
     </p>
+  </div>
+</div>
+
+<div id="newsModal" class="bet-modal-overlay hidden" role="dialog" aria-modal="true">
+  <div class="bet-modal" style="max-width:520px">
+    <h2>お知らせ</h2>
+    <p class="bet-sub" id="newsModalSub">更新内容</p>
+    <div id="newsModalBody" class="horse-meta" style="line-height:1.55;max-height:55dvh;overflow-y:auto;padding:4px 2px 12px"></div>
+    <button type="button" class="btn btn-primary btn-close-modal" id="btnCloseNewsModal">確認した</button>
   </div>
 </div>
 
@@ -1992,6 +2013,83 @@ function formatRaceTitle(race) {
   }
   return (race.course || "") + " " + (race.surface || "") + (race.distance || "") + "m";
 }
+
+
+// ========== お知らせ・更新履歴 ==========
+const NEWS_VERSION = "2026-09-04d";
+const NEWS_SEEN_KEY = "keiba_sim_news_seen";
+const NEWS_ITEMS = [
+  {
+    ver: "2026-09-04d",
+    date: "2026/9/4",
+    title: "お知らせ機能・統計のレース絞り込み など",
+    body: [
+      "【お知らせ】タブを追加。起動時に未読の更新があればポップアップ表示（確認後は自動表示なし）",
+      "【統計】にレースごとのプルダウンを追加。選択レースの履歴だけ集計可能",
+      "枠番カラーをJRA公式どおりに修正（5枠＝黄・6枠＝緑）",
+      "京成杯AH・札幌2歳S・紫苑S・セントウルSの枠順・出走馬を更新（欠場・除外は未登録）",
+      "馬券組合せポップアップに枠番カラーと馬名を表示",
+      "レース映像コース下のスタンド帯（黒と芝色のブロック列）を非表示",
+      "レース名の「［26年］」表記を削除",
+      "札幌2歳S：写真コースで黄ライン走行。ゴール前のカクつきを修正"
+    ]
+  },
+  {
+    ver: "2026-09-03",
+    date: "2026/9/3",
+    title: "中山・阪神など写真コース対応",
+    body: [
+      "京成杯AH：中山芝1600m外の写真コース対応",
+      "紫苑S・セントウルSなど週末G2/G3を追加",
+      "展開・馬場・天候・倍速・まとめて予想の強化"
+    ]
+  }
+];
+
+function formatNewsHtml(items) {
+  return items.map(it => {
+    const lis = (it.body || []).map(b => `<li style="margin:4px 0">${b}</li>`).join("");
+    return `<div style="margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+      <div style="font-weight:800;color:#f0c414;margin-bottom:4px">${it.date} ${it.title}</div>
+      <ul style="margin:0;padding-left:1.2em;color:var(--text)">${lis}</ul>
+    </div>`;
+  }).join("");
+}
+
+function renderNewsPanel() {
+  const el = document.getElementById("newsListBody");
+  if (el) el.innerHTML = formatNewsHtml(NEWS_ITEMS);
+}
+
+function getSeenNewsVer() {
+  try { return localStorage.getItem(NEWS_SEEN_KEY) || ""; } catch (e) { return ""; }
+}
+function setSeenNewsVer(v) {
+  try { localStorage.setItem(NEWS_SEEN_KEY, v); } catch (e) {}
+}
+
+function showNewsModalIfNeeded() {
+  const seen = getSeenNewsVer();
+  if (seen === NEWS_VERSION) return;
+  const modal = document.getElementById("newsModal");
+  const body = document.getElementById("newsModalBody");
+  const sub = document.getElementById("newsModalSub");
+  if (!modal || !body) return;
+  // 未読：最新バージョンの項目のみ、または全体
+  const unread = NEWS_ITEMS.filter(it => it.ver === NEWS_VERSION);
+  const show = unread.length ? unread : NEWS_ITEMS.slice(0, 1);
+  if (sub) sub.textContent = "バージョン " + NEWS_VERSION;
+  body.innerHTML = formatNewsHtml(show);
+  modal.classList.remove("hidden");
+}
+
+function hideNewsModal(markSeen) {
+  const modal = document.getElementById("newsModal");
+  if (modal) modal.classList.add("hidden");
+  if (markSeen) setSeenNewsVer(NEWS_VERSION);
+  renderNewsPanel();
+}
+
 
 // ========== 履歴・統計 ==========
 const HISTORY_KEY = "keiba_sim_history_v1";
