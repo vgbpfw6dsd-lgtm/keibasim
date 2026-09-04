@@ -647,6 +647,7 @@
     </select>
     <label class="horse-meta" style="display:block;margin:8px 0 4px">レース</label>
     <select id="viewRaceSelect" class="race-select"></select>
+    <div id="viewRaceInfo" class="horse-meta" style="margin-top:6px"></div>
     <div style="margin-top:10px">
       <label class="horse-meta" style="display:block;margin-bottom:6px">馬場状態</label>
       <select id="goingSelectRace" class="race-select">
@@ -658,6 +659,7 @@
     <div style="margin-top:10px">
       <label class="horse-meta" style="display:block;margin-bottom:6px">想定ペース</label>
       <select id="paceSelectRace" class="race-select">
+        <option value="auto">自動（メンバーから推定）</option>
         <option value="high">ハイペース</option>
         <option value="mid" selected>ミドルペース</option>
         <option value="slow">スローペース</option>
@@ -1091,7 +1093,7 @@ const SAMPLE_RACES = [
     id: "keisei_ah_20260905",
     name: "【2026/9/5 京成杯オータムH】",
     course: "中山", surface: "芝", distance: 1600, condition: "良",
-    note: "中山外回り芝1600m・16頭｜おむすび型・3コーナー｜2角まで約240m｜直線310m｜急坂2.4m｜高低差最大5.3m｜枠順未定",
+    note: "中山外回り芝1600m・16頭｜おむすび型・3コーナー｜2角まで約240m｜直線310m｜急坂2.4m｜高低差最大5.3m｜枠順確定",
     date: "2026-09-05", grade: "G3", yearSrc: "2026",
     raceName: "京成杯オータムハンデキャップ",
     horses: [
@@ -1117,7 +1119,7 @@ const SAMPLE_RACES = [
     id: "sapporo_2yo_20260905",
     name: "【2026/9/5 札幌2歳S】",
     course: "札幌", surface: "芝", distance: 1800, condition: "良",
-    note: "芝・右1800m｜枠順未定（暫定馬番）｜2歳G3",
+    note: "芝・右1800m｜枠順確定｜2歳G3",
     date: "2026-09-05", grade: "G3", yearSrc: "2026",
     raceName: "札幌2歳ステークス",
     horses: [
@@ -1136,7 +1138,7 @@ const SAMPLE_RACES = [
     id: "shion_s_20260906",
     name: "【2026/9/6 紫苑S】",
     course: "中山", surface: "芝", distance: 2000, condition: "良",
-    note: "中山内回り芝2000m｜1周強・1角まで約405m｜直線310m｜ゴール前急坂2.4m｜枠順未定",
+    note: "中山内回り芝2000m｜1周強・1角まで約405m｜直線310m｜ゴール前急坂2.4m｜枠順確定",
     date: "2026-09-06", grade: "G2", yearSrc: "2026",
     raceName: "紫苑ステークス",
     horses: [
@@ -1157,7 +1159,7 @@ const SAMPLE_RACES = [
     id: "centaur_s_20260906",
     name: "【2026/9/6 セントウルS】",
     course: "阪神", surface: "芝", distance: 1200, condition: "良",
-    note: "阪神内回り芝1200m｜3角まで約243m｜直線356.5m｜急坂1.8m｜枠順未定",
+    note: "阪神内回り芝1200m｜3角まで約243m｜直線356.5m｜急坂1.8m｜枠順確定",
     date: "2026-09-06", grade: "G2", yearSrc: "2026",
     raceName: "産経賞セントウルステークス",
     horses: [
@@ -1181,8 +1183,8 @@ const SAMPLE_RACES = [
   }
 ];
 
-const FRAME_COLORS = ["#fff","#000","#e53935","#1e88e5","#fdd835","#43a047","#fb8c00","#8e24aa"];
-const FRAME_TEXT = ["#111","#fff","#fff","#fff","#111","#fff","#111","#fff"];
+const FRAME_COLORS = ["#fff","#000","#e53935","#1e88e5","#fdd835","#43a047","#fb8c00","#f8bbd0"];
+const FRAME_TEXT = ["#111","#fff","#fff","#fff","#111","#fff","#111","#111"];
 
 let weights = { rank: 30, time: 22, agari: 18, dist: 12, frame: 8, blood: 10 };
 let raceAnim = null;
@@ -1741,27 +1743,43 @@ function syncRaceAcrossTabs(sourceSelectId) {
   });
 }
 
-function updateRaceInfo() {
-  const race = getCurrentRace("raceSelect");
-  if (!race) return;
+function formatRaceNoteLine(race) {
+  if (!race) return "";
   const c = COURSES[race.course] || {};
   const dir = c.direction === "left" ? "左回り" : c.direction === "right" ? "右回り" : "";
-  const extra = race.note ? `｜${race.note}` : (c.surfaceNote ? `｜${c.surfaceNote}` : "");
-  document.getElementById("raceInfo").textContent =
-    `${c.name || race.course} ${dir} / ${race.surface}${race.distance}m / 馬場:${race.condition} / ${race.horses.length}頭${extra}`;
-  document.querySelectorAll(".going-btn").forEach(btn => {
-    const on = btn.dataset.going === race.condition;
-    btn.classList.toggle("active", on);
-    if (on) {
-      btn.style.background = "linear-gradient(135deg,#c9a227,#f0c414)";
-      btn.style.color = "#1a1208";
-      btn.style.fontWeight = "800";
-    } else {
-      btn.style.background = "";
-      btn.style.color = "";
-      btn.style.fontWeight = "";
-    }
-  });
+  const extra = race.note ? "｜" + race.note : (c.surfaceNote ? "｜" + c.surfaceNote : "");
+  return (c.name || race.course) + " " + dir + " / " + race.surface + race.distance + "m / 馬場:" + race.condition + " / " + race.horses.length + "頭" + extra;
+}
+
+function updateRaceInfo() {
+  const race = getCurrentRace("raceSelect");
+  if (race) {
+    const el = document.getElementById("raceInfo");
+    if (el) el.textContent = formatRaceNoteLine(race);
+    document.querySelectorAll(".going-btn").forEach(btn => {
+      const on = btn.dataset.going === race.condition;
+      btn.classList.toggle("active", on);
+      if (on) {
+        btn.style.background = "linear-gradient(135deg,#c9a227,#f0c414)";
+        btn.style.color = "#1a1208";
+        btn.style.fontWeight = "800";
+      } else {
+        btn.style.background = "";
+        btn.style.color = "";
+        btn.style.fontWeight = "";
+      }
+    });
+  }
+  // レース映像タブの備考
+  const viewRace = getCurrentRace("viewRaceSelect") || race;
+  const vEl = document.getElementById("viewRaceInfo");
+  if (vEl && viewRace) vEl.textContent = formatRaceNoteLine(viewRace);
+}
+
+function updateViewRaceInfo() {
+  const race = getCurrentRace("viewRaceSelect");
+  const vEl = document.getElementById("viewRaceInfo");
+  if (vEl && race) vEl.textContent = formatRaceNoteLine(race);
 }
 
 function setRaceGoing(going) {
@@ -1846,6 +1864,20 @@ function suggestedGoingFromWeather(weather) {
   if (weather === "大雨" || weather === "大雪") return "重";
   if (weather === "雨" || weather === "雪" || weather === "小雨") return "稍重";
   return "良";
+}
+
+/** メンバー脚質から想定ペースを推定 */
+function estimatePaceFromMembers(race) {
+  if (!race || !race.horses || !race.horses.length) return "mid";
+  let nige = 0, senko = 0;
+  race.horses.forEach(h => {
+    const st = (h.styles && h.styles[0]) || "";
+    if (st === "nige") nige++;
+    else if (st === "senko") senko++;
+  });
+  if (nige >= 2 || (nige >= 1 && senko >= 3)) return "high";
+  if (nige === 0 && senko <= 1) return "slow";
+  return "mid";
 }
 
 function getSelectedPace(selectId) {
@@ -2087,9 +2119,27 @@ function historyRaceLabel(title, raceId) {
 
 
 // ========== お知らせ・更新履歴 ==========
-const NEWS_VERSION = "2026-09-05c";
+const NEWS_VERSION = "2026-09-05e";
 const NEWS_SEEN_KEY = "keiba_sim_news_seen";
 const NEWS_ITEMS = [
+  {
+    ver: "2026-09-05e",
+    date: "2026/9/5",
+    title: "レース映像の備考・ペース・枠色",
+    body: [
+      "【レース映像】にも開催レースの備考欄を表示",
+      "【レース映像】の想定ペースに「自動（メンバーから推定）」を追加",
+      "8枠の色を紫から薄いピンクに変更"
+    ]
+  },
+  {
+    ver: "2026-09-05d",
+    date: "2026/9/5",
+    title: "レース備考の枠順表記を更新",
+    body: [
+      "開催レース選択下の備考を「枠順未定」から「枠順確定」に変更（全レース）"
+    ]
+  },
   {
     ver: "2026-09-05c",
     date: "2026/9/5",
@@ -4453,7 +4503,11 @@ function startRace(horses, raceMeta) {
   const goingSel = getSelectedGoing("goingSelectRace");
   if (goingSel) raceMeta.condition = goingSel;
   raceMeta.weather = getSelectedWeather("weatherSelectRace");
-  const pace = getSelectedPace("paceSelectRace") || "mid";
+  let pace = getSelectedPace("paceSelectRace") || "mid";
+  if (pace === "auto") {
+    const _r = getCurrentRace("viewRaceSelect");
+    pace = estimatePaceFromMembers(_r);
+  }
   // 予想タブのペースも同期（同じ条件で見られるように）
   const predPace = document.getElementById("paceSelectPredict");
   if (predPace && pace !== "auto") predPace.value = pace;
@@ -5108,6 +5162,7 @@ if (entriesSel) entriesSel.addEventListener("change", () => {
 const viewSel = document.getElementById("viewRaceSelect");
 if (viewSel) viewSel.addEventListener("change", () => {
   syncRaceAcrossTabs("viewRaceSelect");
+  updateViewRaceInfo();
 });
 const abilitySel = document.getElementById("abilityRaceSelect");
 if (abilitySel) abilitySel.addEventListener("change", () => {
