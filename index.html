@@ -1294,16 +1294,45 @@ function calcRealDataProfile(horse, raceCondition) {
   const goingKey = raceCondition === "重" ? "重" : raceCondition === "稍重" ? "稍重" : "良";
   const goingRecs = parsed.filter(r=>r.condition===goingKey);
   const goingToday = goingRecs.length ? weighted("rankScore") : 50;
-  // 能力値への重賞反映を強化。重賞格＋着順を独立した大きな評価軸にする。
-  // これにより通常戦2勝だけでGⅠ/GⅡ/GⅢ上位実績馬を上回る偏りを抑える。
+  // ===== 実データ5能力の再設計 =====
+  // レース格は GⅠ > GⅡ > GⅢ > L > その他 を固定。
+  // 同じ格では1着に近いほど高評価し、通常戦の複数勝利だけで重賞上位馬を
+  // 簡単に上回らないよう、5能力すべてに「競走レベル」を反映する。
   const gradeScore = clamp100(gradePoints);
+  const timeScore = time;
+  const agariScore = agari;
+  const formScore = form;
+  const courseScore = courseApt ?? 60;
+  const goingScore = goingToday;
+  const popScore = popularity;
+  
+  // 5項目:
+  // スピード = タイム45 + 格25 + 近走10 + 上がり10 + コース5 + 人気5
+  // スタミナ = 近走25 + 格30 + 距離15 + コース10 + 馬場10 + タイム10
+  // 末脚    = 上がり40 + 格25 + 近走10 + タイム10 + 人気5 + コース10
+  // 安定性  = 近走30 + 格25 + コース15 + 上がり10 + 人気10 + 馬場10
+  const speed = clamp100(
+    timeScore*0.45 + gradeScore*0.25 + formScore*0.10 + agariScore*0.10 + courseScore*0.05 + popScore*0.05
+  );
+  const stamina = clamp100(
+    formScore*0.25 + gradeScore*0.30 + (Number(horse.distApt)||6)*10*0.15 + courseScore*0.10 + goingScore*0.10 + timeScore*0.10
+  );
+  const accel = clamp100(
+    agariScore*0.40 + gradeScore*0.25 + formScore*0.10 + timeScore*0.10 + popScore*0.05 + courseScore*0.10
+  );
+  const consistency = clamp100(
+    formScore*0.30 + gradeScore*0.25 + courseScore*0.15 + agariScore*0.10 + popScore*0.10 + goingScore*0.10
+  );
+  
+  // 総合能力は5能力を統合。重賞格は別項目として二重加点せず、各能力に既に
+  // 入っている格補正を踏まえた上で、総合では「重賞実績」を20%残す。
   const total = Math.round(clamp100(
-    form*0.23 + time*0.16 + agari*0.12 + (courseApt ?? 60)*0.11 +
-    popularity*0.04 + goingToday*0.06 + gradeScore*0.28
+    speed*0.25 + stamina*0.20 + accel*0.20 + consistency*0.15 + gradeScore*0.20
   ));
   return {
     records: parsed,
     form: Math.round(form), time: Math.round(time), agari: Math.round(agari),
+    speed: Math.round(speed), stamina: Math.round(stamina), accel: Math.round(accel), consistency: Math.round(consistency),
     popularity: Math.round(popularity), courseApt: courseApt == null ? null : Math.round(courseApt),
     goingToday: Math.round(goingToday), total, gradePoints: Math.round(gradePoints*10)/10, gradeScore: Math.round(gradeScore), gradeTop3,
     bestGrade: bestGrade.grade || "その他",
@@ -1318,8 +1347,7 @@ function calcAbility(horse, raceCondition) {
       const cond = horse.condition != null ? clamp(Math.round(horse.condition),1,5) : 3;
       const going = horse.going || {firm:70, soft:70, heavy:65};
       return {
-        speed: rd.time, stamina: Math.round(rd.form*0.50 + (rd.courseApt ?? 60)*0.24 + rd.time*0.18 + Math.min(8, rd.gradePoints*0.55)),
-        accel: rd.agari, consistency: Math.round(rd.form*0.68 + rd.agari*0.09 + rd.popularity*0.13 + Math.min(10, rd.gradePoints*0.70)),
+        speed: rd.speed, stamina: rd.stamina, accel: rd.accel, consistency: rd.consistency,
         form: rd.form, condition: cond, going, goingToday: rd.goingToday, total: rd.total,
         detail: {avgRank:rd.avgRank, winRate:rd.records.filter(r=>r.rank===1).length/rd.records.length*100, placeRate:rd.records.filter(r=>r.rank<=2).length/rd.records.length*100, showRate:rd.records.filter(r=>r.rank<=3).length/rd.records.length*100, timeIdx:rd.time, agariIdx:rd.agari, realData:true, popularityIdx:rd.popularity, courseApt:rd.courseApt, gradePoints:rd.gradePoints, gradeScore:rd.gradeScore, bestGrade:rd.bestGrade, gradeTop3:rd.gradeTop3}
       };
