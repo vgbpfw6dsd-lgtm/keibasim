@@ -1258,8 +1258,9 @@ function calcRealDataProfile(horse, raceCondition) {
   const time = weighted("timeScore");
   const agari = weighted("agariScore");
   const popularity = weighted("popularityScore");
-  // 重賞格を実績として明確に加点。GⅠ>GⅡ>GⅢ>リステッド>OPの順で、
-  // 出走そのものにも価値を持たせ、さらに上位着順を大きく評価する。
+  // 重賞格を能力値の重要な評価軸として加重。優先順位は GⅠ > GⅡ > GⅢ > それ以外。
+  // 同じ格なら「1着に近いほど」大きく評価し、重賞未経験の通常戦2勝だけで
+  // 重賞上位馬を簡単に上回らないようにする。
   const gradeInfo = parsed.map(r => {
     const txt = String(r.grade || r.race || "");
     let grade = r.grade || "";
@@ -1269,13 +1270,19 @@ function calcRealDataProfile(horse, raceCondition) {
       else if (/G\s*[ⅢIII3]/i.test(txt) || /関屋記念|中京記念|しらさぎS|ラジオNIKKEI賞|府中牝馬S|クイーンS|京成杯AH|京成杯オータム|コスモス賞/i.test(txt)) grade = "G3";
       else if (/L$|L\s/.test(txt)) grade = "L";
     }
-    const base = grade === "G1" ? 14 : grade === "G2" ? 10 : grade === "G3" ? 7 : grade === "L" ? 3.5 : 0;
+    // 格そのものの基礎評価。GⅠ>GⅡ>GⅢ>それ以外を固定。
+    const base = grade === "G1" ? 100 : grade === "G2" ? 82 : grade === "G3" ? 65 : grade === "L" ? 45 : 25;
     const rk = Number(r.rank) || 99;
-    const finish = rk===1 ? 1.00 : rk===2 ? 0.82 : rk===3 ? 0.68 : rk===4 ? 0.52 : rk===5 ? 0.38 : rk<=8 ? 0.22 : 0.08;
-    return {grade, gradePoints:base*finish, top3: base>0 && rk<=3 ? 1 : 0, base};
+    // 同じ重賞格でも1着に近いほど急激に高くなる。着外でも出走経験は残す。
+    const finish = rk===1 ? 1.00 : rk===2 ? 0.94 : rk===3 ? 0.89 : rk===4 ? 0.84 : rk===5 ? 0.79 : rk===6 ? 0.73 : rk===7 ? 0.67 : rk===8 ? 0.61 : rk<=10 ? 0.54 : rk<=12 ? 0.47 : rk<=15 ? 0.40 : 0.34;
+    const gradePoints = base * finish;
+    return {grade, gradePoints, top3: base>=65 && rk<=3 ? 1 : 0, base, finish};
   });
   const gradePoints = gradeInfo.reduce((sum,x,i)=>sum+x.gradePoints*w[i],0)/(w.reduce((a,b)=>a+b,0)||1);
   const gradeTop3 = gradeInfo.reduce((a,x)=>a+x.top3,0);
+  // 最高格の重賞経験を別軸でも保持。GⅠ>GⅡ>GⅢ>その他。
+  const gradeRank = {G1:3, G2:2, G3:1, L:0.5, "":0};
+  const bestGrade = gradeInfo.reduce((best,x)=> (gradeRank[x.grade]||0) > (gradeRank[best.grade]||0) ? x : best, {grade:"",gradePoints:0});
   const targetCourse = horse.targetCourse || "東京";
   const courseRecs = parsed.filter(r=>r.venue === targetCourse);
   let courseApt = null;
@@ -1287,14 +1294,19 @@ function calcRealDataProfile(horse, raceCondition) {
   const goingKey = raceCondition === "重" ? "重" : raceCondition === "稍重" ? "稍重" : "良";
   const goingRecs = parsed.filter(r=>r.condition===goingKey);
   const goingToday = goingRecs.length ? weighted("rankScore") : 50;
+  // 能力値への重賞反映を強化。重賞格＋着順を独立した大きな評価軸にする。
+  // これにより通常戦2勝だけでGⅠ/GⅡ/GⅢ上位実績馬を上回る偏りを抑える。
+  const gradeScore = clamp100(gradePoints);
   const total = Math.round(clamp100(
-    form*0.27 + time*0.19 + agari*0.14 + (courseApt ?? 60)*0.13 + popularity*0.05 + goingToday*0.07 + Math.min(12, gradePoints)
+    form*0.23 + time*0.16 + agari*0.12 + (courseApt ?? 60)*0.11 +
+    popularity*0.04 + goingToday*0.06 + gradeScore*0.28
   ));
   return {
     records: parsed,
     form: Math.round(form), time: Math.round(time), agari: Math.round(agari),
     popularity: Math.round(popularity), courseApt: courseApt == null ? null : Math.round(courseApt),
-    goingToday: Math.round(goingToday), total, gradePoints: Math.round(gradePoints*10)/10, gradeTop3,
+    goingToday: Math.round(goingToday), total, gradePoints: Math.round(gradePoints*10)/10, gradeScore: Math.round(gradeScore), gradeTop3,
+    bestGrade: bestGrade.grade || "その他",
     avgRank: parsed.reduce((a,r)=>a+r.rank,0)/parsed.length
   };
 }
@@ -1309,7 +1321,7 @@ function calcAbility(horse, raceCondition) {
         speed: rd.time, stamina: Math.round(rd.form*0.50 + (rd.courseApt ?? 60)*0.24 + rd.time*0.18 + Math.min(8, rd.gradePoints*0.55)),
         accel: rd.agari, consistency: Math.round(rd.form*0.68 + rd.agari*0.09 + rd.popularity*0.13 + Math.min(10, rd.gradePoints*0.70)),
         form: rd.form, condition: cond, going, goingToday: rd.goingToday, total: rd.total,
-        detail: {avgRank:rd.avgRank, winRate:rd.records.filter(r=>r.rank===1).length/rd.records.length*100, placeRate:rd.records.filter(r=>r.rank<=2).length/rd.records.length*100, showRate:rd.records.filter(r=>r.rank<=3).length/rd.records.length*100, timeIdx:rd.time, agariIdx:rd.agari, realData:true, popularityIdx:rd.popularity, courseApt:rd.courseApt, gradePoints:rd.gradePoints, gradeTop3:rd.gradeTop3}
+        detail: {avgRank:rd.avgRank, winRate:rd.records.filter(r=>r.rank===1).length/rd.records.length*100, placeRate:rd.records.filter(r=>r.rank<=2).length/rd.records.length*100, showRate:rd.records.filter(r=>r.rank<=3).length/rd.records.length*100, timeIdx:rd.time, agariIdx:rd.agari, realData:true, popularityIdx:rd.popularity, courseApt:rd.courseApt, gradePoints:rd.gradePoints, gradeScore:rd.gradeScore, bestGrade:rd.bestGrade, gradeTop3:rd.gradeTop3}
       };
     }
   }
