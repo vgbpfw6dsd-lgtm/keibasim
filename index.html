@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>競馬シミュレーション｜Grok</title>
 <style>
-  :root, [data-theme="classic"] {
+  :root, html[data-theme="classic"], body[data-theme="classic"] {
     --bg: #0c1017;
     --card: #161e2b;
     --card2: #1e2a3c;
@@ -28,7 +28,7 @@
     --max-w: 720px;
   }
   /* 芝グリーン：ターフ感のある深い緑 */
-  [data-theme="turf"] {
+  html[data-theme="turf"], body[data-theme="turf"] {
     --bg: #0a1410;
     --card: #12241c;
     --card2: #1a3228;
@@ -44,7 +44,7 @@
     --btn-primary-text: #052e16;
   }
   /* ミッドナイト：黒基調＋シアン */
-  [data-theme="midnight"] {
+  html[data-theme="midnight"], body[data-theme="midnight"] {
     --bg: #050508;
     --card: #12121a;
     --card2: #1c1c28;
@@ -60,7 +60,7 @@
     --btn-primary-text: #042f2e;
   }
   /* サクラ夜：紫〜ピンクの宵闇 */
-  [data-theme="sakura"] {
+  html[data-theme="sakura"], body[data-theme="sakura"] {
     --bg: #120c14;
     --card: #1e1524;
     --card2: #2a1c34;
@@ -196,7 +196,7 @@
     font-size: 0.7rem; font-weight: 800; flex-shrink: 0;
     background: var(--card2); color: var(--muted);
   }
-  .hist-rank.r1 { background: #f0c414; color: #111; }
+  .hist-rank.r1 { background: var(--accent); color: #111; }
   .hist-rank.r2 { background: #c0c0c0; color: #111; }
   .hist-rank.r3 { background: #cd7f32; color: #111; }
   .hist-num {
@@ -213,7 +213,7 @@
 
   .horse-meta { font-size: 0.68rem; color: var(--muted); }
   .prob-bar-wrap { width: 68px; text-align: right; }
-  .prob-num { font-size: 0.82rem; font-weight: 800; color: #f0c414; }
+  .prob-num { font-size: 0.82rem; font-weight: 800; color: var(--accent); }
   .prob-bar { height: 3px; background: var(--border); border-radius: 2px; margin-top: 3px; overflow: hidden; }
   .prob-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #f0c414); border-radius: 2px; }
   .pill {
@@ -233,7 +233,7 @@
     background: var(--bg); border-radius: 8px; padding: 6px 8px; font-size: 0.7rem;
   }
   .ability-item .label { color: var(--muted); }
-  .ability-item .val { font-weight: 800; color: #f0c414; float: right; }
+  .ability-item .val { font-weight: 800; color: var(--accent); float: right; }
   .ability-bar {
     height: 4px; background: var(--border); border-radius: 2px; margin-top: 3px; overflow: hidden;
   }
@@ -242,14 +242,14 @@
   .ab-sta { background: #22c55e; }
   .ab-acc { background: #3b82f6; }
   .ab-con { background: #a855f7; }
-  .ab-tot { background: #f0c414; }
+  .ab-tot { background: var(--accent); }
   /* 展開予想 */
   .pace-stage {
     background: var(--bg); border-radius: 10px; padding: 10px; margin-bottom: 10px;
     border: 1px solid var(--border);
   }
   .pace-stage-title {
-    font-size: 0.78rem; font-weight: 800; color: #f0c414; margin-bottom: 8px;
+    font-size: 0.78rem; font-weight: 800; color: var(--accent); margin-bottom: 8px;
     display: flex; align-items: center; gap: 6px;
   }
   .pace-row {
@@ -285,7 +285,7 @@
     z-index: 2; pointer-events: none;
   }
   .race-hud.bottom { top: auto; bottom: 0; }
-  .race-hud .lap { font-weight: 800; color: #f0c414; }
+  .race-hud .lap { font-weight: 800; color: var(--accent); }
   /* 馬番速報（中継風・広め） */
   .live-ticker {
     position: relative;
@@ -303,7 +303,7 @@
     font-size: 0.72rem; color: rgba(255,255,255,0.55); margin-bottom: 8px;
     padding: 0 8px;
   }
-  .live-ticker-head strong { color: #f0c414; font-size: 0.88rem; }
+  .live-ticker-head strong { color: var(--accent); font-size: 0.88rem; }
   .live-ticker-track {
     position: relative; height: 96px;
     margin: 0 2px;
@@ -339,7 +339,7 @@
   }
   .live-dot.lead {
     width: 22px; height: 22px; font-size: 0.68rem;
-    border-color: #f0c414; box-shadow: 0 0 0 2px rgba(240,196,20,0.35), 0 1px 5px rgba(0,0,0,0.5);
+    border-color: var(--accent); box-shadow: 0 0 0 2px rgba(240,196,20,0.35), 0 1px 5px rgba(0,0,0,0.5);
     z-index: 5; transition: left 0.2s linear, top 0.2s linear;
   }
   .leaderboard {
@@ -406,7 +406,7 @@
     box-shadow: 0 12px 40px rgba(0,0,0,0.55);
   }
   .bet-modal h2 {
-    margin: 0 0 6px; font-size: 1.15rem; color: #f0c414; text-align: center;
+    margin: 0 0 6px; font-size: 1.15rem; color: var(--accent); text-align: center;
   }
   .bet-modal .bet-sub {
     text-align: center; font-size: 0.75rem; color: var(--muted, #9aa); margin-bottom: 14px;
@@ -437,7 +437,7 @@
     display: block; width: 100%; font-size: 0.68rem; font-weight: 600;
     color: var(--muted, #9aa); line-height: 1.25; margin-top: 1px;
   }
-  .bet-row .pct { color: #f0c414; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+  .bet-row .pct { color: var(--accent); font-weight: 700; white-space: nowrap; flex-shrink: 0; }
   .bet-modal .btn-close-modal {
     width: 100%; margin-top: 12px; padding: 14px;
     font-size: 1rem; font-weight: 800;
@@ -498,12 +498,12 @@
   }
   .hf-list-row .hf-time {
     font-weight: 800; font-variant-numeric: tabular-nums;
-    text-align: right; color: #f0c414;
+    text-align: right; color: var(--accent);
   }
   .hf-list-row .hf-place {
     font-weight: 800; text-align: center;
   }
-  .hf-list-row.top .hf-place { color: #f0c414; }
+  .hf-list-row.top .hf-place { color: var(--accent); }
   .hf-num {
     display: inline-flex; align-items: center; justify-content: center;
     width: 26px; height: 26px; border-radius: 6px;
@@ -511,7 +511,7 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.35);
   }
   .hf-podium .hf-time-big {
-    font-size: 1.05rem; font-weight: 800; color: #f0c414;
+    font-size: 1.05rem; font-weight: 800; color: var(--accent);
     margin-top: 4px; font-variant-numeric: tabular-nums;
   }
   .mt-8 { margin-top: 8px; }
@@ -521,6 +521,115 @@
     padding: 5px 4px; border-bottom: 1px solid var(--border); text-align: left;
   }
   .analysis-table th { color: var(--muted); font-weight: 600; }
+
+  .ai-conf {
+    text-align: center;
+    padding: 12px 10px;
+    margin-bottom: 14px;
+    border-radius: 12px;
+    background: var(--card2);
+    border: 1px solid var(--border);
+  }
+  .ai-conf-label { font-size: 0.8rem; color: var(--muted); margin-bottom: 4px; }
+  .ai-conf-stars {
+    font-size: 1.45rem;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    font-weight: 800;
+    line-height: 1.3;
+  }
+  .ai-conf-note { font-size: 0.72rem; color: var(--muted); margin-top: 4px; }
+  .ai-ticket-block {
+    margin-bottom: 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .ai-ticket-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: var(--card2);
+    font-weight: 800;
+    font-size: 0.88rem;
+    color: var(--accent);
+  }
+  .ai-ticket-head span.pts {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .ai-ticket-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  .ai-ticket-table th {
+    text-align: left;
+    padding: 6px 10px;
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 0.72rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .ai-ticket-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .ai-ticket-table tr:last-child td { border-bottom: none; }
+  .ai-ticket-table .ai-nums {
+    font-weight: 800;
+    letter-spacing: 0.04em;
+  }
+  .ai-ticket-table .ai-meta {
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .ai-num-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 5px;
+    border-radius: 5px;
+    font-weight: 800;
+    font-size: 0.8rem;
+    margin: 0 2px;
+    vertical-align: middle;
+  }
+  .ai-frame-chip { border-radius: 999px; }
+  .ai-names {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--muted);
+    line-height: 1.35;
+    max-width: 11em;
+  }
+  .ai-col-idx {
+    width: 1.6em;
+    color: var(--muted);
+    font-size: 0.75rem;
+  }
+  .ai-ticket-table {
+    table-layout: auto;
+  }
+  .ai-ticket-table th:nth-child(2),
+  .ai-ticket-table td.ai-nums {
+    white-space: nowrap;
+  }
+  .ai-sep {
+    color: var(--muted);
+    margin: 0 2px;
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+  .ai-ticket-table td.ai-nums {
+    line-height: 1.6;
+  }
 </style>
 </head>
 <body>
@@ -532,6 +641,7 @@
 <div class="tabs">
   <button class="tab active" data-tab="raceview">レース映像</button>
   <button class="tab" data-tab="predict">まとめて予想</button>
+  <button class="tab" data-tab="aipredict">AI予想</button>
   <button class="tab" data-tab="entries">出走表</button>
   <button class="tab" data-tab="ability">能力値</button>
   <button class="tab" data-tab="pace">展開予想</button>
@@ -620,6 +730,30 @@
     <h2>予想順位（勝率順）</h2>
     <p id="predictNote" class="horse-meta" style="margin-bottom:8px"></p>
     <div id="horseList"></div>
+  </div>
+</div>
+
+
+<!-- ===== AI予想 ===== -->
+<div id="panel-aipredict" class="panel">
+  <div class="card">
+    <h2>AI予想</h2>
+    <label class="horse-meta" style="display:block;margin-bottom:4px">グレード</label>
+    <select id="gradeSelectAi" class="race-select">
+      <option value="ALL" selected>すべて</option>
+      <option value="G1">GⅠ</option>
+      <option value="G2">GⅡ</option>
+      <option value="G3">GⅢ</option>
+    </select>
+    <label class="horse-meta" style="display:block;margin:8px 0 4px">開催レース</label>
+    <select id="aiRaceSelect" class="race-select"></select>
+    <div id="aiRaceInfo" class="horse-meta" style="margin-top:6px"></div>
+    <button type="button" class="btn btn-primary" id="btnAiPredict" style="margin-top:12px">AI予想を出す</button>
+  </div>
+  <div class="card hidden" id="aiPredictResult">
+    <div class="ai-conf" id="aiConfidence"></div>
+    <div id="aiPredictBody"></div>
+    <p class="horse-meta" style="margin-top:12px">※シミュレーション結果に基づく参考予想です。的中を保証するものではありません。</p>
   </div>
 </div>
 
@@ -1137,17 +1271,17 @@ const SAMPLE_RACES = [
     raceName: "第62回 農林水産省賞典 新潟記念",
     horses: [
       // courseApt: 競馬場適性1-10 / past: 隠し詳細（近走メモ・得意条件）
-      { name: "ボーンディスウェイ", blood: { sire: "ゴールドシップ", damsire: "ディープインパクト", dam: "ボーンフリー" }, frame: 1, number: 1, sexAge: "牡7", ranks: [], timeIdx: 72, agariIdx: 70, distApt: 7, lastDist: 2000, restWeeks: 6, jockey: "丸山元気", weight: 57, trainer: "牧光二", odds: 57.1, popular: 11, going: { firm: 68, soft: 72, heavy: 74 }, styles: ["senko","sashi","senko","sashi","senko"], passOrders: [4,7,5,3,6], courseApt: { 新潟: 7, 東京: 5, 中山: 6, 阪神: 5, 京都: 5, 中京: 6, 札幌: 7, 函館: 6, 小倉: 6 }, past: { note: "重・稍重で粘るタイプ。平坦向き。", best: "稍重〜重の中距離", recent: ["新潟2000 5着","福島2000 8着","中山1800 6着"] } },
-      { name: "サヴォーナ", blood: { sire: "エピファネイア", damsire: "ディープインパクト", dam: "サヴォイア" }, frame: 2, number: 2, sexAge: "牡6", ranks: [], timeIdx: 74, agariIdx: 72, distApt: 7, lastDist: 2000, restWeeks: 6, jockey: "池添謙一", weight: 57, trainer: "中竹和也", odds: 27.6, popular: 9, going: { firm: 70, soft: 73, heavy: 71 }, styles: ["sashi","sashi","senko","sashi","oikomi"], passOrders: [9,6,5,8,7], courseApt: { 新潟: 6, 東京: 7, 中山: 5, 阪神: 7, 京都: 6, 中京: 6, 札幌: 5, 函館: 5, 小倉: 6 }, past: { note: "差し遅れることあり。直線長い場が合う。", best: "東京・阪神の長い直線", recent: ["阪神2000 10着","京都2200 6着","東京1800 5着"] } },
-      { name: "ロデオドライブ", blood: { sire: "ドゥラメンテ", damsire: "キングカメハメハ", dam: "ロデオガール" }, frame: 3, number: 3, sexAge: "牡3", ranks: [], timeIdx: 88, agariIdx: 85, distApt: 5, lastDist: 1600, restWeeks: 14, jockey: "C.ルメール", weight: 57, trainer: "辻哲英", odds: 4.3, popular: 3, going: { firm: 92, soft: 86, heavy: 78 }, styles: ["senko","senko","nige","senko","senko"], passOrders: [2,3,1,4,2], courseApt: { 新潟: 6, 東京: 9, 中山: 7, 阪神: 7, 京都: 6, 中京: 7, 札幌: 6, 函館: 5, 小倉: 5 }, past: { note: "マイル実績優秀。2000mは未知数・延長不安。", best: "良馬場のマイル〜1800", recent: ["東京1600 1着","東京1600 2着","阪神1600 1着"] } },
-      { name: "ドゥレッツァ", blood: { sire: "ハービンジャー", damsire: "ディープインパクト", dam: "ドゥレス" }, frame: 4, number: 4, sexAge: "牡6", ranks: [], timeIdx: 86, agariIdx: 80, distApt: 9, lastDist: 2400, restWeeks: 40, jockey: "田辺裕信", weight: 59, trainer: "尾関知人", odds: 8.3, popular: 4, going: { firm: 84, soft: 85, heavy: 83 }, styles: ["senko","sashi","senko","nige","senko"], passOrders: [3,5,2,1,4], courseApt: { 新潟: 7, 東京: 8, 中山: 7, 阪神: 8, 京都: 9, 中京: 7, 札幌: 6, 函館: 6, 小倉: 5 }, past: { note: "長期休養明け。スタミナ型で中長距離向き。", best: "京都・阪神のスタミナ戦", recent: ["長期休養","京都2400 3着","東京2400 4着"] } },
-      { name: "ゾロアストロ", blood: { sire: "エピファネイア", damsire: "ディープインパクト", dam: "アストロラブ" }, frame: 5, number: 5, sexAge: "牡3", ranks: [], timeIdx: 93, agariIdx: 90, distApt: 9, lastDist: 2000, restWeeks: 18, jockey: "岩田望来", weight: 55, trainer: "宮田敬介", odds: 3.5, popular: 1, going: { firm: 94, soft: 90, heavy: 82 }, styles: ["sashi","nige","senko","senko","sashi"], passOrders: [11,1,3,2,6], courseApt: { 新潟: 10, 東京: 8, 中山: 6, 阪神: 7, 京都: 7, 中京: 7, 札幌: 6, 函館: 6, 小倉: 6 }, formBoost: 8.5, past: { note: "新潟記念1着実績想定。新潟外回り適性◎・能力上位。", best: "新潟外回り・平坦長距離直線", recent: ["新潟記念G3 1着","東京2000 12着","新潟1800 1着"] } },
-      { name: "チェルヴィニア", blood: { sire: "キタサンブラック", damsire: "ディープインパクト", dam: "チェルシー" }, frame: 6, number: 6, sexAge: "牝5", ranks: [], timeIdx: 84, agariIdx: 82, distApt: 7, lastDist: 1600, restWeeks: 12, jockey: "津村明秀", weight: 56, trainer: "木村哲也", odds: 12.8, popular: 6, going: { firm: 86, soft: 82, heavy: 76 }, styles: ["oikomi","sashi","senko","sashi","senko"], passOrders: [14,6,4,5,3], courseApt: { 新潟: 7, 東京: 9, 中山: 5, 阪神: 7, 京都: 6, 中京: 6, 札幌: 5, 函館: 5, 小倉: 6 }, past: { note: "東京巧者。距離延長は慎重。", best: "東京マイル前後", recent: ["東京1600 16着","東京1600 3着","東京1800 1着"] } },
-      { name: "ジュンブロッサム", blood: { sire: "キズナ", damsire: "ディープインパクト", dam: "ブロッサム" }, frame: 6, number: 7, sexAge: "牡7", ranks: [], timeIdx: 73, agariIdx: 71, distApt: 7, lastDist: 1800, restWeeks: 5, jockey: "杉原誠人", weight: 58, trainer: "友道康夫", odds: 42.0, popular: 10, going: { firm: 70, soft: 74, heavy: 75 }, styles: ["sashi","sashi","oikomi","sashi","senko"], passOrders: [8,7,9,6,5], courseApt: { 新潟: 6, 東京: 5, 中山: 6, 阪神: 7, 京都: 8, 中京: 6, 札幌: 5, 函館: 5, 小倉: 5 }, past: { note: "高齢・実績薄め。京都で好走歴。", best: "京都芝", recent: ["阪神1800 9着","京都2000 7着","中京2000 5着"] } },
-      { name: "ダノンシーマ", blood: { sire: "エピファネイア", damsire: "ディープインパクト", dam: "ダノンファンタジー" }, frame: 7, number: 8, sexAge: "牡4", ranks: [], timeIdx: 89, agariIdx: 83, distApt: 9, lastDist: 2500, restWeeks: 8, jockey: "川田将雅", weight: 57, trainer: "中内田充正", odds: 3.6, popular: 2, going: { firm: 88, soft: 90, heavy: 86 }, styles: ["senko","senko","sashi","senko","nige"], passOrders: [3,4,5,3,1], courseApt: { 新潟: 8, 東京: 9, 中山: 7, 阪神: 8, 京都: 8, 中京: 7, 札幌: 6, 函館: 6, 小倉: 6 }, past: { note: "距離短縮で切れ味活きる。稍重もこなす。", best: "東京・新潟の中距離", recent: ["東京2500 3着","阪神2200 3着","京都2000 2着"] } },
-      { name: "アーバンシック", blood: { sire: "スクリーンヒーロー", damsire: "ハービンジャー", dam: "アーバンモード" }, frame: 7, number: 9, sexAge: "牡5", ranks: [], timeIdx: 85, agariIdx: 79, distApt: 9, lastDist: 2000, restWeeks: 16, jockey: "三浦皇成", weight: 59, trainer: "武井亮", odds: 14.0, popular: 7, going: { firm: 82, soft: 84, heavy: 85 }, styles: ["oikomi","sashi","sashi","senko","senko"], passOrders: [12,7,6,4,3], courseApt: { 新潟: 7, 東京: 6, 中山: 8, 阪神: 6, 京都: 6, 中京: 7, 札幌: 5, 函館: 5, 小倉: 6 }, past: { note: "中山・タフな馬場向き。休み明け注意。", best: "中山・重めの馬場", recent: ["中山2000 14着","中山1800 5着","福島2000 3着"] } },
-      { name: "バレエマスター", blood: { sire: "モーリス", damsire: "ディープインパクト", dam: "バレエクイーン" }, frame: 8, number: 10, sexAge: "牡7", ranks: [], timeIdx: 75, agariIdx: 73, distApt: 7, lastDist: 2000, restWeeks: 10, jockey: "菊沢一樹", weight: 57, trainer: "梅田智之", odds: 27.5, popular: 8, going: { firm: 72, soft: 75, heavy: 73 }, styles: ["sashi","oikomi","sashi","senko","sashi"], passOrders: [7,9,8,6,5], courseApt: { 新潟: 7, 東京: 5, 中山: 5, 阪神: 5, 京都: 5, 中京: 6, 札幌: 7, 函館: 7, 小倉: 6 }, past: { note: "ローカル・平坦得意の差し脚。", best: "新潟・札幌", recent: ["新潟2000 6着","小倉1800 8着","新潟1800 7着"] } },
-      { name: "ステレンボッシュ", blood: { sire: "エピファネイア", damsire: "ディープインパクト", dam: "ステラヴィーノ" }, frame: 8, number: 11, sexAge: "牝5", ranks: [], timeIdx: 87, agariIdx: 85, distApt: 7, lastDist: 1600, restWeeks: 10, jockey: "戸崎圭太", weight: 56, trainer: "宮田敬介", odds: 12.0, popular: 5, going: { firm: 89, soft: 84, heavy: 77 }, styles: ["sashi","sashi","senko","senko","nige"], passOrders: [9,5,3,2,1], courseApt: { 新潟: 6, 東京: 8, 中山: 6, 阪神: 8, 京都: 7, 中京: 7, 札幌: 5, 函館: 5, 小倉: 5 }, past: { note: "良馬場の切れ味。距離延長は課題。", best: "良馬場マイル級", recent: ["阪神1600 10着","東京1600 4着","中京1600 2着"] } }
+      { name: "ボーンディスウェイ", blood: { sire: "ゴールドシップ", damsire: "ディープインパクト", dam: "ボーンフリー" }, frame: 1, number: 1, sexAge: "牡7", ranks: [5, 8, 6, 9, 7], starts: 5, classLevel: 1.15, timeIdx: 78, agariIdx: 76, distApt: 7, lastDist: 2000, restWeeks: 6, jockey: "丸山元気", weight: 57, trainer: "牧光二", odds: 57.1, popular: 11, going: { firm: 68, soft: 72, heavy: 74 }, styles: ["senko","sashi","senko","sashi","senko"], passOrders: [4,7,5,3,6], courseApt: { 新潟: 7, 東京: 5, 中山: 6, 阪神: 5, 京都: 5, 中京: 6, 札幌: 7, 函館: 6, 小倉: 6 }, past: { note: "重・稍重で粘るタイプ。平坦向き。", best: "稍重〜重の中距離", recent: ["七夕賞5着", "目黒記念8着相当", "中距離重賞", "オープン", "重賞"] } },
+      { name: "サヴォーナ", blood: { sire: "エピファネイア", damsire: "ディープインパクト", dam: "サヴォイア" }, frame: 2, number: 2, sexAge: "牡6", ranks: [10, 6, 5, 8, 4], starts: 5, classLevel: 1.2, timeIdx: 80, agariIdx: 78, distApt: 7, lastDist: 2000, restWeeks: 6, jockey: "池添謙一", weight: 57, trainer: "中竹和也", odds: 27.6, popular: 9, going: { firm: 70, soft: 73, heavy: 71 }, styles: ["sashi","sashi","senko","sashi","oikomi"], passOrders: [9,6,5,8,7], courseApt: { 新潟: 6, 東京: 7, 中山: 5, 阪神: 7, 京都: 6, 中京: 6, 札幌: 5, 函館: 5, 小倉: 6 }, past: { note: "差し遅れることあり。直線長い場が合う。", best: "東京・阪神の長い直線", recent: ["七夕賞10着", "京都2200 6着", "東京1800 5着", "重賞", "オープン"] } },
+      { name: "ロデオドライブ", blood: { sire: "ドゥラメンテ", damsire: "キングカメハメハ", dam: "ロデオガール" }, frame: 3, number: 3, sexAge: "牡3", ranks: [1, 2, 1, 3, 1], starts: 5, classLevel: 1.65, timeIdx: 96, agariIdx: 92, distApt: 5, lastDist: 1600, restWeeks: 14, jockey: "C.ルメール", weight: 57, trainer: "辻哲英", odds: 4.3, popular: 3, going: { firm: 92, soft: 86, heavy: 78 }, styles: ["senko","senko","nige","senko","senko"], passOrders: [2,3,1,4,2], courseApt: { 新潟: 6, 東京: 9, 中山: 7, 阪神: 7, 京都: 6, 中京: 7, 札幌: 6, 函館: 5, 小倉: 5 }, past: { note: "マイル実績優秀。2000mは未知数・延長不安。", best: "良馬場のマイル〜1800", recent: ["NHKマイルC1着", "東京1600 2着", "阪神1600 1着", "重賞3着", "オープン1着"] } },
+      { name: "ドゥレッツァ", blood: { sire: "ハービンジャー", damsire: "ディープインパクト", dam: "ドゥレス" }, frame: 4, number: 4, sexAge: "牡6", ranks: [3, 4, 6, 2, 5], starts: 5, classLevel: 1.55, timeIdx: 91, agariIdx: 87, distApt: 9, lastDist: 2400, restWeeks: 40, jockey: "田辺裕信", weight: 59, trainer: "尾関知人", odds: 8.3, popular: 4, going: { firm: 84, soft: 85, heavy: 83 }, styles: ["senko","sashi","senko","nige","senko"], passOrders: [3,5,2,1,4], courseApt: { 新潟: 7, 東京: 8, 中山: 7, 阪神: 8, 京都: 9, 中京: 7, 札幌: 6, 函館: 6, 小倉: 5 }, past: { note: "長期休養明け。スタミナ型で中長距離向き。", best: "京都・阪神のスタミナ戦", recent: ["長期休養明け前・京都2400 3着", "東京2400 4着", "重賞", "G1好走歴", "中長距離"] } },
+      { name: "ゾロアストロ", blood: { sire: "エピファネイア", damsire: "ディープインパクト", dam: "アストロラブ" }, frame: 5, number: 5, sexAge: "牡3", ranks: [12, 1, 2, 3, 1], starts: 5, classLevel: 1.55, timeIdx: 90, agariIdx: 88, distApt: 9, lastDist: 2000, restWeeks: 18, jockey: "岩田望来", weight: 55, trainer: "宮田敬介", odds: 3.5, popular: 1, going: { firm: 94, soft: 90, heavy: 82 }, styles: ["sashi","nige","senko","senko","sashi"], passOrders: [11,1,3,2,6], courseApt: { 新潟: 10, 東京: 8, 中山: 6, 阪神: 7, 京都: 7, 中京: 7, 札幌: 6, 函館: 6, 小倉: 6 }, formBoost: 8.5, past: { note: "新潟記念1着実績想定。新潟外回り適性◎・能力上位。", best: "新潟外回り・平坦長距離直線", recent: ["皐月賞12着", "きさらぎ賞1着", "東スポ杯2歳S2着", "サウジRC3着", "未勝利1着"] } },
+      { name: "チェルヴィニア", blood: { sire: "キタサンブラック", damsire: "ディープインパクト", dam: "チェルシー" }, frame: 6, number: 6, sexAge: "牝5", ranks: [16, 5, 10, 4, 1], starts: 5, classLevel: 1.65, timeIdx: 93, agariIdx: 90, distApt: 7, lastDist: 1600, restWeeks: 12, jockey: "津村明秀", weight: 56, trainer: "木村哲也", odds: 12.8, popular: 6, going: { firm: 86, soft: 82, heavy: 76 }, styles: ["oikomi","sashi","senko","sashi","senko"], passOrders: [14,6,4,5,3], courseApt: { 新潟: 7, 東京: 9, 中山: 5, 阪神: 7, 京都: 6, 中京: 6, 札幌: 5, 函館: 5, 小倉: 6 }, past: { note: "東京巧者。距離延長は慎重。", best: "東京マイル前後", recent: ["ヴィクトリアM16着", "中山記念5着", "マイル戦", "G1好走", "秋華賞1着歴"] } },
+      { name: "ジュンブロッサム", blood: { sire: "キズナ", damsire: "ディープインパクト", dam: "ブロッサム" }, frame: 6, number: 7, sexAge: "牡7", ranks: [6, 8, 5, 7, 4], starts: 5, classLevel: 1.1, timeIdx: 76, agariIdx: 74, distApt: 7, lastDist: 1800, restWeeks: 5, jockey: "杉原誠人", weight: 58, trainer: "友道康夫", odds: 42.0, popular: 10, going: { firm: 70, soft: 74, heavy: 75 }, styles: ["sashi","sashi","oikomi","sashi","senko"], passOrders: [8,7,9,6,5], courseApt: { 新潟: 6, 東京: 5, 中山: 6, 阪神: 7, 京都: 8, 中京: 6, 札幌: 5, 函館: 5, 小倉: 5 }, past: { note: "高齢・実績薄め。京都で好走歴。", best: "京都芝", recent: ["関越S", "オープン", "中距離", "重賞", "オープン"] } },
+      { name: "ダノンシーマ", blood: { sire: "エピファネイア", damsire: "ディープインパクト", dam: "ダノンファンタジー" }, frame: 7, number: 8, sexAge: "牡4", ranks: [3, 3, 1, 1, 3], starts: 5, classLevel: 1.45, timeIdx: 92, agariIdx: 90, distApt: 9, lastDist: 2500, restWeeks: 8, jockey: "川田将雅", weight: 57, trainer: "中内田充正", odds: 3.6, popular: 2, going: { firm: 88, soft: 90, heavy: 86 }, styles: ["senko","senko","sashi","senko","nige"], passOrders: [3,4,5,3,1], courseApt: { 新潟: 8, 東京: 9, 中山: 7, 阪神: 8, 京都: 8, 中京: 7, 札幌: 6, 函館: 6, 小倉: 6 }, past: { note: "距離短縮で切れ味活きる。稍重もこなす。", best: "東京・新潟の中距離", recent: ["目黒記念3着", "阪神大賞典3着", "白富士S1着", "比叡S1着", "兵庫特別1着"] } },
+      { name: "アーバンシック", blood: { sire: "スクリーンヒーロー", damsire: "ハービンジャー", dam: "アーバンモード" }, frame: 7, number: 9, sexAge: "牡5", ranks: [14, 6, 5, 3, 2], starts: 5, classLevel: 1.55, timeIdx: 90, agariIdx: 86, distApt: 9, lastDist: 2000, restWeeks: 16, jockey: "三浦皇成", weight: 59, trainer: "武井亮", odds: 14.0, popular: 7, going: { firm: 82, soft: 84, heavy: 85 }, styles: ["oikomi","sashi","sashi","senko","senko"], passOrders: [12,7,6,4,3], courseApt: { 新潟: 7, 東京: 6, 中山: 8, 阪神: 6, 京都: 6, 中京: 7, 札幌: 5, 函館: 5, 小倉: 6 }, past: { note: "中山・タフな馬場向き。休み明け注意。", best: "中山・重めの馬場", recent: ["金鯱賞14着", "重賞", "中距離", "G1好走歴", "菊花賞系"] } },
+      { name: "バレエマスター", blood: { sire: "モーリス", damsire: "ディープインパクト", dam: "バレエクイーン" }, frame: 8, number: 10, sexAge: "牡7", ranks: [7, 2, 5, 8, 6], starts: 5, classLevel: 1.2, timeIdx: 80, agariIdx: 78, distApt: 7, lastDist: 2000, restWeeks: 10, jockey: "菊沢一樹", weight: 57, trainer: "梅田智之", odds: 27.5, popular: 8, going: { firm: 72, soft: 75, heavy: 73 }, styles: ["sashi","oikomi","sashi","senko","sashi"], passOrders: [7,9,8,6,5], courseApt: { 新潟: 7, 東京: 5, 中山: 5, 阪神: 5, 京都: 5, 中京: 6, 札幌: 7, 函館: 7, 小倉: 6 }, past: { note: "ローカル・平坦得意の差し脚。", best: "新潟・札幌", recent: ["ジューンS", "新潟大賞典2着", "オープン", "重賞", "中距離"] } },
+      { name: "ステレンボッシュ", blood: { sire: "エピファネイア", damsire: "ディープインパクト", dam: "ステラヴィーノ" }, frame: 8, number: 11, sexAge: "牝5", ranks: [10, 2, 10, 13, 3], starts: 5, classLevel: 1.65, timeIdx: 92, agariIdx: 89, distApt: 7, lastDist: 1600, restWeeks: 10, jockey: "戸崎圭太", weight: 56, trainer: "宮田敬介", odds: 12.0, popular: 5, going: { firm: 89, soft: 84, heavy: 77 }, styles: ["sashi","sashi","senko","senko","nige"], passOrders: [9,5,3,2,1], courseApt: { 新潟: 6, 東京: 8, 中山: 6, 阪神: 8, 京都: 7, 中京: 7, 札幌: 5, 函館: 5, 小倉: 5 }, past: { note: "良馬場の切れ味。距離延長は課題。", best: "良馬場マイル級", recent: ["安田記念10着", "エプソムC2着", "エリザベス女王杯10着", "大阪杯13着", "香港ヴァーズ3着"] } }
     ]
   },
   {
@@ -1158,22 +1292,22 @@ const SAMPLE_RACES = [
     date: "2026-09-05", grade: "G3", yearSrc: "2026",
     raceName: "京成杯オータムハンデキャップ",
     horses: [
-      { name: "クルゼイロドスル", frame: 1, number: 1, sexAge: "牡6", ranks: [14], starts: 1, timeIdx: 72, agariIdx: 70, distApt: 6, jockey: "小崎綾也", weight: 57, odds: 114.7, popular: 15, going: { firm: 70, soft: 72, heavy: 68 }, styles: ["sashi","oikomi","sashi","sashi","oikomi"], past: { note: "朱鷺S14着。", recent: ["朱鷺S14着"] } },
-      { name: "ミナデオロ", frame: 1, number: 2, sexAge: "牡5", ranks: [5], starts: 1, timeIdx: 82, agariIdx: 80, distApt: 7, jockey: "M.ミシェル", weight: 56, odds: 15.9, popular: 8, going: { firm: 81, soft: 80, heavy: 76 }, styles: ["senko","sashi","senko","sashi","senko"], past: { note: "中京記念5着。重賞初挑戦。", recent: ["中京記念5着"] } },
-      { name: "ドロップオブライト", frame: 2, number: 3, sexAge: "牝7", ranks: [12, 2], starts: 2, timeIdx: 83, agariIdx: 80, distApt: 7, jockey: "岩田康誠", weight: 56.5, odds: 23.0, popular: 11, going: { firm: 82, soft: 79, heavy: 74 }, styles: ["senko","sashi","senko","sashi","senko"], past: { note: "昨年2着。関屋記念12着。", recent: ["関屋記念12着", "京成杯AH2着(2025)"] } },
-      { name: "フォルテアンジェロ", frame: 2, number: 4, sexAge: "牡3", ranks: [5, 2], starts: 2, timeIdx: 90, agariIdx: 86, distApt: 8, jockey: "D.レーン", weight: 55, odds: 5.2, popular: 1, going: { firm: 88, soft: 82, heavy: 76 }, styles: ["senko","sashi","senko","senko","sashi"], past: { note: "ダービー12着。ホープフルS2着。", recent: ["東京優駿12着", "ホープフルS2着"] } },
-      { name: "サイルーン", frame: 3, number: 5, sexAge: "セ7", ranks: [14], starts: 1, timeIdx: 81, agariIdx: 79, distApt: 7, jockey: "大野拓弥", weight: 57, odds: 16.4, popular: 9, going: { firm: 80, soft: 82, heavy: 78 }, styles: ["senko","nige","senko","senko","sashi"], past: { note: "中山マイル好成績。", recent: ["しらさぎS14着"] } },
-      { name: "ファンダム", frame: 3, number: 6, sexAge: "牡4", ranks: [4], starts: 1, timeIdx: 86, agariIdx: 83, distApt: 8, jockey: "戸崎圭太", weight: 57, odds: 7.9, popular: 5, going: { firm: 85, soft: 82, heavy: 76 }, styles: ["senko","sashi","senko","sashi","senko"], past: { note: "復調気配の重賞ウイナー。", recent: ["しらさぎS4着"] } },
-      { name: "エコロブルーム", frame: 4, number: 7, sexAge: "牡5", ranks: [1], starts: 1, timeIdx: 88, agariIdx: 84, distApt: 8, jockey: "武豊", weight: 58, odds: 7.0, popular: 3, going: { firm: 87, soft: 84, heavy: 78 }, styles: ["senko","sashi","senko","senko","sashi"], past: { note: "NZT覇者。安土城S1着。", recent: ["安土城S1着"] } },
-      { name: "ピコローズ", frame: 4, number: 8, sexAge: "牝4", ranks: [1], starts: 1, timeIdx: 80, agariIdx: 78, distApt: 7, jockey: "三浦皇成", weight: 53, odds: 19.2, popular: 10, going: { firm: 79, soft: 78, heavy: 74 }, styles: ["sashi","senko","sashi","sashi","senko"], past: { note: "新潟日報賞1着。", recent: ["新潟日報賞1着"] } },
-      { name: "レザベーション", frame: 5, number: 9, sexAge: "牡3", ranks: [6, 1], starts: 2, timeIdx: 87, agariIdx: 84, distApt: 8, jockey: "原優介", weight: 55, odds: 7.1, popular: 4, going: { firm: 86, soft: 82, heavy: 76 }, styles: ["senko","nige","senko","senko","sashi"], past: { note: "NZT勝ち。NHKマイル6着。", recent: ["NHKマイルC6着", "NZT1着"] } },
-      { name: "ヴァルキリーバース", frame: 5, number: 10, sexAge: "牝4", ranks: [14, 1], starts: 2, timeIdx: 84, agariIdx: 82, distApt: 7, jockey: "C.ルメール", weight: 55.5, odds: 9.5, popular: 6, going: { firm: 83, soft: 80, heavy: 74 }, styles: ["sashi","senko","sashi","sashi","senko"], past: { note: "東風S勝ち。府中牝馬S14着。", recent: ["府中牝馬S14着", "東風S1着"] } },
-      { name: "クランフォード", frame: 6, number: 11, sexAge: "牝5", ranks: [2], starts: 1, timeIdx: 85, agariIdx: 83, distApt: 7, jockey: "菊沢一樹", weight: 55, odds: 11.0, popular: 7, going: { firm: 84, soft: 81, heavy: 75 }, styles: ["sashi","oikomi","sashi","sashi","senko"], past: { note: "関屋記念2着。", recent: ["関屋記念2着"] } },
-      { name: "ディールメーカー", frame: 6, number: 12, sexAge: "牡3", ranks: [2], starts: 1, timeIdx: 86, agariIdx: 84, distApt: 7, jockey: "横山武史", weight: 54, odds: 10.0, popular: 6, going: { firm: 85, soft: 82, heavy: 76 }, styles: ["sashi","senko","sashi","sashi","senko"], past: { note: "ラジオNIKKEI賞2着。", recent: ["ラジオNIKKEI賞2着"] } },
-      { name: "メタルスピード", frame: 7, number: 13, sexAge: "牡6", ranks: [14], starts: 1, timeIdx: 76, agariIdx: 74, distApt: 6, jockey: "田辺裕信", weight: 55, odds: 40.0, popular: 13, going: { firm: 75, soft: 76, heavy: 72 }, styles: ["sashi","oikomi","sashi","sashi","oikomi"], past: { note: "関屋記念14着。", recent: ["関屋記念14着"] } },
-      { name: "リラボニート", frame: 7, number: 14, sexAge: "牝5", ranks: [7], starts: 1, timeIdx: 78, agariIdx: 76, distApt: 7, jockey: "丸山元気", weight: 54, odds: 32.0, popular: 12, going: { firm: 77, soft: 76, heavy: 72 }, styles: ["sashi","senko","sashi","sashi","senko"], past: { note: "クイーンS7着。", recent: ["クイーンS7着"] } },
-      { name: "テレサ", frame: 8, number: 15, sexAge: "牝4", ranks: [15], starts: 1, timeIdx: 74, agariIdx: 72, distApt: 6, jockey: "津村明秀", weight: 55, odds: 55.0, popular: 14, going: { firm: 73, soft: 74, heavy: 70 }, styles: ["oikomi","sashi","oikomi","sashi","oikomi"], past: { note: "府中牝馬S15着。", recent: ["府中牝馬S15着"] } },
-      { name: "ラケマーダ", frame: 8, number: 16, sexAge: "牡6", ranks: [8], starts: 1, timeIdx: 77, agariIdx: 75, distApt: 7, jockey: "杉原誠人", weight: 56, odds: 38.0, popular: 13, going: { firm: 76, soft: 75, heavy: 72 }, styles: ["senko","sashi","senko","sashi","senko"], past: { note: "パラダイスS8着。", recent: ["パラダイスS8着"] } }
+      { name: "クルゼイロドスル", frame: 1, number: 1, sexAge: "牡6", ranks: [14, 9, 11, 8, 6], starts: 5, classLevel: 1.1, timeIdx: 72, agariIdx: 70, distApt: 6, jockey: "小崎綾也", weight: 57, odds: 114.7, popular: 15, going: { firm: 70, soft: 72, heavy: 68 }, styles: ["sashi","oikomi","sashi","sashi","oikomi"], past: { note: "朱鷺S14着。", recent: ["朱鷺S14着"] } },
+      { name: "ミナデオロ", frame: 1, number: 2, sexAge: "牡5", ranks: [5, 7, 4, 8, 3], starts: 5, classLevel: 1.15, timeIdx: 82, agariIdx: 80, distApt: 7, jockey: "M.ミシェル", weight: 56, odds: 15.9, popular: 8, going: { firm: 81, soft: 80, heavy: 76 }, styles: ["senko","sashi","senko","sashi","senko"], past: { note: "中京記念5着。重賞初挑戦。", recent: ["中京記念5着"] } },
+      { name: "ドロップオブライト", frame: 2, number: 3, sexAge: "牝7", ranks: [12, 2, 6, 5, 8], starts: 5, classLevel: 1.25, timeIdx: 83, agariIdx: 80, distApt: 7, jockey: "岩田康誠", weight: 56.5, odds: 23.0, popular: 11, going: { firm: 82, soft: 79, heavy: 74 }, styles: ["senko","sashi","senko","sashi","senko"], past: { note: "昨年2着。関屋記念12着。", recent: ["関屋記念12着", "京成杯AH2着(2025)"] } },
+      { name: "フォルテアンジェロ", frame: 2, number: 4, sexAge: "牡3", ranks: [12, 5, 2, 2, 1], starts: 5, classLevel: 1.55, timeIdx: 91, agariIdx: 88, distApt: 8, jockey: "D.レーン", weight: 55, odds: 5.2, popular: 1, going: { firm: 88, soft: 82, heavy: 76 }, styles: ["senko","sashi","senko","senko","sashi"], past: { note: "ダービー12着。ホープフルS2着。", recent: ["東京優駿12着", "ホープフルS2着"] } },
+      { name: "サイルーン", frame: 3, number: 5, sexAge: "セ7", ranks: [14, 8, 10, 6, 7], starts: 5, classLevel: 1.1, timeIdx: 81, agariIdx: 79, distApt: 7, jockey: "大野拓弥", weight: 57, odds: 16.4, popular: 9, going: { firm: 80, soft: 82, heavy: 78 }, styles: ["senko","nige","senko","senko","sashi"], past: { note: "中山マイル好成績。", recent: ["しらさぎS14着"] } },
+      { name: "ファンダム", frame: 3, number: 6, sexAge: "牡4", ranks: [4, 5, 3, 6, 2], starts: 5, classLevel: 1.2, timeIdx: 86, agariIdx: 83, distApt: 8, jockey: "戸崎圭太", weight: 57, odds: 7.9, popular: 5, going: { firm: 85, soft: 82, heavy: 76 }, styles: ["senko","sashi","senko","sashi","senko"], past: { note: "復調気配の重賞ウイナー。", recent: ["しらさぎS4着"] } },
+      { name: "エコロブルーム", frame: 4, number: 7, sexAge: "牡5", ranks: [1, 4, "除", 1, 2], starts: 5, classLevel: 1.3, timeIdx: 88, agariIdx: 84, distApt: 8, jockey: "武豊", weight: 58, odds: 7.0, popular: 3, going: { firm: 87, soft: 84, heavy: 78 }, styles: ["senko","sashi","senko","senko","sashi"], past: { note: "NZT覇者。安土城S1着。", recent: ["安土城S1着"] } },
+      { name: "ピコローズ", frame: 4, number: 8, sexAge: "牝4", ranks: [1, 3, 5, 2, 4], starts: 5, classLevel: 1.15, timeIdx: 80, agariIdx: 78, distApt: 7, jockey: "三浦皇成", weight: 53, odds: 19.2, popular: 10, going: { firm: 79, soft: 78, heavy: 74 }, styles: ["sashi","senko","sashi","sashi","senko"], past: { note: "新潟日報賞1着。", recent: ["新潟日報賞1着"] } },
+      { name: "レザベーション", frame: 5, number: 9, sexAge: "牡3", ranks: [6, 1, 4, 2, 3], starts: 5, classLevel: 1.35, timeIdx: 87, agariIdx: 84, distApt: 8, jockey: "原優介", weight: 55, odds: 7.1, popular: 4, going: { firm: 86, soft: 82, heavy: 76 }, styles: ["senko","nige","senko","senko","sashi"], past: { note: "NZT勝ち。NHKマイル6着。", recent: ["NHKマイルC6着", "NZT1着"] } },
+      { name: "ヴァルキリーバース", frame: 5, number: 10, sexAge: "牝4", ranks: [14, 1, 5, 8, 2], starts: 5, classLevel: 1.25, timeIdx: 84, agariIdx: 82, distApt: 7, jockey: "C.ルメール", weight: 55.5, odds: 9.5, popular: 6, going: { firm: 83, soft: 80, heavy: 74 }, styles: ["sashi","senko","sashi","sashi","senko"], past: { note: "東風S勝ち。府中牝馬S14着。", recent: ["府中牝馬S14着", "東風S1着"] } },
+      { name: "クランフォード", frame: 6, number: 11, sexAge: "牝5", ranks: [2, 6, 4, 5, 3], starts: 5, classLevel: 1.2, timeIdx: 85, agariIdx: 83, distApt: 7, jockey: "菊沢一樹", weight: 55, odds: 11.0, popular: 7, going: { firm: 84, soft: 81, heavy: 75 }, styles: ["sashi","oikomi","sashi","sashi","senko"], past: { note: "関屋記念2着。", recent: ["関屋記念2着"] } },
+      { name: "ディールメーカー", frame: 6, number: 12, sexAge: "牡3", ranks: [2, 5, 3, 4, 1], starts: 5, classLevel: 1.25, timeIdx: 86, agariIdx: 84, distApt: 7, jockey: "横山武史", weight: 54, odds: 10.0, popular: 6, going: { firm: 85, soft: 82, heavy: 76 }, styles: ["sashi","senko","sashi","sashi","senko"], past: { note: "ラジオNIKKEI賞2着。", recent: ["ラジオNIKKEI賞2着"] } },
+      { name: "メタルスピード", frame: 7, number: 13, sexAge: "牡6", ranks: [14, 9, 11, 7, 8], starts: 5, classLevel: 1.1, timeIdx: 76, agariIdx: 74, distApt: 6, jockey: "田辺裕信", weight: 55, odds: 40.0, popular: 13, going: { firm: 75, soft: 76, heavy: 72 }, styles: ["sashi","oikomi","sashi","sashi","oikomi"], past: { note: "関屋記念14着。", recent: ["関屋記念14着"] } },
+      { name: "リラボニート", frame: 7, number: 14, sexAge: "牝5", ranks: [7, 9, 6, 8, 5], starts: 5, classLevel: 1.05, timeIdx: 78, agariIdx: 76, distApt: 7, jockey: "丸山元気", weight: 54, odds: 32.0, popular: 12, going: { firm: 77, soft: 76, heavy: 72 }, styles: ["sashi","senko","sashi","sashi","senko"], past: { note: "クイーンS7着。", recent: ["クイーンS7着"] } },
+      { name: "テレサ", frame: 8, number: 15, sexAge: "牝4", ranks: [15, 10, 8, 12, 6], starts: 5, classLevel: 1.05, timeIdx: 74, agariIdx: 72, distApt: 6, jockey: "津村明秀", weight: 55, odds: 55.0, popular: 14, going: { firm: 73, soft: 74, heavy: 70 }, styles: ["oikomi","sashi","oikomi","sashi","oikomi"], past: { note: "府中牝馬S15着。", recent: ["府中牝馬S15着"] } },
+      { name: "ラケマーダ", frame: 8, number: 16, sexAge: "牡6", ranks: [8, 10, 7, 9, 5], starts: 5, classLevel: 1.05, timeIdx: 77, agariIdx: 75, distApt: 7, jockey: "杉原誠人", weight: 56, odds: 38.0, popular: 13, going: { firm: 76, soft: 75, heavy: 72 }, styles: ["senko","sashi","senko","sashi","senko"], past: { note: "パラダイスS8着。", recent: ["パラダイスS8着"] } }
     ]
   },
   {
@@ -1203,17 +1337,17 @@ const SAMPLE_RACES = [
     date: "2026-09-06", grade: "G2", yearSrc: "2026",
     raceName: "紫苑ステークス",
     horses: [
-      { name: "ジワタネホ", frame: 1, number: 1, sexAge: "牝3", ranks: [1], starts: 1, timeIdx: 78, agariIdx: 76, distApt: 7, jockey: "三浦皇成", weight: 55, odds: 28.0, popular: 8, going: { firm: 77, soft: 75, heavy: 70 }, blood: { sire: "—" }, styles: ["senko","sashi","senko","sashi","senko"], past: { note: "未勝利勝ち。", recent: ["未勝利1着"] } },
-      { name: "サムシングスイート", frame: 2, number: 2, sexAge: "牝3", ranks: [1], starts: 1, timeIdx: 80, agariIdx: 78, distApt: 7, jockey: "団野大成", weight: 55, odds: 18.0, popular: 6, going: { firm: 79, soft: 76, heavy: 72 }, blood: { sire: "—" }, styles: ["senko","nige","senko","senko","sashi"], past: { note: "1勝クラス勝ち。", recent: ["1勝クラス1着"] } },
-      { name: "リアライズルミナス", frame: 3, number: 3, sexAge: "牝3", ranks: [3, 4], starts: 2, timeIdx: 88, agariIdx: 84, distApt: 9, jockey: "津村明秀", weight: 55, odds: 8.5, popular: 3, going: { firm: 86, soft: 82, heavy: 76 }, blood: { sire: "—" }, styles: ["sashi","senko","sashi","sashi","senko"], past: { note: "オークス4着。", recent: ["燕特別3着", "オークス4着"] } },
-      { name: "マスターソアラ", frame: 4, number: 4, sexAge: "牝3", ranks: [4], starts: 1, timeIdx: 85, agariIdx: 82, distApt: 8, jockey: "大野拓弥", weight: 55, odds: 12.0, popular: 4, going: { firm: 84, soft: 80, heavy: 74 }, blood: { sire: "—" }, styles: ["senko","sashi","senko","sashi","senko"], past: { note: "クイーンC4着。", recent: ["クイーンC4着"] } },
-      { name: "ファムクラジューズ", frame: 5, number: 5, sexAge: "牝3", ranks: [10], starts: 1, timeIdx: 76, agariIdx: 74, distApt: 7, jockey: "菊沢一樹", weight: 55, odds: 35.0, popular: 9, going: { firm: 75, soft: 74, heavy: 70 }, blood: { sire: "—" }, styles: ["sashi","oikomi","sashi","sashi","oikomi"], past: { note: "フローラS10着。", recent: ["フローラS10着"] } },
-      { name: "アストリル", frame: 6, number: 6, sexAge: "牝3", ranks: [2], starts: 1, timeIdx: 83, agariIdx: 81, distApt: 8, jockey: "M.ミシェル", weight: 55, odds: 15.0, popular: 5, going: { firm: 82, soft: 80, heavy: 75 }, blood: { sire: "—" }, styles: ["senko","sashi","senko","senko","sashi"], past: { note: "かもめ島特別2着。", recent: ["かもめ島特別2着"] } },
-      { name: "ロングトールサリー", frame: 6, number: 7, sexAge: "牝3", ranks: [3], starts: 1, timeIdx: 81, agariIdx: 79, distApt: 7, jockey: "杉原誠人", weight: 55, odds: 22.0, popular: 7, going: { firm: 80, soft: 78, heavy: 74 }, blood: { sire: "—" }, styles: ["sashi","senko","sashi","sashi","senko"], past: { note: "筑紫特別3着。", recent: ["筑紫特別3着"] } },
-      { name: "ナイスプレーアスク", frame: 7, number: 8, sexAge: "牝3", ranks: [1], starts: 1, timeIdx: 82, agariIdx: 80, distApt: 7, jockey: "岩田康誠", weight: 55, odds: 16.0, popular: 6, going: { firm: 81, soft: 78, heavy: 73 }, blood: { sire: "—" }, styles: ["senko","nige","senko","sashi","senko"], past: { note: "1勝クラス勝ち。", recent: ["1勝クラス1着"] } },
-      { name: "ドリームコア", frame: 7, number: 9, sexAge: "牝3", ranks: [2, 9, 1], starts: 3, timeIdx: 94, agariIdx: 89, distApt: 9, lastDist: 2400, restWeeks: 14, jockey: "C.ルメール", weight: 55, trainer: "田中博康", odds: 1.7, popular: 1, going: { firm: 92, soft: 82, heavy: 76 }, blood: { sire: "キズナ", damsire: "ハーツクライ", dam: "ノームコア" }, styles: ["senko","sashi","senko","sashi","senko"], passOrders: [3, 8, 2, 4, 3], courseApt: { 中山: 6, 東京: 9, 阪神: 7, 京都: 7, 新潟: 7, 中京: 7, default: 7 }, past: { note: "オークス2着。転厩初戦。", best: "良馬場・中距離", recent: ["オークス2着", "桜花賞9着", "クイーンC1着"] } },
-      { name: "ジッピーチューン", frame: 8, number: 10, sexAge: "牝3", ranks: [3], starts: 1, timeIdx: 90, agariIdx: 86, distApt: 8, jockey: "北村友一", weight: 55, odds: 6.5, popular: 2, going: { firm: 88, soft: 82, heavy: 76 }, blood: { sire: "ロードカナロア" }, styles: ["sashi","oikomi","sashi","sashi","senko"], past: { note: "桜花賞3着。骨折明け。", recent: ["桜花賞3着"] } },
-      { name: "ベンヴェヌータ", frame: 8, number: 11, sexAge: "牝3", ranks: [1, 1], starts: 2, timeIdx: 86, agariIdx: 82, distApt: 7, lastDist: 1800, restWeeks: 18, jockey: "石橋脩", weight: 55, trainer: "辻哲英", odds: 12.5, popular: 5, going: { firm: 85, soft: 78, heavy: 72 }, blood: { sire: "—" }, styles: ["nige","senko","nige","senko","senko"], passOrders: [1, 1, 2, 1, 2], courseApt: { 中山: 9, 東京: 6, 阪神: 6, 京都: 6, 新潟: 6, 中京: 6, default: 6 }, past: { note: "中山で新馬・ミモザ賞連勝。", best: "中山・先行", recent: ["ミモザ賞1着", "新馬1着"] } }
+      { name: "ジワタネホ", frame: 1, number: 1, sexAge: "牝3", ranks: [1, 2, 3, 15], starts: 4, classLevel: 1.05, timeIdx: 80, agariIdx: 78, distApt: 7, jockey: "三浦皇成", weight: 55, odds: 28.0, popular: 8, going: { firm: 77, soft: 75, heavy: 70 }, blood: { sire: "—" }, styles: ["senko","sashi","senko","sashi","senko"], past: { note: "未勝利勝ち。", recent: ["1着", "2着", "3着", "15着"] } },
+      { name: "サムシングスイート", frame: 2, number: 2, sexAge: "牝3", ranks: [1, 4, "除", 1, 2], starts: 5, classLevel: 1.05, timeIdx: 81, agariIdx: 79, distApt: 7, jockey: "団野大成", weight: 55, odds: 18.0, popular: 6, going: { firm: 79, soft: 76, heavy: 72 }, blood: { sire: "—" }, styles: ["senko","nige","senko","senko","sashi"], past: { note: "1勝クラス勝ち。", recent: ["1着", "4着", "取消", "1着", "2着"] } },
+      { name: "リアライズルミナス", frame: 3, number: 3, sexAge: "牝3", ranks: [3, 4, 3, 1, 4], starts: 5, classLevel: 1.4, timeIdx: 90, agariIdx: 86, distApt: 9, jockey: "津村明秀", weight: 55, odds: 8.5, popular: 3, going: { firm: 86, soft: 82, heavy: 76 }, blood: { sire: "—" }, styles: ["sashi","senko","sashi","sashi","senko"], past: { note: "オークス4着。", recent: ["3着", "4着", "3着", "1着", "4着"] } },
+      { name: "マスターソアラ", frame: 4, number: 4, sexAge: "牝3", ranks: [4, 1], starts: 2, classLevel: 1.15, timeIdx: 84, agariIdx: 81, distApt: 8, jockey: "大野拓弥", weight: 55, odds: 12.0, popular: 4, going: { firm: 84, soft: 80, heavy: 74 }, blood: { sire: "—" }, styles: ["senko","sashi","senko","sashi","senko"], past: { note: "クイーンC4着。", recent: ["4着", "1着"] } },
+      { name: "ファムクラジューズ", frame: 5, number: 5, sexAge: "牝3", ranks: [10, 1, 1, 5, 7], starts: 5, classLevel: 1.0, timeIdx: 77, agariIdx: 75, distApt: 7, jockey: "菊沢一樹", weight: 55, odds: 35.0, popular: 9, going: { firm: 75, soft: 74, heavy: 70 }, blood: { sire: "—" }, styles: ["sashi","oikomi","sashi","sashi","oikomi"], past: { note: "フローラS10着。", recent: ["10着", "1着", "1着", "5着", "7着"] } },
+      { name: "アストリル", frame: 6, number: 6, sexAge: "牝3", ranks: [2, 1, 5, 1, 2], starts: 5, classLevel: 1.2, timeIdx: 85, agariIdx: 82, distApt: 8, jockey: "M.ミシェル", weight: 55, odds: 15.0, popular: 5, going: { firm: 82, soft: 80, heavy: 75 }, blood: { sire: "—" }, styles: ["senko","sashi","senko","senko","sashi"], past: { note: "かもめ島特別2着。", recent: ["2着", "1着", "5着", "1着", "2着"] } },
+      { name: "ロングトールサリー", frame: 6, number: 7, sexAge: "牝3", ranks: [3, 11, 7, 1, 2], starts: 5, classLevel: 1.15, timeIdx: 82, agariIdx: 80, distApt: 7, jockey: "杉原誠人", weight: 55, odds: 22.0, popular: 7, going: { firm: 80, soft: 78, heavy: 74 }, blood: { sire: "—" }, styles: ["sashi","senko","sashi","sashi","senko"], past: { note: "筑紫特別3着。", recent: ["3着", "11着", "7着", "1着", "2着"] } },
+      { name: "ナイスプレーアスク", frame: 7, number: 8, sexAge: "牝3", ranks: [1, 5, 12, 7, 1], starts: 5, classLevel: 1.15, timeIdx: 83, agariIdx: 80, distApt: 7, jockey: "岩田康誠", weight: 55, odds: 16.0, popular: 6, going: { firm: 81, soft: 78, heavy: 73 }, blood: { sire: "—" }, styles: ["senko","nige","senko","sashi","senko"], past: { note: "1勝クラス勝ち。", recent: ["1着", "5着", "12着", "7着", "1着"] } },
+      { name: "ドリームコア", frame: 7, number: 9, sexAge: "牝3", ranks: [2, 9, 1, 1, 3], starts: 5, classLevel: 1.6, timeIdx: 96, agariIdx: 92, distApt: 9, lastDist: 2400, restWeeks: 14, jockey: "C.ルメール", weight: 55, trainer: "田中博康", odds: 1.7, popular: 1, going: { firm: 92, soft: 82, heavy: 76 }, blood: { sire: "キズナ", damsire: "ハーツクライ", dam: "ノームコア" }, styles: ["senko","sashi","senko","sashi","senko"], passOrders: [3, 8, 2, 4, 3], courseApt: { 中山: 6, 東京: 9, 阪神: 7, 京都: 7, 新潟: 7, 中京: 7, default: 7 }, past: { note: "オークス2着。転厩初戦。", best: "良馬場・中距離", recent: ["2着", "9着", "1着", "1着", "3着"] } },
+      { name: "ジッピーチューン", frame: 8, number: 10, sexAge: "牝3", ranks: [3, 2, 1, 2], starts: 4, classLevel: 1.55, timeIdx: 93, agariIdx: 89, distApt: 8, jockey: "北村友一", weight: 55, odds: 6.5, popular: 2, going: { firm: 88, soft: 82, heavy: 76 }, blood: { sire: "ロードカナロア" }, styles: ["sashi","oikomi","sashi","sashi","senko"], past: { note: "桜花賞3着。骨折明け。", recent: ["3着", "2着", "1着", "2着"] } },
+      { name: "ベンヴェヌータ", frame: 8, number: 11, sexAge: "牝3", ranks: [1, 1], starts: 2, classLevel: 0.92, timeIdx: 76, agariIdx: 74, distApt: 7, lastDist: 1800, restWeeks: 18, jockey: "石橋脩", weight: 55, trainer: "辻哲英", odds: 12.5, popular: 5, going: { firm: 85, soft: 78, heavy: 72 }, blood: { sire: "—" }, styles: ["nige","senko","nige","senko","senko"], passOrders: [1, 1, 2, 1, 2], courseApt: { 中山: 9, 東京: 6, 阪神: 6, 京都: 6, 新潟: 6, 中京: 6, default: 6 }, past: { note: "中山で新馬・ミモザ賞連勝。", best: "中山・先行", recent: ["1着", "1着"] } }
     ]
   },
   {
@@ -1224,22 +1358,22 @@ const SAMPLE_RACES = [
     date: "2026-09-06", grade: "G2", yearSrc: "2026",
     raceName: "産経賞セントウルステークス",
     horses: [
-      { name: "ママコチャ", frame: 1, number: 1, sexAge: "牝7", ranks: [5, 5, 9, 4, 2], starts: 5, timeIdx: 88, agariIdx: 86, distApt: 6, jockey: "武豊", weight: 56, odds: 6.5, popular: 3, going: { firm: 87, soft: 82, heavy: 76 }, styles: ["senko","sashi","senko","senko","sashi"], past: { note: "短距離実績馬。", recent: ["さきたま杯5着", "地方・スプリント", "高松宮記念9着", "オーシャンS4着", "重賞好走歴"] } },
-      { name: "クラスペディア", frame: 1, number: 2, sexAge: "牡4", ranks: [11, "除", 1, 11, 3], starts: 5, timeIdx: 82, agariIdx: 80, distApt: 6, jockey: "小崎綾也", weight: 57, odds: 18.0, popular: 10, going: { firm: 81, soft: 78, heavy: 72 }, styles: ["senko","sashi","senko","sashi","senko"], past: { note: "安定した先行力。", recent: ["CBC賞11着", "函館SS除外", "春雷S1着", "京阪杯11着", "オパールS3着"] } },
-      { name: "フリッカージャブ", frame: 2, number: 3, sexAge: "牡4", ranks: [1, 1, 1], starts: 3, timeIdx: 91, agariIdx: 88, distApt: 6, jockey: "松山弘平", weight: 57, odds: 4.5, popular: 1, going: { firm: 90, soft: 84, heavy: 78 }, styles: ["senko","nige","senko","senko","sashi"], past: { note: "北九州記念勝ち。重賞連勝狙い。", recent: ["北九州記念1着", "連勝中", "連勝中"] } },
-      { name: "ティニア", frame: 2, number: 4, sexAge: "牡6", ranks: [], timeIdx: 83, agariIdx: 81, distApt: 5, jockey: "田口貫太", weight: 57, odds: 22.0, popular: 11, going: { firm: 82, soft: 78, heavy: 74 }, styles: ["sashi","senko","sashi","sashi","senko"], past: { note: "差し脚。", recent: ["オープン"] } },
-      { name: "ダイヤモンドノット", frame: 3, number: 5, sexAge: "牡3", ranks: [5, 2], starts: 2, timeIdx: 92, agariIdx: 89, distApt: 6, jockey: "川田将雅", weight: 55, odds: 5.0, popular: 2, going: { firm: 91, soft: 84, heavy: 78 }, styles: ["senko","sashi","senko","nige","senko"], past: { note: "朝日杯FS2着。3歳重賞馬。", recent: ["NHKマイルC5着", "朝日杯FS2着"] } },
-      { name: "プロトポロス", frame: 3, number: 6, sexAge: "牡6", ranks: [4, 12], starts: 2, timeIdx: 84, agariIdx: 84, distApt: 6, jockey: "亀田温心", weight: 57, odds: 14.0, popular: 8, going: { firm: 83, soft: 78, heavy: 72 }, styles: ["sashi","sashi","senko","sashi","sashi"], past: { note: "安定した差し。", recent: ["CBC賞4着", "北九州記念12着"] } },
-      { name: "メイショウヨゾラ", frame: 4, number: 7, sexAge: "牝5", ranks: [], timeIdx: 84, agariIdx: 83, distApt: 5, jockey: "吉村誠之助", weight: 55, odds: 20.0, popular: 11, going: { firm: 83, soft: 78, heavy: 72 }, styles: ["senko","nige","senko","senko","sashi"], past: { note: "充実一途。", recent: ["オープン"] } },
-      { name: "ファストネットワーク", frame: 4, number: 8, sexAge: "セ6", ranks: [3], starts: 1, timeIdx: 90, agariIdx: 87, distApt: 5, jockey: "D.レーン", weight: 57, odds: 8.0, popular: 4, going: { firm: 89, soft: 82, heavy: 76 }, styles: ["nige","senko","nige","senko","senko"], past: { note: "香港馬。スプリンター。", recent: ["香港スプリント3着"] } },
-      { name: "ピューロマジック", frame: 5, number: 9, sexAge: "牝5", ranks: [1, 1], starts: 2, timeIdx: 89, agariIdx: 86, distApt: 5, jockey: "岩田望来", weight: 55, odds: 7.5, popular: 5, going: { firm: 88, soft: 82, heavy: 76 }, styles: ["senko","sashi","senko","senko","sashi"], past: { note: "重賞連勝中。", recent: ["アイビスSD1着", "函館スプリントS1着"] } },
-      { name: "ヤブサメ", frame: 5, number: 10, sexAge: "牡5", ranks: [], timeIdx: 79, agariIdx: 78, distApt: 5, jockey: "田山旺佑", weight: 57, odds: 30.0, popular: 14, going: { firm: 78, soft: 77, heavy: 72 }, styles: ["senko","sashi","senko","sashi","senko"], past: { note: "穴候補。", recent: ["オープン"] } },
-      { name: "ヨシノイースター", frame: 6, number: 11, sexAge: "牡8", ranks: [], timeIdx: 83, agariIdx: 81, distApt: 5, jockey: "田辺裕信", weight: 57, odds: 16.0, popular: 9, going: { firm: 82, soft: 78, heavy: 72 }, styles: ["sashi","senko","sashi","sashi","senko"], past: { note: "ベテラン。", recent: ["オープン"] } },
-      { name: "レッドモンレーヴ", frame: 6, number: 12, sexAge: "牡7", ranks: [2], starts: 1, timeIdx: 85, agariIdx: 83, distApt: 5, jockey: "酒井学", weight: 57, odds: 12.0, popular: 7, going: { firm: 84, soft: 78, heavy: 72 }, styles: ["nige","senko","nige","senko","senko"], past: { note: "先行力。", recent: ["高松宮記念2着"] } },
-      { name: "カルプスペルシュ", frame: 7, number: 13, sexAge: "牝4", ranks: [], timeIdx: 81, agariIdx: 80, distApt: 5, jockey: "西村淳也", weight: 55, odds: 22.0, popular: 13, going: { firm: 80, soft: 78, heavy: 72 }, styles: ["sashi","senko","sashi","sashi","senko"], past: { note: "差し脚。", recent: ["オープン"] } },
-      { name: "タマモブラックタイ", frame: 7, number: 14, sexAge: "牡6", ranks: [], timeIdx: 80, agariIdx: 79, distApt: 5, jockey: "幸英明", weight: 57, odds: 25.0, popular: 12, going: { firm: 79, soft: 77, heavy: 72 }, styles: ["sashi","sashi","oikomi","sashi","oikomi"], past: { note: "追込型。", recent: ["オープン"] } },
-      { name: "ビッグシーザー", frame: 8, number: 15, sexAge: "牡6", ranks: [], timeIdx: 85, agariIdx: 83, distApt: 6, jockey: "M.デムーロ", weight: 57, odds: 11.0, popular: 6, going: { firm: 84, soft: 78, heavy: 72 }, styles: ["nige","senko","nige","senko","senko"], past: { note: "逃げ先行。", recent: ["オープン"] } },
-      { name: "タマモイカロス", frame: 8, number: 16, sexAge: "牡5", ranks: [], timeIdx: 78, agariIdx: 77, distApt: 5, jockey: "池添謙一", weight: 57, odds: 28.0, popular: 15, going: { firm: 77, soft: 76, heavy: 72 }, styles: ["sashi","oikomi","sashi","sashi","oikomi"], past: { note: "外枠。", recent: ["オープン"] } }
+      { name: "ママコチャ", frame: 1, number: 1, sexAge: "牝7", ranks: [5, 5, 9, 4, 2], starts: 5, classLevel: 1.55, timeIdx: 94, agariIdx: 91, distApt: 6, jockey: "武豊", weight: 56, odds: 6.5, popular: 3, going: { firm: 87, soft: 82, heavy: 76 }, styles: ["senko","sashi","senko","senko","sashi"], past: { note: "短距離実績馬。", recent: ["さきたま杯5着", "地方・スプリント", "高松宮記念9着", "オーシャンS4着", "重賞好走歴"] } },
+      { name: "クラスペディア", frame: 1, number: 2, sexAge: "牡4", ranks: [11, "除", 1, 11, 3], starts: 5, classLevel: 1.2, timeIdx: 82, agariIdx: 80, distApt: 6, jockey: "小崎綾也", weight: 57, odds: 18.0, popular: 10, going: { firm: 81, soft: 78, heavy: 72 }, styles: ["senko","sashi","senko","sashi","senko"], past: { note: "安定した先行力。", recent: ["CBC賞11着", "函館SS除外", "春雷S1着", "京阪杯11着", "オパールS3着"] } },
+      { name: "フリッカージャブ", frame: 2, number: 3, sexAge: "牡4", ranks: [1, 1, 2, 1, 3], starts: 5, classLevel: 1.35, timeIdx: 91, agariIdx: 88, distApt: 6, jockey: "松山弘平", weight: 57, odds: 4.5, popular: 1, going: { firm: 90, soft: 84, heavy: 78 }, styles: ["senko","nige","senko","senko","sashi"], past: { note: "北九州記念勝ち。重賞連勝狙い。", recent: ["北九州記念1着", "連勝中", "連勝中"] } },
+      { name: "ティニア", frame: 2, number: 4, sexAge: "牡6", ranks: [8, 6, 5, 7, 4], starts: 5, classLevel: 1.15, timeIdx: 83, agariIdx: 81, distApt: 5, jockey: "田口貫太", weight: 57, odds: 22.0, popular: 11, going: { firm: 82, soft: 78, heavy: 74 }, styles: ["sashi","senko","sashi","sashi","senko"], past: { note: "差し脚。", recent: ["オープン"] } },
+      { name: "ダイヤモンドノット", frame: 3, number: 5, sexAge: "牡3", ranks: [5, 2, 1, 3, 1], starts: 5, classLevel: 1.25, timeIdx: 92, agariIdx: 89, distApt: 6, jockey: "川田将雅", weight: 55, odds: 5.0, popular: 2, going: { firm: 91, soft: 84, heavy: 78 }, styles: ["senko","sashi","senko","nige","senko"], past: { note: "朝日杯FS2着。3歳重賞馬。", recent: ["NHKマイルC5着", "朝日杯FS2着"] } },
+      { name: "プロトポロス", frame: 3, number: 6, sexAge: "牡6", ranks: [4, 12, 15, 11, 1], starts: 5, classLevel: 1.25, timeIdx: 84, agariIdx: 84, distApt: 6, jockey: "亀田温心", weight: 57, odds: 14.0, popular: 8, going: { firm: 83, soft: 78, heavy: 72 }, styles: ["sashi","sashi","senko","sashi","sashi"], past: { note: "安定した差し。", recent: ["CBC賞4着", "北九州記念12着"] } },
+      { name: "メイショウヨゾラ", frame: 4, number: 7, sexAge: "牝5", ranks: [6, 5, 4, 8, 3], starts: 5, classLevel: 1.15, timeIdx: 84, agariIdx: 83, distApt: 5, jockey: "吉村誠之助", weight: 55, odds: 20.0, popular: 11, going: { firm: 83, soft: 78, heavy: 72 }, styles: ["senko","nige","senko","senko","sashi"], past: { note: "充実一途。", recent: ["オープン"] } },
+      { name: "ファストネットワーク", frame: 4, number: 8, sexAge: "セ6", ranks: [3, 5, 4, 6, 2], starts: 5, classLevel: 1.3, timeIdx: 90, agariIdx: 87, distApt: 5, jockey: "D.レーン", weight: 57, odds: 8.0, popular: 4, going: { firm: 89, soft: 82, heavy: 76 }, styles: ["nige","senko","nige","senko","senko"], past: { note: "香港馬。スプリンター。", recent: ["香港スプリント3着"] } },
+      { name: "ピューロマジック", frame: 5, number: 9, sexAge: "牝5", ranks: [1, 1, 13, 16, 10], starts: 5, classLevel: 1.5, timeIdx: 93, agariIdx: 90, distApt: 5, jockey: "岩田望来", weight: 55, odds: 7.5, popular: 5, going: { firm: 88, soft: 82, heavy: 76 }, styles: ["senko","sashi","senko","senko","sashi"], past: { note: "重賞連勝中。", recent: ["アイビスSD1着", "函館スプリントS1着"] } },
+      { name: "ヤブサメ", frame: 5, number: 10, sexAge: "牡5", ranks: [8, 7, 9, 5, 6], starts: 5, classLevel: 1.2, timeIdx: 79, agariIdx: 78, distApt: 5, jockey: "田山旺佑", weight: 57, odds: 30.0, popular: 14, going: { firm: 78, soft: 77, heavy: 72 }, styles: ["senko","sashi","senko","sashi","senko"], past: { note: "穴候補。", recent: ["オープン"] } },
+      { name: "ヨシノイースター", frame: 6, number: 11, sexAge: "牡8", ranks: [9, 8, 7, 10, 6], starts: 5, classLevel: 1.1, timeIdx: 83, agariIdx: 81, distApt: 5, jockey: "田辺裕信", weight: 57, odds: 16.0, popular: 9, going: { firm: 82, soft: 78, heavy: 72 }, styles: ["sashi","senko","sashi","sashi","senko"], past: { note: "ベテラン。", recent: ["オープン"] } },
+      { name: "レッドモンレーヴ", frame: 6, number: 12, sexAge: "牡7", ranks: [2, 6, 4, 5, 3], starts: 5, classLevel: 1.25, timeIdx: 85, agariIdx: 83, distApt: 5, jockey: "酒井学", weight: 57, odds: 12.0, popular: 7, going: { firm: 84, soft: 78, heavy: 72 }, styles: ["nige","senko","nige","senko","senko"], past: { note: "先行力。", recent: ["高松宮記念2着"] } },
+      { name: "カルプスペルシュ", frame: 7, number: 13, sexAge: "牝4", ranks: [7, 5, 6, 8, 4], starts: 5, classLevel: 1.1, timeIdx: 81, agariIdx: 80, distApt: 5, jockey: "西村淳也", weight: 55, odds: 22.0, popular: 13, going: { firm: 80, soft: 78, heavy: 72 }, styles: ["sashi","senko","sashi","sashi","senko"], past: { note: "差し脚。", recent: ["オープン"] } },
+      { name: "タマモブラックタイ", frame: 7, number: 14, sexAge: "牡6", ranks: [8, 6, 9, 7, 5], starts: 5, classLevel: 1.15, timeIdx: 80, agariIdx: 79, distApt: 5, jockey: "幸英明", weight: 57, odds: 25.0, popular: 12, going: { firm: 79, soft: 77, heavy: 72 }, styles: ["sashi","sashi","oikomi","sashi","oikomi"], past: { note: "追込型。", recent: ["オープン"] } },
+      { name: "ビッグシーザー", frame: 8, number: 15, sexAge: "牡6", ranks: [5, 4, 6, 3, 7], starts: 5, classLevel: 1.15, timeIdx: 85, agariIdx: 83, distApt: 6, jockey: "M.デムーロ", weight: 57, odds: 11.0, popular: 6, going: { firm: 84, soft: 78, heavy: 72 }, styles: ["nige","senko","nige","senko","senko"], past: { note: "逃げ先行。", recent: ["オープン"] } },
+      { name: "タマモイカロス", frame: 8, number: 16, sexAge: "牡5", ranks: [6, 8, 5, 7, 4], starts: 5, classLevel: 1.1, timeIdx: 78, agariIdx: 77, distApt: 5, jockey: "池添謙一", weight: 57, odds: 28.0, popular: 15, going: { firm: 77, soft: 76, heavy: 72 }, styles: ["sashi","oikomi","sashi","sashi","oikomi"], past: { note: "外枠。", recent: ["オープン"] } }
     ]
   }
 ];
@@ -1262,10 +1396,13 @@ const WEIGHT_PRESETS = {
 function numericRanks(ranks) {
   if (!ranks || !ranks.length) return [];
   return ranks.map(r => {
-    if (typeof r === "number" && isFinite(r)) return r;
-    if (r === "除" || r === "除外" || r === "取消" || r === "W" || r === "-") return null;
-    const n = Number(r);
-    return isFinite(n) ? n : null;
+    if (typeof r === "number" && isFinite(r) && r > 0) return r;
+    if (r == null || r === "") return null;
+    const s = String(r).trim();
+    // 除・取消・- は欠測扱い（着順計算に含めない）
+    if (s === "除" || s === "除外" || s === "取消" || s === "W" || s === "w" || s === "-" || s === "—") return null;
+    const n = Number(s);
+    return (isFinite(n) && n > 0) ? n : null;
   }).filter(r => r != null);
 }
 
@@ -1294,10 +1431,39 @@ function calcAbility(horse, raceCondition) {
     formW += w;
   });
   formScore = formScore / (formW || 1);
+  // サンプルが少ないと過大評価しにくいよう減衰
+  if (rankNums.length <= 1) formScore *= 0.70;
+  else if (rankNums.length === 2) formScore *= 0.80;
+  else if (rankNums.length === 3) formScore *= 0.90;
+  // レース格: G1 >>> G2 >> G3 > その他（classLevel 目安 1.6 / 1.35 / 1.15 / 0.95）
+  const classLv = Number(horse.classLevel);
+  if (isFinite(classLv) && classLv > 0) {
+    // 1.0基準で G1帯は form を大きく押し上げ、条件戦は抑える
+    const classMul = classLv >= 1.5 ? 1.28
+      : classLv >= 1.35 ? 1.16
+      : classLv >= 1.2 ? 1.08
+      : classLv >= 1.05 ? 1.0
+      : 0.88;
+    formScore = formScore * classMul;
+  }
 
-  // タイム・上がり（細かい数値をそのまま能力に反映）
-  const timeN = clamp(Number(horse.timeIdx) || 65, 30, 100);
-  const agariN = clamp(Number(horse.agariIdx) || 60, 30, 100);
+  // タイム・上がり（レース格でベースを上下）
+  let timeN = clamp(Number(horse.timeIdx) || 65, 30, 100);
+  let agariN = clamp(Number(horse.agariIdx) || 60, 30, 100);
+  {
+    const cl0 = Number(horse.classLevel);
+    if (isFinite(cl0) && cl0 > 0) {
+      // G1帯は指数そのものを底上げ、条件戦は抑えめ
+      const idxMul = cl0 >= 1.55 ? 1.12
+        : cl0 >= 1.45 ? 1.08
+        : cl0 >= 1.3 ? 1.04
+        : cl0 >= 1.15 ? 1.01
+        : cl0 >= 1.0 ? 1.0
+        : 0.94;
+      timeN = clamp(timeN * idxMul, 30, 100);
+      agariN = clamp(agariN * idxMul, 30, 100);
+    }
+  }
   const distN = clamp((Number(horse.distApt) || 5) * 10, 10, 100);
 
   // タイム明細があれば追加反映（例: last3f, avgTimeIdx）
@@ -1308,30 +1474,45 @@ function calcAbility(horse, raceCondition) {
     timeDetail = clamp(100 - (last - 33) * 8, 40, 95);
   }
 
+  // 除・取消・- は着順計算に含めない（numericRanks で除外済み）
   const consistency = (() => {
-    if (ranks.length < 2) return 60;
-    const mean = ranks.reduce((a, b) => a + b, 0) / ranks.length;
-    const variance = ranks.reduce((a, b) => a + (b - mean) ** 2, 0) / ranks.length;
+    if (rankNums.length < 2) return 60;
+    const mean = rankNums.reduce((a, b) => a + b, 0) / rankNums.length;
+    const variance = rankNums.reduce((a, b) => a + (b - mean) ** 2, 0) / rankNums.length;
     return clamp(96 - variance * 5, 38, 96);
   })();
 
-  const winRate = ranks.filter(r => r === 1).length / ranks.length;
-  const placeRate = ranks.filter(r => r <= 2).length / ranks.length;
-  const showRate = ranks.filter(r => r <= 3).length / ranks.length;
-  const resultBoost = winRate * 14 + placeRate * 9 + showRate * 6;
+  const nValid = rankNums.length || 1;
+  const winRate = rankNums.filter(r => r === 1).length / nValid;
+  const placeRate = rankNums.filter(r => r <= 2).length / nValid;
+  const showRate = rankNums.filter(r => r <= 3).length / nValid;
+  // 出走数が少ないと勝率100%でもブーストを抑える
+  const sampleScale = Math.min(1, nValid / 4);
+  let resultBoost = (winRate * 14 + placeRate * 9 + showRate * 6) * sampleScale;
+  // classLevel: 0.9条件 / 1.0 OP / 1.15 G3 / 1.3 G2 / 1.45 G1出走 / 1.55 G1好走 / 1.65 G1勝利級
+  const cl = Number(horse.classLevel);
+  if (isFinite(cl) && cl > 0) {
+    const boostMul = cl >= 1.55 ? 1.55
+      : cl >= 1.45 ? 1.38
+      : cl >= 1.3 ? 1.22
+      : cl >= 1.15 ? 1.10
+      : cl >= 1.0 ? 1.0
+      : 0.82;
+    resultBoost *= boostMul;
+  }
 
   // スピード＝タイム指数を主軸＋近走
-  const speed = clamp(Math.round(0.50 * timeN + 0.22 * formScore + 0.18 * resultBoost + 0.10 * (timeDetail || timeN)), 40, 98);
+  const speed = (Math.round(clamp(0.50 * timeN + 0.22 * formScore + 0.18 * resultBoost + 0.10 * (timeDetail || timeN), 40, 98) * 10) / 10);
   // スタミナ＝距離適性＋タイム持続＋近走
-  const stamina = clamp(Math.round(0.38 * distN + 0.28 * formScore + 0.18 * timeN + 0.16 * consistency), 40, 98);
+  const stamina = (Math.round(clamp(0.38 * distN + 0.28 * formScore + 0.18 * timeN + 0.16 * consistency, 40, 98) * 10) / 10);
   // 加速＝上がり指数を主軸
-  const accel = clamp(Math.round(0.55 * agariN + 0.20 * formScore + 0.15 * resultBoost + 0.10 * (timeDetail || agariN)), 40, 98);
+  const accel = (Math.round(clamp(0.55 * agariN + 0.20 * formScore + 0.15 * resultBoost + 0.10 * (timeDetail || agariN), 40, 98) * 10) / 10);
 
   const going = calcGoingApt(horse, timeN, formScore, consistency, agariN);
 
   // 調子 1〜5（近走の良化・悪化を反映。5=絶好調）
   const condition = (() => {
-    if (horse.condition != null) return clamp(Math.round(horse.condition), 1, 5);
+    if (horse.condition != null) return (Math.round(clamp(horse.condition, 1, 5) * 10) / 10);
     if (ranks.length < 2) return 3;
     const recent = ranks.slice(0, Math.min(3, ranks.length));
     const older = ranks.slice(Math.min(3, ranks.length));
@@ -1347,24 +1528,24 @@ function calcAbility(horse, raceCondition) {
     if (rAvg > oAvg + 1.5) s -= 0.8; // 悪化
     if (ranks[0] === 1) s += 0.4;
     if (ranks[0] >= 10) s -= 0.5;
-    return clamp(Math.round(s), 1, 5);
+    return (Math.round(clamp(s, 1, 5) * 10) / 10);
   })();
 
   const cond = raceCondition || "良";
   const goingToday = cond === "重" ? going.heavy : cond === "稍重" ? going.soft : going.firm;
   const condBoost = (condition - 3) * 3; // 調子を総合に微反映
-  const total = clamp(Math.round(
+  const total = (Math.round(clamp(
     speed * 0.20 + stamina * 0.15 + accel * 0.18 + consistency * 0.10 +
     formScore * 0.15 + goingToday * 0.14 + (50 + condBoost) * 0.08
-  ), 40, 98);
+  , 40, 98) * 10) / 10);
 
   return {
     speed, stamina, accel,
-    consistency: Math.round(consistency),
-    form: Math.round(formScore),
+    consistency: Math.round(consistency * 10) / 10,
+    form: Math.round(formScore * 10) / 10,
     condition,
     going,
-    goingToday: Math.round(goingToday),
+    goingToday: Math.round(goingToday * 10) / 10,
     total,
     // 内訳（表示用）
     detail: {
@@ -1382,15 +1563,15 @@ function calcAbility(horse, raceCondition) {
 function calcGoingApt(horse, timeN, formScore, consistency, agariN) {
   if (horse.going) {
     return {
-      firm: clamp(Number(horse.going.firm) || 70, 40, 98),
-      soft: clamp(Number(horse.going.soft) || 70, 40, 98),
-      heavy: clamp(Number(horse.going.heavy) || 65, 40, 98)
+      firm: Math.round(clamp(Number(horse.going.firm) || 70, 40, 98) * 10) / 10,
+      soft: Math.round(clamp(Number(horse.going.soft) || 70, 40, 98) * 10) / 10,
+      heavy: Math.round(clamp(Number(horse.going.heavy) || 65, 40, 98) * 10) / 10
     };
   }
-  // 推定：良＝タイム重視、稍重＝バランス、重＝安定・パワー寄り
-  const firm = clamp(Math.round(0.48 * timeN + 0.28 * formScore + 0.12 * (agariN || 70) + 0.12 * 72), 45, 96);
-  const soft = clamp(Math.round(0.32 * timeN + 0.32 * formScore + 0.20 * consistency + 0.16 * (agariN || 70)), 45, 95);
-  const heavy = clamp(Math.round(0.22 * timeN + 0.28 * formScore + 0.40 * consistency + 0.10 * (agariN || 65) - 2), 40, 93);
+  // 推定：良＝タイム重視、稍重＝バランス、重＝安定・パワー寄り（小数第1位）
+  const firm = Math.round(clamp(0.48 * timeN + 0.28 * formScore + 0.12 * (agariN || 70) + 0.12 * 72, 45, 96) * 10) / 10;
+  const soft = Math.round(clamp(0.32 * timeN + 0.32 * formScore + 0.20 * consistency + 0.16 * (agariN || 70), 45, 95) * 10) / 10;
+  const heavy = Math.round(clamp(0.22 * timeN + 0.28 * formScore + 0.40 * consistency + 0.10 * (agariN || 65) - 2, 40, 93) * 10) / 10;
   return { firm, soft, heavy };
 }
 
@@ -1625,10 +1806,11 @@ function traitBonus(horse, race) {
     if (race.distance >= 2000 && /中距離|スタミナ|長/.test(best)) b += 1.2;
     if (race.distance <= 1600 && /マイル/.test(best)) b += 1.2;
   }
-  // 安定性: 着順のばらつきが小さいとプラス
-  if (horse.ranks && horse.ranks.length >= 3) {
-    const avg = horse.ranks.reduce((a, b) => a + b, 0) / horse.ranks.length;
-    const varc = horse.ranks.reduce((s, r) => s + (r - avg) * (r - avg), 0) / horse.ranks.length;
+  // 安定性: 着順のばらつきが小さいとプラス（除外は無視）
+  const nr = typeof numericRanks === "function" ? numericRanks(horse.ranks) : (horse.ranks || []);
+  if (nr && nr.length >= 3) {
+    const avg = nr.reduce((a, b) => a + b, 0) / nr.length;
+    const varc = nr.reduce((s, r) => s + (r - avg) * (r - avg), 0) / nr.length;
     if (varc < 4) b += 1.5;
     else if (varc > 20) b -= 1.2;
   }
@@ -1728,11 +1910,11 @@ function simulateRaceOutcomes(race, nSim, fixedPace) {
     placeP: top3.map(c => c / nSim),
     counts: { nSim, c1: count1, c2: count2, c3: count3 },
     combos: {
-      umatan: topCombos(umatan, 5),
-      umaren: topCombos(umaren, 5),
-      wide: topCombos(wide, 5),
-      sanrenpuku: topCombos(sanrenpuku, 5),
-      sanrentan: topCombos(sanrentan, 5)
+      umatan: topCombos(umatan, 8),
+      umaren: topCombos(umaren, 8),
+      wide: topCombos(wide, 8),
+      sanrenpuku: topCombos(sanrenpuku, 10),
+      sanrentan: topCombos(sanrentan, 15)
     }
   };
 }
@@ -1799,7 +1981,8 @@ function fillRaceSelects() {
     ["abilityRaceSelect", "gradeSelectAbility"],
     ["viewRaceSelect", "gradeSelectView"],
     ["entriesRaceSelect", "gradeSelectEntries"],
-    ["paceRaceSelect", "gradeSelectPace"]
+    ["paceRaceSelect", "gradeSelectPace"],
+    ["aiRaceSelect", "gradeSelectAi"]
   ];
   pairs.forEach(([sid, gid]) => fillOneRaceSelect(sid, gid));
   updateRaceInfo();
@@ -2008,7 +2191,7 @@ function renderHorseList(containerId, horses, race, probs, placeP, extra) {
         <div style="flex:1;min-width:0">
           <div class="horse-name">${item.horse.number || "-"} ${item.horse.name}</div>
           <div class="horse-meta">${item.horse.frame}枠・${item.horse.jockey||""}・総合能力 ${ab.total}</div>
-          <div class="horse-meta">近走平均 ${avgRank(item.horse.ranks).toFixed(1)} / タイム${item.horse.timeIdx} / 上がり${item.horse.agariIdx}</div>
+          <div class="horse-meta">近走平均 ${avgRank(item.horse.ranks).toFixed(1)} / タイム${fmtIdx(item.horse.timeIdx)} / 上がり${fmtIdx(item.horse.agariIdx)}</div>
           <div class="horse-meta">${item.horse.popular != null ? item.horse.popular + "番人気" : ""}${item.horse.odds != null ? "・単勝オッズ " + formatOdds(item.horse.odds) : ""}</div>
           ${countLine}
         </div>
@@ -2307,9 +2490,69 @@ function historyRaceLabel(title, raceId) {
 
 
 // ========== お知らせ・更新履歴 ==========
-const NEWS_VERSION = "2026-09-06a";
+const NEWS_VERSION = "2026-09-06g";
 const NEWS_SEEN_KEY = "keiba_sim_news_seen";
 const NEWS_ITEMS = [
+  {
+    ver: "2026-09-06g",
+    date: "2026/9/6",
+    title: "能力値：G1≫G2≫G3の差を強化",
+    body: [
+      "レース格の重みを大幅強化：G1勝利・好走 ≫ G2 ≫ G3 ≫ 条件戦",
+      "G1実績馬はタイム指数・近走ブーストとも大きく加算",
+      "条件戦のみの連勝馬は相対的に抑えめ"
+    ]
+  },
+  {
+    ver: "2026-09-06f",
+    date: "2026/9/6",
+    title: "能力値：レース格・出走数を反映",
+    body: [
+      "条件戦だけの連勝より、G1・G2好走を能力値で優遇するよう調整",
+      "出走数が少ない馬は勝率の過大評価を抑制",
+      "紫苑Sはドリームコア・ジッピーチューン等G1実績馬を上位寄りに再設定"
+    ]
+  },
+  {
+    ver: "2026-09-06e",
+    date: "2026/9/6",
+    title: "紫苑S近走着順を指定どおり更新",
+    body: [
+      "紫苑ステークス出走馬11頭の近走着順を提供データに合わせて反映",
+      "取消は「除」として表示・計算"
+    ]
+  },
+  {
+    ver: "2026-09-06d",
+    date: "2026/9/6",
+    title: "全出走馬の近走着順を拡充",
+    body: [
+      "京成杯AH・紫苑S・セントウルS・札幌2歳Sを含む全レースの出走馬について近走着順を更新",
+      "判明している成績を最大5走分 ranks に反映（左が最新）",
+      "2歳馬など出走歴が少ない馬は判明分のみ（不足は「-」表示）",
+      "除外は「除」で表記"
+    ]
+  },
+  {
+    ver: "2026-09-06c",
+    date: "2026/9/6",
+    title: "新潟記念の近走着順を反映",
+    body: [
+      "新潟記念出走馬11頭に、公開されている直近レース着順を ranks に反映",
+      "タイム指数・上がり指数も近走内容に合わせて調整",
+      "【能力値】の近走表示・予想計算に使用"
+    ]
+  },
+  {
+    ver: "2026-09-06b",
+    date: "2026/9/6",
+    title: "【AI予想】タブを追加",
+    body: [
+      "開催レースごとに単勝・馬単・馬連・枠連・ワイド・3連複・3連単の推奨馬番を一覧表示",
+      "点数: 単勝2／馬単・馬連・枠連各2／ワイド4／3連複6／3連単12",
+      "自信度を星5段階（★☆☆☆☆〜★★★★★）で表示"
+    ]
+  },
   {
     ver: "2026-09-06a",
     date: "2026/9/6",
@@ -2836,27 +3079,27 @@ function runAbility() {
             <strong>${h.number} ${h.name}</strong>
             <span class="horse-meta"> ${h.jockey||""}</span>
           </div>
-          <div style="font-weight:800;color:#f0c414;font-size:1.05rem">総合 ${ab.total}</div>
+          <div style="font-weight:800;color:#f0c414;font-size:1.05rem">総合 ${fmtIdx(ab.total)}</div>
         </div>
         <div class="horse-meta" style="margin:4px 0 6px">
-          近走:${formatRanksDisplay(getDisplayRanks(h))} ／タイム${d.timeIdx||"-"} 上がり${d.agariIdx||"-"}
+          近走:${formatRanksDisplay(getDisplayRanks(h))} ／タイム${fmtIdx(d.timeIdx)} 上がり${fmtIdx(d.agariIdx)}
         </div>
         <div class="ability-grid">
-          <div class="ability-item"><span class="label">スピード</span><span class="val">${ab.speed}</span>
+          <div class="ability-item"><span class="label">スピード</span><span class="val">${fmtIdx(ab.speed)}</span>
             <div class="ability-bar"><div class="ability-fill ab-spd" style="width:${ab.speed}%"></div></div></div>
-          <div class="ability-item"><span class="label">スタミナ</span><span class="val">${ab.stamina}</span>
+          <div class="ability-item"><span class="label">スタミナ</span><span class="val">${fmtIdx(ab.stamina)}</span>
             <div class="ability-bar"><div class="ability-fill ab-sta" style="width:${ab.stamina}%"></div></div></div>
-          <div class="ability-item"><span class="label">末脚</span><span class="val">${ab.accel}</span>
+          <div class="ability-item"><span class="label">末脚</span><span class="val">${fmtIdx(ab.accel)}</span>
             <div class="ability-bar"><div class="ability-fill ab-acc" style="width:${ab.accel}%"></div></div></div>
-          <div class="ability-item"><span class="label">安定性</span><span class="val">${ab.consistency}</span>
+          <div class="ability-item"><span class="label">安定性</span><span class="val">${fmtIdx(ab.consistency)}</span>
             <div class="ability-bar"><div class="ability-fill ab-con" style="width:${ab.consistency}%"></div></div></div>
           <div class="ability-item"><span class="label">調子</span><span class="val">${ab.condition}/5</span>
             <div class="ability-bar"><div class="ability-fill" style="width:${ab.condition*20}%;background:#ec4899"></div></div></div>
-          <div class="ability-item"><span class="label">馬場適正:良</span><span class="val">${ab.going.firm}</span>
+          <div class="ability-item"><span class="label">馬場適正:良</span><span class="val">${fmtIdx(ab.going.firm)}</span>
             <div class="ability-bar"><div class="ability-fill" style="width:${ab.going.firm}%;background:#84cc16"></div></div></div>
-          <div class="ability-item"><span class="label">馬場適正:稍重</span><span class="val">${ab.going.soft}</span>
+          <div class="ability-item"><span class="label">馬場適正:稍重</span><span class="val">${fmtIdx(ab.going.soft)}</span>
             <div class="ability-bar"><div class="ability-fill" style="width:${ab.going.soft}%;background:#eab308"></div></div></div>
-          <div class="ability-item"><span class="label">馬場適正:重</span><span class="val">${ab.going.heavy}</span>
+          <div class="ability-item"><span class="label">馬場適正:重</span><span class="val">${fmtIdx(ab.going.heavy)}</span>
             <div class="ability-bar"><div class="ability-fill" style="width:${ab.going.heavy}%;background:#a16207"></div></div></div>
         </div>
       </div>`;
@@ -2893,8 +3136,8 @@ function predictStyle(horse, ab) {
       else hist.oikomi += w * 10;
     });
   }
-  // 着順パターン：前で粘る／後ろから差すの簡易推定
-  const ranks = horse.ranks || [];
+  // 着順パターン：前で粘る／後ろから差すの簡易推定（除・- は無視）
+  const ranks = typeof numericRanks === "function" ? numericRanks(horse.ranks) : (horse.ranks || []).filter(r => typeof r === "number");
   if (ranks.length && !horse.styles && !horse.passOrders) {
     // 着順が安定して上位＝先行寄り、ばらつき大＋末脚高＝差し・追込
     const avg = ranks.reduce((a, b) => a + b, 0) / ranks.length;
@@ -4315,6 +4558,14 @@ function stopRace() {
   document.getElementById("raceStatus").textContent = "停止";
 }
 
+/** タイム指数・上がり指数を小数第1位で表示 */
+function fmtIdx(v) {
+  if (v == null || v === "" || v === "-") return "-";
+  const n = Number(v);
+  if (!isFinite(n)) return String(v);
+  return n.toFixed(1);
+}
+
 function formatRaceTime(sec) {
   const m = Math.floor(sec / 60);
   const s = sec - m * 60;
@@ -5326,6 +5577,249 @@ function runCustomRace() {
 }
 
 
+
+// ========== AI予想 ==========
+function confidenceStars(level) {
+  const n = Math.max(1, Math.min(5, Math.round(level)));
+  return "★".repeat(n) + "☆".repeat(5 - n);
+}
+
+function calcAiConfidence(sim, race) {
+  if (!sim || !sim.winP || !sim.winP.length) return 2;
+  const sorted = sim.winP.slice().sort((a, b) => b - a);
+  const top = sorted[0] || 0;
+  const second = sorted[1] || 0;
+  const third = sorted[2] || 0;
+  const gap = top - second;
+  const top3 = top + second + third;
+  const n = race.horses.length || 16;
+  // 本命が明確で上位に確率が集中しているほど星を上げる（最大★5）
+  let score = 2.5;
+  if (top >= 0.18) score += 0.6;
+  if (top >= 0.22) score += 0.5;
+  if (top >= 0.28) score += 0.6;
+  if (top >= 0.35) score += 0.5;
+  if (gap >= 0.04) score += 0.4;
+  if (gap >= 0.08) score += 0.5;
+  if (gap >= 0.12) score += 0.4;
+  if (top3 >= 0.45) score += 0.3;
+  if (top3 >= 0.55) score += 0.4;
+  if (n <= 11) score += 0.4;
+  else if (n <= 14) score += 0.2;
+  else if (n >= 16) score -= 0.15;
+  if (top < 0.12) score -= 0.8;
+  if (top < 0.10) score -= 0.5;
+  return Math.max(1, Math.min(5, Math.round(score)));
+}
+
+/** 馬番を枠色チップで表示 */
+function aiNumChip(num, race) {
+  const h = race.horses.find(x => String(x.number) === String(num));
+  const frame = h && h.frame != null ? h.frame : Math.ceil(Number(num) / 2);
+  const fi = Math.min(7, Math.max(0, (frame | 0) - 1));
+  const bg = FRAME_COLORS[fi];
+  const fg = FRAME_TEXT[fi];
+  const border = (bg === "#000" || bg === "#000000") ? "1px solid #666" : (bg === "#fff" || bg === "#ffffff") ? "1px solid #888" : "1px solid transparent";
+  return '<span class="ai-num-chip" style="background:' + bg + ';color:' + fg + ';border:' + border + '">' + num + '</span>';
+}
+
+/** 枠番チップ */
+function aiFrameChip(frame) {
+  const fi = Math.min(7, Math.max(0, (frame | 0) - 1));
+  const bg = FRAME_COLORS[fi];
+  const fg = FRAME_TEXT[fi];
+  const border = (bg === "#000" || bg === "#000000") ? "1px solid #666" : (bg === "#fff" || bg === "#ffffff") ? "1px solid #888" : "1px solid transparent";
+  return '<span class="ai-num-chip ai-frame-chip" style="background:' + bg + ';color:' + fg + ';border:' + border + '">' + frame + '</span>';
+}
+
+/** 組合せキー → { numsHtml, namesHtml } に分離 */
+function formatAiComboParts(key, race) {
+  const s = String(key);
+  const sep = s.indexOf("→") >= 0 ? "→" : "-";
+  const parts = s.split(sep).map(x => x.trim()).filter(Boolean);
+  const numsHtml = parts.map(p => aiNumChip(p, race)).join('<span class="ai-sep">' + sep + '</span>');
+  const namesHtml = parts.map(p => horseNameByNum(race, p) || "—").join('<span class="ai-sep">・</span>');
+  return { numsHtml, namesHtml };
+}
+
+function formatAiWakurenParts(key) {
+  const parts = String(key).split("-").map(x => x.trim()).filter(Boolean);
+  const numsHtml = parts.map(f => aiFrameChip(f)).join('<span class="ai-sep">-</span>');
+  const namesHtml = parts.map(f => f + "枠").join('<span class="ai-sep">・</span>');
+  return { numsHtml, namesHtml };
+}
+
+// 互換
+function formatAiComboHtml(key, race) {
+  const p = formatAiComboParts(key, race);
+  return p.numsHtml;
+}
+function formatAiWakurenHtml(key) {
+  return formatAiWakurenParts(key).numsHtml;
+}
+
+function formatAiCombo(key, type) {
+  // key examples: "3→7", "3-7", "3-7-11", "1-2" (frames)
+  if (type === "umatan") return String(key).replace("→", " → ");
+  return String(key);
+}
+
+function buildFrameRenCombos(sim, race, limit) {
+  // 着順上位の枠番ペアを集計（sim.combosに無い場合）
+  const horses = race.horses;
+  const counts = {};
+  // winP上位から枠の相性を擬似的に
+  const ranked = horses.map((h, i) => ({ h, i, p: (sim.winP && sim.winP[i]) || 0 }))
+    .sort((a, b) => b.p - a.p);
+  const top = ranked.slice(0, Math.min(8, ranked.length));
+  for (let a = 0; a < top.length; a++) {
+    for (let b = a + 1; b < top.length; b++) {
+      const f1 = top[a].h.frame || Math.ceil(top[a].h.number / 2);
+      const f2 = top[b].h.frame || Math.ceil(top[b].h.number / 2);
+      if (f1 === f2) continue;
+      const lo = Math.min(f1, f2), hi = Math.max(f1, f2);
+      const k = lo + "-" + hi;
+      const w = top[a].p * top[b].p;
+      counts[k] = (counts[k] || 0) + w;
+    }
+  }
+  return Object.keys(counts).map(k => ({ k, v: counts[k] }))
+    .sort((a, b) => b.v - a.v)
+    .slice(0, limit)
+    .map(x => x.k);
+}
+
+function horseNameByNum(race, num) {
+  const h = race.horses.find(x => String(x.number) === String(num));
+  return h ? h.name : "";
+}
+
+function updateAiRaceInfo() {
+  const race = getCurrentRace("aiRaceSelect");
+  const el = document.getElementById("aiRaceInfo");
+  if (!el) return;
+  if (race && typeof formatRaceNoteLine === "function") el.textContent = formatRaceNoteLine(race);
+  else if (race) el.textContent = (race.raceName || race.name || "") + "｜" + (race.horses ? race.horses.length : 0) + "頭";
+  else el.textContent = "";
+}
+
+function runAiPredict() {
+  let race = null;
+  try { race = getCurrentRace("aiRaceSelect"); } catch (e) { race = null; }
+  if (!race || !race.horses || !race.horses.length) {
+    alert("レースを選択してください");
+    return;
+  }
+  const paceOpt = "auto";
+  const nSim = 400;
+  const sim = simulateRaceOutcomes(race, nSim, paceOpt);
+  if (!sim || !sim.winP) {
+    alert("シミュレーション結果を取得できませんでした");
+    return;
+  }
+  const conf = calcAiConfidence(sim, race);
+
+  const confEl = document.getElementById("aiConfidence");
+  if (confEl) {
+    confEl.innerHTML =
+      '<div class="ai-conf-label">この予想に対する自信度</div>' +
+      '<div class="ai-conf-stars">' + confidenceStars(conf) + '</div>' +
+      '<div class="ai-conf-note">星' + conf + '／5　（シミュレーション ' + nSim + ' 回）</div>';
+  }
+
+  // 単勝: winP top 2
+  const winOrder = race.horses.map((h, i) => ({ h, i, p: sim.winP[i] || 0 }))
+    .sort((a, b) => b.p - a.p);
+  const tansho = winOrder.slice(0, 2).map(x => ({
+    numsHtml: aiNumChip(x.h.number, race),
+    namesHtml: x.h.name || "",
+    meta: "勝率 " + Math.round(x.p * 1000) / 10 + "%"
+  }));
+
+  const combos = sim.combos || {};
+  // combos structure from sim
+  function normalizeCombos(raw) {
+    if (!raw) return [];
+    if (Array.isArray(raw)) {
+      return raw.map(c => {
+        if (typeof c === "string") return { k: c, v: null };
+        if (c.key != null) return { k: c.key, v: c.n != null ? c.n : c.v };
+        if (c.k != null) return { k: c.k, v: c.v };
+        return { k: String(c), v: null };
+      });
+    }
+    return Object.keys(raw).map(k => ({ k, v: raw[k] })).sort((a, b) => (b.v || 0) - (a.v || 0));
+  }
+
+  function takeCombo(arr, n) {
+    return (arr || []).slice(0, n).map(c => {
+      const key = c.k || c.key || String(c);
+      const cnt = c.v != null ? c.v : (c.n != null ? c.n : null);
+      const parts = formatAiComboParts(key, race);
+      return {
+        numsHtml: parts.numsHtml,
+        namesHtml: parts.namesHtml,
+        meta: cnt != null ? ("出現 " + cnt + " / " + nSim) : ""
+      };
+    });
+  }
+
+  const umatan = takeCombo(normalizeCombos(combos.umatan), 2);
+  const umaren = takeCombo(normalizeCombos(combos.umaren), 2);
+  const wide = takeCombo(normalizeCombos(combos.wide), 4);
+  const sanrenpuku = takeCombo(normalizeCombos(combos.sanrenpuku), 6);
+  const sanrentan = takeCombo(normalizeCombos(combos.sanrentan), 12);
+
+  let wakuren = buildFrameRenCombos(sim, race, 2).map(k => {
+    const p = formatAiWakurenParts(k);
+    return { numsHtml: p.numsHtml, namesHtml: p.namesHtml, meta: "枠連" };
+  });
+  if (wakuren.length < 2) {
+    const fset = [];
+    winOrder.slice(0, 6).forEach(x => {
+      const f = x.h.frame || Math.ceil(x.h.number / 2);
+      if (!fset.includes(f)) fset.push(f);
+    });
+    for (let i = 0; i < fset.length && wakuren.length < 2; i++) {
+      for (let j = i + 1; j < fset.length && wakuren.length < 2; j++) {
+        const lo = Math.min(fset[i], fset[j]), hi = Math.max(fset[i], fset[j]);
+        const p = formatAiWakurenParts(lo + "-" + hi);
+        wakuren.push({ numsHtml: p.numsHtml, namesHtml: p.namesHtml, meta: "枠連" });
+      }
+    }
+  }
+
+  function block(title, pts, rows) {
+    const body = rows.map((r, i) =>
+      '<tr>' +
+      '<td class="ai-col-idx">' + (i + 1) + '</td>' +
+      '<td class="ai-nums">' + (r.numsHtml || r.labelHtml || r.label || "") + '</td>' +
+      '<td class="ai-names">' + (r.namesHtml || "") + '</td>' +
+      '<td class="ai-meta">' + (r.meta || "") + '</td>' +
+      '</tr>'
+    ).join("");
+    return '<div class="ai-ticket-block">' +
+      '<div class="ai-ticket-head"><span>' + title + '</span><span class="pts">' + pts + '点</span></div>' +
+      '<table class="ai-ticket-table"><thead><tr><th>#</th><th>馬番</th><th>馬名</th><th></th></tr></thead>' +
+      '<tbody>' + body + '</tbody></table></div>';
+  }
+
+  const body = document.getElementById("aiPredictBody");
+  if (body) {
+    body.innerHTML =
+      block("単勝", 2, tansho) +
+      block("馬単", 2, umatan) +
+      block("馬連", 2, umaren) +
+      block("枠連", 2, wakuren) +
+      block("ワイド", 4, wide) +
+      block("3連複", 6, sanrenpuku) +
+      block("3連単", 12, sanrentan);
+  }
+  const res = document.getElementById("aiPredictResult");
+  if (res) res.classList.remove("hidden");
+}
+
+
 // ========== デザインテーマ ==========
 const THEME_KEY = "keiba_sim_theme";
 const THEME_IDS = ["classic", "turf", "midnight", "sakura"];
@@ -5333,9 +5827,15 @@ const THEME_IDS = ["classic", "turf", "midnight", "sakura"];
 function applyTheme(id) {
   const t = THEME_IDS.includes(id) ? id : "classic";
   document.documentElement.setAttribute("data-theme", t);
+  if (document.body) document.body.setAttribute("data-theme", t);
   try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
   const sel = document.getElementById("themeSelect");
   if (sel && sel.value !== t) sel.value = t;
+  // 強制再描画（一部ブラウザでCSS変数の反映が遅れる対策）
+  try {
+    const bg = getComputedStyle(document.documentElement).getPropertyValue("--bg").trim();
+    if (bg && document.body) document.body.style.background = bg;
+  } catch (e) {}
 }
 
 function initTheme() {
@@ -5463,7 +5963,7 @@ document.querySelectorAll(".going-btn").forEach(btn => {
 });
 
 
-["gradeSelect","gradeSelectEntries","gradeSelectView","gradeSelectAbility","gradeSelectPace"].forEach(id => {
+["gradeSelect","gradeSelectEntries","gradeSelectView","gradeSelectAbility","gradeSelectPace","gradeSelectAi"].forEach(id => {
   const el = document.getElementById(id);
   if (el) el.addEventListener("change", () => {
     fillRaceSelects();
@@ -5500,6 +6000,42 @@ try {
   }
   setTimeout(function () { showNewsModalIfNeeded(); }, 400);
 } catch (e) { console.warn("news init", e); }
+
+
+// AI予想・テーマ初期化
+try {
+  initTheme();
+} catch (e) { console.warn("theme", e); }
+try {
+  const _btnAi = document.getElementById("btnAiPredict");
+  if (_btnAi) {
+    _btnAi.addEventListener("click", function () {
+      try {
+        runAiPredict();
+      } catch (err) {
+        console.error(err);
+        alert("AI予想の算出に失敗しました: " + (err && err.message ? err.message : err));
+      }
+    });
+  }
+  const _gAi = document.getElementById("gradeSelectAi");
+  if (_gAi) {
+    _gAi.addEventListener("change", function () {
+      fillOneRaceSelect("aiRaceSelect", "gradeSelectAi");
+      if (typeof updateAiRaceInfo === "function") updateAiRaceInfo();
+    });
+  }
+  const _rAi = document.getElementById("aiRaceSelect");
+  if (_rAi) {
+    _rAi.addEventListener("change", function () {
+      if (typeof updateAiRaceInfo === "function") updateAiRaceInfo();
+    });
+  }
+  if (typeof fillOneRaceSelect === "function") {
+    fillOneRaceSelect("aiRaceSelect", "gradeSelectAi");
+  }
+  if (typeof updateAiRaceInfo === "function") updateAiRaceInfo();
+} catch (e) { console.warn("ai bind", e); }
 
 // Canvas polyfill for roundRect
 if (!CanvasRenderingContext2D.prototype.roundRect) {
