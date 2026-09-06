@@ -630,6 +630,98 @@
   .ai-ticket-table td.ai-nums {
     line-height: 1.6;
   }
+
+  /* フリック操作デモ */
+  .swipe-demo {
+    margin: 14px 0 6px; padding: 14px 12px 16px; border-radius: 14px;
+    background: linear-gradient(160deg, #0f172a 0%, #1e293b 55%, #0f172a 100%);
+    border: 1px solid rgba(148,163,184,0.35);
+  }
+  .swipe-demo-title { font-size: 0.72rem; color: #94a3b8; text-align: center; margin-bottom: 10px; }
+  .swipe-phone {
+    position: relative; width: min(260px, 86%); margin: 0 auto;
+    height: 200px; border-radius: 18px;
+    border: 2px solid #64748b; background: #020617; overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    display: flex; flex-direction: column;
+  }
+  .swipe-phone-notch {
+    position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
+    width: 36%; height: 6px; border-radius: 6px; background: #334155; z-index: 2;
+  }
+  .swipe-tabs-row { display: flex; gap: 4px; padding: 14px 8px 4px; overflow: hidden; flex-shrink: 0; }
+  .swipe-mini-tab {
+    flex: 0 0 auto; font-size: 0.58rem; padding: 3px 7px; border-radius: 999px;
+    background: #1e293b; color: #94a3b8; border: 1px solid #334155; white-space: nowrap;
+  }
+  .swipe-mini-tab.t0 { animation: tabHL0 2.4s ease-in-out infinite; }
+  .swipe-mini-tab.t1 { animation: tabHL1 2.4s ease-in-out infinite; }
+  @keyframes tabHL0 {
+    0%, 35% { background: #22c55e; color: #052e16; border-color: #4ade80; font-weight: 700; }
+    45%, 100% { background: #1e293b; color: #94a3b8; border-color: #334155; font-weight: 400; }
+  }
+  @keyframes tabHL1 {
+    0%, 40% { background: #1e293b; color: #94a3b8; border-color: #334155; font-weight: 400; }
+    48%, 85% { background: #22c55e; color: #052e16; border-color: #4ade80; font-weight: 700; }
+    95%, 100% { background: #1e293b; color: #94a3b8; border-color: #334155; font-weight: 400; }
+  }
+  .swipe-panel-area {
+    margin: 4px 8px 10px; flex: 1; min-height: 110px; border-radius: 10px;
+    background: #0b1220; border: 1px dashed #334155; position: relative; overflow: hidden;
+  }
+  .swipe-label-a, .swipe-label-b {
+    position: absolute; left: 0; right: 0; top: 0; bottom: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; font-weight: 800; color: #f8fafc;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    pointer-events: none; z-index: 3;
+  }
+  .swipe-label-a { animation: labelA 2.4s ease-in-out infinite; }
+  .swipe-label-b { animation: labelB 2.4s ease-in-out infinite; }
+  @keyframes labelA {
+    0%, 38% { opacity: 1; transform: translateX(0); }
+    48%, 100% { opacity: 0; transform: translateX(-24px); }
+  }
+  @keyframes labelB {
+    0%, 45% { opacity: 0; transform: translateX(24px); }
+    55%, 90% { opacity: 1; transform: translateX(0); }
+    100% { opacity: 0; transform: translateX(0); }
+  }
+  .swipe-hand {
+    position: absolute; width: 26px; height: 26px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff 0%, #cbd5e1 45%, #64748b 100%);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4); top: 62%; left: 72%; z-index: 4;
+    animation: swipeFlick 2.4s ease-in-out infinite;
+  }
+  .swipe-hand::after {
+    content: ""; position: absolute; left: 50%; top: 50%; width: 42px; height: 42px;
+    margin: -21px 0 0 -21px; border-radius: 50%;
+    border: 2px solid rgba(56,189,248,0.55);
+    animation: swipeRipple 2.4s ease-in-out infinite;
+  }
+  @keyframes swipeFlick {
+    0%, 12% { left: 72%; opacity: 0.15; transform: scale(0.9); }
+    18% { opacity: 1; transform: scale(1); }
+    48% { left: 22%; opacity: 1; transform: scale(1); }
+    58% { left: 18%; opacity: 0.3; transform: scale(0.85); }
+    70%, 100% { left: 72%; opacity: 0; transform: scale(0.9); }
+  }
+  @keyframes swipeRipple {
+    0%, 15% { opacity: 0; transform: scale(0.6); }
+    25% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 0.25; transform: scale(1.35); }
+    60%, 100% { opacity: 0; transform: scale(1.5); }
+  }
+  .swipe-hint {
+    display: flex; justify-content: space-between; font-size: 0.68rem; color: #94a3b8;
+    margin-top: 10px; padding: 0 4px;
+  }
+  .swipe-arrow { display: inline-block; animation: swipeArrowPulse 1.2s ease-in-out infinite; }
+  @keyframes swipeArrowPulse {
+    0%, 100% { transform: translateX(0); opacity: 0.7; }
+    50% { transform: translateX(-3px); opacity: 1; }
+  }
+
 </style>
 </head>
 <body>
@@ -2490,9 +2582,20 @@ function historyRaceLabel(title, raceId) {
 
 
 // ========== お知らせ・更新履歴 ==========
-const NEWS_VERSION = "2026-09-06i";
+const NEWS_VERSION = "2026-09-06j";
 const NEWS_SEEN_KEY = "keiba_sim_news_seen";
 const NEWS_ITEMS = [
+  {
+    ver: "2026-09-06j",
+    date: "2026/9/6",
+    title: "指フリックでタブ移動",
+    body: [
+      "画面を左右にフリックすると、タブを順に切り替えられます",
+      "左へフリック → 次のタブ　／　右へフリック → 前のタブ",
+      "下のアニメーションで操作イメージを確認できます"
+    ],
+    showSwipeDemo: true
+  },
   {
     ver: "2026-09-06i",
     date: "2026/9/6",
@@ -2725,12 +2828,37 @@ const NEWS_ITEMS = [
   }
 ];
 
+function swipeDemoHtml() {
+  return `<div class="swipe-demo" aria-hidden="true">
+    <div class="swipe-demo-title">操作イメージ（自動再生）</div>
+    <div class="swipe-phone">
+      <div class="swipe-phone-notch"></div>
+      <div class="swipe-tabs-row">
+        <span class="swipe-mini-tab t0">レース映像</span>
+        <span class="swipe-mini-tab t1">まとめて予想</span>
+        <span class="swipe-mini-tab t2">AI予想</span>
+      </div>
+      <div class="swipe-panel-area">
+        <div class="swipe-label-a">レース映像</div>
+        <div class="swipe-label-b">まとめて予想</div>
+        <div class="swipe-hand"></div>
+      </div>
+    </div>
+    <div class="swipe-hint">
+      <span><span class="swipe-arrow">←</span> 右フリックで前へ</span>
+      <span>左フリックで次へ <span class="swipe-arrow" style="animation-direction:reverse">→</span></span>
+    </div>
+  </div>`;
+}
+
 function formatNewsHtml(items) {
   return items.map(it => {
     const lis = (it.body || []).map(b => `<li style="margin:4px 0">${b}</li>`).join("");
+    const demo = it.showSwipeDemo ? swipeDemoHtml() : "";
     return `<div style="margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
       <div style="font-weight:800;color:#f0c414;margin-bottom:4px">${it.date} ${it.title}</div>
       <ul style="margin:0;padding-left:1.2em;color:var(--text)">${lis}</ul>
+      ${demo}
     </div>`;
   }).join("");
 }
@@ -5921,6 +6049,56 @@ function bindWeights() {
 }
 
 // ========== タブ ==========
+
+/** 左右フリックでタブ移動 */
+(function setupTabSwipe() {
+  let sx = 0, sy = 0, st = 0, tracking = false;
+  const MIN_X = 60;
+  const MAX_Y = 50;
+  const MAX_MS = 450;
+
+  function tabOrder() {
+    return Array.from(document.querySelectorAll(".tab"));
+  }
+  function go(delta) {
+    const tabs = tabOrder();
+    if (!tabs.length) return;
+    const active = document.querySelector(".tab.active");
+    let idx = tabs.indexOf(active);
+    if (idx < 0) idx = 0;
+    idx = (idx + delta + tabs.length) % tabs.length;
+    tabs[idx].click();
+  }
+  document.addEventListener("touchstart", e => {
+    if (!e.touches || e.touches.length !== 1) return;
+    // 入力欄・横スクロールUI上は無視
+    const t = e.target;
+    if (t && (t.closest && (t.closest("input,select,textarea,button,.tabs")))) return;
+    sx = e.touches[0].clientX;
+    sy = e.touches[0].clientY;
+    st = Date.now();
+    tracking = true;
+  }, { passive: true });
+  document.addEventListener("touchend", e => {
+    if (!tracking) return;
+    tracking = false;
+    if (!e.changedTouches || !e.changedTouches.length) return;
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    const dt = Date.now() - st;
+    if (dt > MAX_MS) return;
+    if (Math.abs(dx) < MIN_X) return;
+    if (Math.abs(dy) > MAX_Y && Math.abs(dy) >= Math.abs(dx) * 0.65) return;
+    // モーダル表示中は無効
+    try {
+      const open = document.querySelector("#newsModal:not(.hidden), #betComboModal:not(.hidden), .modal-overlay:not(.hidden)");
+      if (open) return;
+    } catch (err) {}
+    if (dx < 0) go(1);   // 左へフリック → 右のタブ
+    else go(-1);         // 右へフリック → 左のタブ
+  }, { passive: true });
+})();
+
 document.querySelectorAll(".tab").forEach(tab => {
   tab.addEventListener("click", () => {
     document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
