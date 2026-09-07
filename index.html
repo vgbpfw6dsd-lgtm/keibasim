@@ -875,6 +875,45 @@
     color: var(--muted);
     line-height: 1.4;
   }
+
+  .weather-api-note {
+    margin-top: 6px;
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  .weather-highlight-box {
+    position: relative;
+    margin: 8px 0 12px;
+    padding: 12px 12px 12px 14px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(56,189,248,0.18), rgba(34,197,94,0.12));
+    border: 1.5px solid rgba(56,189,248,0.55);
+    box-shadow: 0 0 0 1px rgba(56,189,248,0.15), 0 4px 14px rgba(0,0,0,0.2);
+  }
+  .weather-highlight-badge {
+    position: absolute;
+    top: -8px; right: 10px;
+    font-size: 0.65rem; font-weight: 800;
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #38bdf8, #22c55e);
+    color: #042f2e;
+  }
+  .weather-highlight-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #7dd3fc;
+    margin-bottom: 6px;
+  }
+  .weather-highlight-body {
+    font-size: 0.84rem;
+    line-height: 1.55;
+    color: var(--text);
+  }
+  .weather-highlight-body strong { color: #bae6fd; }
 </style>
 </head>
 <body>
@@ -943,7 +982,7 @@
     <div style="margin-top:10px">
       <label class="horse-meta" style="display:block;margin-bottom:6px">天候</label>
       <select id="weatherSelectPredict" class="race-select">
-        <option value="晴れ" selected>晴れ</option>
+        <option value="晴れ">晴れ</option>
         <option value="曇り">曇り</option>
         <option value="小雨">小雨</option>
         <option value="雨">雨</option>
@@ -951,6 +990,7 @@
         <option value="雪">雪</option>
         <option value="大雪">大雪</option>
       </select>
+      <p class="weather-api-note">※天候の初期値は、競馬場付近のリアルタイム天気データから取得しています（Open-Meteo）。手動変更も可能です。</p>
     </div>
     <div style="margin-top:10px">
       <label class="horse-meta" style="display:block;margin-bottom:6px">予想の重視ポイント</label>
@@ -1107,7 +1147,7 @@
     <div style="margin-top:10px">
       <label class="horse-meta" style="display:block;margin-bottom:6px">天候</label>
       <select id="weatherSelectRace" class="race-select">
-        <option value="晴れ" selected>晴れ</option>
+        <option value="晴れ">晴れ</option>
         <option value="曇り">曇り</option>
         <option value="小雨">小雨</option>
         <option value="雨">雨</option>
@@ -1115,6 +1155,7 @@
         <option value="雪">雪</option>
         <option value="大雪">大雪</option>
       </select>
+      <p class="weather-api-note">※天候の初期値は、競馬場付近のリアルタイム天気データから取得しています（Open-Meteo）。手動変更も可能です。</p>
     </div>
     <div style="margin-top:10px">
       <label class="horse-meta" style="display:block;margin-bottom:6px">予想の重視ポイント</label>
@@ -2336,6 +2377,97 @@ function getRaceById(id) {
   return SAMPLE_RACES.find(r => r.id === id);
 }
 
+
+/** 競馬場 → 緯度経度（概ね競馬場付近） */
+const COURSE_COORDS = {
+  "札幌": { lat: 43.077, lon: 141.329 },
+  "函館": { lat: 41.777, lon: 140.748 },
+  "福島": { lat: 37.765, lon: 140.480 },
+  "新潟": { lat: 37.946, lon: 139.185 },
+  "東京": { lat: 35.663, lon: 139.486 },
+  "中山": { lat: 35.725, lon: 139.961 },
+  "中京": { lat: 35.067, lon: 136.989 },
+  "京都": { lat: 34.985, lon: 135.726 },
+  "阪神": { lat: 34.777, lon: 135.418 },
+  "小倉": { lat: 33.843, lon: 130.877 }
+};
+
+const weatherCache = {}; // course -> { weather, ts }
+
+/** WMO天気コード → アプリの天候ラベル */
+function mapWmoToWeather(code, precip) {
+  const c = Number(code) || 0;
+  const p = Number(precip) || 0;
+  // 雪系
+  if (c === 71 || c === 73 || c === 75 || c === 77 || c === 85 || c === 86) {
+    return (c === 75 || c === 86 || p >= 2) ? "大雪" : "雪";
+  }
+  if (c === 66 || c === 67) return "雪"; // 着氷性雨は雪寄り表示
+  // 雷雨・大雨
+  if (c === 95 || c === 96 || c === 99) return "大雨";
+  if (c === 65 || c === 82) return "大雨";
+  // 雨
+  if (c === 61 || c === 63 || c === 80 || c === 81) return "雨";
+  if (c === 51 || c === 53 || c === 55 || c === 56 || c === 57) return "小雨";
+  // 霧・曇り
+  if (c === 45 || c === 48 || c === 1 || c === 2 || c === 3) return "曇り";
+  // 晴
+  if (c === 0) return "晴れ";
+  // 降水がある場合のフォールバック
+  if (p >= 5) return "大雨";
+  if (p >= 1.5) return "雨";
+  if (p > 0) return "小雨";
+  return "曇り";
+}
+
+function setWeatherSelectValue(selId, value) {
+  const el = document.getElementById(selId);
+  if (!el) return;
+  const has = Array.from(el.options).some(o => o.value === value);
+  el.value = has ? value : "晴れ";
+}
+
+/**
+ * 競馬場付近の現在天気を取得し、天候プルダウンの初期値に反映
+ * Open-Meteo（無料・APIキー不要）を使用
+ */
+async function fetchCourseWeather(courseName) {
+  const key = courseName || "";
+  const coords = COURSE_COORDS[key];
+  if (!coords) return null;
+  const now = Date.now();
+  if (weatherCache[key] && (now - weatherCache[key].ts) < 15 * 60 * 1000) {
+    return weatherCache[key].weather;
+  }
+  const url = "https://api.open-meteo.com/v1/forecast?latitude=" + coords.lat +
+    "&longitude=" + coords.lon +
+    "&current=weather_code,precipitation&timezone=Asia%2FTokyo";
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("weather http " + res.status);
+    const data = await res.json();
+    const cur = data.current || {};
+    const label = mapWmoToWeather(cur.weather_code, cur.precipitation);
+    weatherCache[key] = { weather: label, ts: now };
+    return label;
+  } catch (e) {
+    console.warn("天気取得失敗", key, e);
+    return null;
+  }
+}
+
+async function applyWeatherDefaultsForRace(race) {
+  if (!race) return;
+  const course = race.course || (race.track) || "";
+  const label = await fetchCourseWeather(course);
+  if (!label) return;
+  // ユーザーが既に手動変更していない場合のみ反映したいが、
+  // レース切替時は新しい競馬場に合わせる
+  setWeatherSelectValue("weatherSelectRace", label);
+  setWeatherSelectValue("weatherSelectPredict", label);
+}
+
+
 function getCurrentRace(selectId) {
   const el = document.getElementById(selectId);
   if (!el) return SAMPLE_RACES[0];
@@ -2372,6 +2504,7 @@ function syncRaceAcrossTabs(sourceSelectId) {
       sEl.value = raceId;
     }
   });
+  try { applyWeatherDefaultsForRace(race); } catch (e) {}
 }
 
 function formatRaceNoteLine(race) {
@@ -2750,9 +2883,22 @@ function historyRaceLabel(title, raceId) {
 
 
 // ========== お知らせ・更新履歴 ==========
-const NEWS_VERSION = "2026-09-07b";
+const NEWS_VERSION = "2026-09-07c";
 const NEWS_SEEN_KEY = "keiba_sim_news_seen";
 const NEWS_ITEMS = [
+  {
+    ver: "2026-09-07c",
+    date: "2026/9/7",
+    title: "操作・デザイン・天気のまとめて更新",
+    body: [
+      "【フリック操作】画面を左右にフリックするとタブを順に切り替えられます（左→次／右→前）",
+      "【デザインテーマ】テーマを20種類に拡充。下のプルダウンでお試し変更できます",
+      "※テーマは【設定】でいつでも変更可能です。天候も手動変更できます"
+    ],
+    highlightWeather: true,
+    showThemeTry: true,
+    showSwipeDemo: true
+  },
   {
     ver: "2026-09-07b",
     date: "2026/9/7",
@@ -3078,13 +3224,27 @@ function themeTryHtml() {
   '</div>';
 }
 
+function weatherHighlightHtml() {
+  return `<div class="weather-highlight-box">
+    <div class="weather-highlight-badge">NEW</div>
+    <div class="weather-highlight-title">🌤 天気情報の自動取得</div>
+    <p class="weather-highlight-body">
+      天候プルダウンの<strong>初期値</strong>は、選択中レースの<strong>競馬場付近</strong>の
+      リアルタイム天気データ（Open-Meteo）から取得します。<br>
+      レースを切り替えると、その競馬場の天気に合わせて更新されます。手動変更も可能です。
+    </p>
+  </div>`;
+}
+
 function formatNewsHtml(items) {
   return items.map(it => {
     const lis = (it.body || []).map(b => `<li style="margin:5px 0;font-size:0.86rem;line-height:1.5">${b}</li>`).join("");
     const demo = it.showSwipeDemo ? swipeDemoHtml() : "";
     const themeTry = it.showThemeTry ? themeTryHtml() : "";
+    const weatherBox = it.highlightWeather ? weatherHighlightHtml() : "";
     return `<div class="news-item" style="margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border)">
       <div class="news-item-title" style="font-weight:800;color:#f0c414;margin-bottom:6px;font-size:0.92rem;line-height:1.35">${it.date} ${it.title}</div>
+      ${weatherBox}
       <ul style="margin:0;padding-left:1.2em;color:var(--text);font-size:0.86rem">${lis}</ul>
       ${themeTry}
       ${demo}
@@ -6509,7 +6669,11 @@ try {
   }
   setTimeout(function () { bindNewsBar();
   updateNewsBar();
-  showNewsModalIfNeeded(); }, 400);
+  showNewsModalIfNeeded();
+  try {
+    const r0 = getCurrentRace("viewRaceSelect") || getCurrentRace("raceSelect") || (typeof SAMPLE_RACES !== "undefined" ? SAMPLE_RACES[0] : null);
+    applyWeatherDefaultsForRace(r0);
+  } catch (e) {} }, 400);
 } catch (e) { console.warn("news init", e); }
 
 
