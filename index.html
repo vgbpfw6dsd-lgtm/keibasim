@@ -722,6 +722,23 @@
     50% { transform: translateX(-3px); opacity: 1; }
   }
 
+
+  .news-bar {
+    display: flex; align-items: center; gap: 10px;
+    margin: 0 12px 8px; padding: 10px 14px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(240,196,20,0.12), rgba(56,189,248,0.08));
+    border: 1px solid rgba(240,196,20,0.35);
+    cursor: pointer; user-select: none;
+  }
+  .news-bar:active { transform: scale(0.98); }
+  .news-bar-icon { font-size: 1.15rem; }
+  .news-bar-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .news-bar-text strong { font-size: 0.88rem; color: var(--accent, #f0c414); }
+  .news-bar-sub { font-size: 0.72rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .news-bar-chevron { font-size: 1.35rem; color: var(--muted); font-weight: 700; }
+  .news-bar.has-unread { border-color: rgba(34,197,94,0.55); }
+  .news-bar.has-unread .news-bar-sub { color: #4ade80; font-weight: 600; }
 </style>
 </head>
 <body>
@@ -729,6 +746,16 @@
   <h1>🏇 競馬シミュレーション</h1>
   <p>能力値分析 ＋ ミニマップ馬番レース｜デモ版</p>
 </header>
+
+
+<div class="news-bar" id="newsBarBtn" role="button" tabindex="0" title="更新履歴を表示">
+  <span class="news-bar-icon">📢</span>
+  <span class="news-bar-text">
+    <strong>お知らせ</strong>
+    <span class="news-bar-sub" id="newsBarSub">更新履歴を表示</span>
+  </span>
+  <span class="news-bar-chevron">›</span>
+</div>
 
 <div class="tabs">
   <button class="tab active" data-tab="raceview">レース映像</button>
@@ -740,8 +767,7 @@
   <button class="tab" data-tab="history">履歴</button>
   <button class="tab" data-tab="stats">統計</button>
   <button class="tab" data-tab="settings">設定</button>
-  <button class="tab" data-tab="news">お知らせ</button>
-</div>
+  </div>
 
 <!-- ===== 予想 ===== -->
 <div id="panel-predict" class="panel">
@@ -1068,16 +1094,6 @@
 </div>
 
 <!-- ===== お知らせ ===== -->
-<div id="panel-news" class="panel">
-  <div class="info-box">
-    アプリの更新内容です。起動時に新しいお知らせがある場合はポップアップで表示されます（確認後は自動では開きません）。
-  </div>
-  <div class="card" id="newsListCard">
-    <h2>更新履歴</h2>
-    <div id="newsListBody" class="horse-meta" style="line-height:1.55"></div>
-  </div>
-</div>
-
 <!-- ===== 設定 ===== -->
 <div id="panel-settings" class="panel">
   <div class="card">
@@ -1363,17 +1379,17 @@ const SAMPLE_RACES = [
     raceName: "第62回 農林水産省賞典 新潟記念",
     horses: [
       // courseApt: 競馬場適性1-10 / past: 隠し詳細（近走メモ・得意条件）
-      { name: "ボーンディスウェイ", blood: { sire: "ゴールドシップ", damsire: "ディープインパクト", dam: "ボーンフリー" }, frame: 1, number: 1, sexAge: "牡7", ranks: [5, 8, 6, 9, 7], starts: 5, classLevel: 1.15, timeIdx: 78, agariIdx: 76, distApt: 7, lastDist: 2000, restWeeks: 6, jockey: "丸山元気", weight: 57, trainer: "牧光二", odds: 57.1, popular: 11, going: { firm: 68, soft: 72, heavy: 74 }, styles: ["senko","sashi","senko","sashi","senko"], passOrders: [4,7,5,3,6], courseApt: { 新潟: 7, 東京: 5, 中山: 6, 阪神: 5, 京都: 5, 中京: 6, 札幌: 7, 函館: 6, 小倉: 6 }, past: { note: "重・稍重で粘るタイプ。平坦向き。", best: "稍重〜重の中距離", recent: ["七夕賞5着", "目黒記念8着相当", "中距離重賞", "オープン", "重賞"] } },
-      { name: "サヴォーナ", blood: { sire: "エピファネイア", damsire: "ディープインパクト", dam: "サヴォイア" }, frame: 2, number: 2, sexAge: "牡6", ranks: [10, 6, 5, 8, 4], starts: 5, classLevel: 1.2, timeIdx: 80, agariIdx: 78, distApt: 7, lastDist: 2000, restWeeks: 6, jockey: "池添謙一", weight: 57, trainer: "中竹和也", odds: 27.6, popular: 9, going: { firm: 70, soft: 73, heavy: 71 }, styles: ["sashi","sashi","senko","sashi","oikomi"], passOrders: [9,6,5,8,7], courseApt: { 新潟: 6, 東京: 7, 中山: 5, 阪神: 7, 京都: 6, 中京: 6, 札幌: 5, 函館: 5, 小倉: 6 }, past: { note: "差し遅れることあり。直線長い場が合う。", best: "東京・阪神の長い直線", recent: ["七夕賞10着", "京都2200 6着", "東京1800 5着", "重賞", "オープン"] } },
-      { name: "ロデオドライブ", blood: { sire: "ドゥラメンテ", damsire: "キングカメハメハ", dam: "ロデオガール" }, frame: 3, number: 3, sexAge: "牡3", ranks: [1, 2, 1, 3, 1], starts: 5, classLevel: 1.65, timeIdx: 96, agariIdx: 92, distApt: 5, lastDist: 1600, restWeeks: 14, jockey: "C.ルメール", weight: 57, trainer: "辻哲英", odds: 4.3, popular: 3, going: { firm: 92, soft: 86, heavy: 78 }, styles: ["senko","senko","nige","senko","senko"], passOrders: [2,3,1,4,2], courseApt: { 新潟: 6, 東京: 9, 中山: 7, 阪神: 7, 京都: 6, 中京: 7, 札幌: 6, 函館: 5, 小倉: 5 }, past: { note: "マイル実績優秀。2000mは未知数・延長不安。", best: "良馬場のマイル〜1800", recent: ["NHKマイルC1着", "東京1600 2着", "阪神1600 1着", "重賞3着", "オープン1着"] } },
-      { name: "ドゥレッツァ", blood: { sire: "ハービンジャー", damsire: "ディープインパクト", dam: "ドゥレス" }, frame: 4, number: 4, sexAge: "牡6", ranks: [3, 4, 6, 2, 5], starts: 5, classLevel: 1.55, timeIdx: 91, agariIdx: 87, distApt: 9, lastDist: 2400, restWeeks: 40, jockey: "田辺裕信", weight: 59, trainer: "尾関知人", odds: 8.3, popular: 4, going: { firm: 84, soft: 85, heavy: 83 }, styles: ["senko","sashi","senko","nige","senko"], passOrders: [3,5,2,1,4], courseApt: { 新潟: 7, 東京: 8, 中山: 7, 阪神: 8, 京都: 9, 中京: 7, 札幌: 6, 函館: 6, 小倉: 5 }, past: { note: "長期休養明け。スタミナ型で中長距離向き。", best: "京都・阪神のスタミナ戦", recent: ["長期休養明け前・京都2400 3着", "東京2400 4着", "重賞", "G1好走歴", "中長距離"] } },
-      { name: "ゾロアストロ", blood: { sire: "エピファネイア", damsire: "ディープインパクト", dam: "アストロラブ" }, frame: 5, number: 5, sexAge: "牡3", ranks: [12, 1, 2, 3, 1], starts: 5, classLevel: 1.55, timeIdx: 90, agariIdx: 88, distApt: 9, lastDist: 2000, restWeeks: 18, jockey: "岩田望来", weight: 55, trainer: "宮田敬介", odds: 3.5, popular: 1, going: { firm: 94, soft: 90, heavy: 82 }, styles: ["sashi","nige","senko","senko","sashi"], passOrders: [11,1,3,2,6], courseApt: { 新潟: 10, 東京: 8, 中山: 6, 阪神: 7, 京都: 7, 中京: 7, 札幌: 6, 函館: 6, 小倉: 6 }, formBoost: 8.5, past: { note: "新潟記念1着実績想定。新潟外回り適性◎・能力上位。", best: "新潟外回り・平坦長距離直線", recent: ["皐月賞12着", "きさらぎ賞1着", "東スポ杯2歳S2着", "サウジRC3着", "未勝利1着"] } },
-      { name: "チェルヴィニア", blood: { sire: "キタサンブラック", damsire: "ディープインパクト", dam: "チェルシー" }, frame: 6, number: 6, sexAge: "牝5", ranks: [16, 5, 10, 4, 1], starts: 5, classLevel: 1.65, timeIdx: 93, agariIdx: 90, distApt: 7, lastDist: 1600, restWeeks: 12, jockey: "津村明秀", weight: 56, trainer: "木村哲也", odds: 12.8, popular: 6, going: { firm: 86, soft: 82, heavy: 76 }, styles: ["oikomi","sashi","senko","sashi","senko"], passOrders: [14,6,4,5,3], courseApt: { 新潟: 7, 東京: 9, 中山: 5, 阪神: 7, 京都: 6, 中京: 6, 札幌: 5, 函館: 5, 小倉: 6 }, past: { note: "東京巧者。距離延長は慎重。", best: "東京マイル前後", recent: ["ヴィクトリアM16着", "中山記念5着", "マイル戦", "G1好走", "秋華賞1着歴"] } },
-      { name: "ジュンブロッサム", blood: { sire: "キズナ", damsire: "ディープインパクト", dam: "ブロッサム" }, frame: 6, number: 7, sexAge: "牡7", ranks: [6, 8, 5, 7, 4], starts: 5, classLevel: 1.1, timeIdx: 76, agariIdx: 74, distApt: 7, lastDist: 1800, restWeeks: 5, jockey: "杉原誠人", weight: 58, trainer: "友道康夫", odds: 42.0, popular: 10, going: { firm: 70, soft: 74, heavy: 75 }, styles: ["sashi","sashi","oikomi","sashi","senko"], passOrders: [8,7,9,6,5], courseApt: { 新潟: 6, 東京: 5, 中山: 6, 阪神: 7, 京都: 8, 中京: 6, 札幌: 5, 函館: 5, 小倉: 5 }, past: { note: "高齢・実績薄め。京都で好走歴。", best: "京都芝", recent: ["関越S", "オープン", "中距離", "重賞", "オープン"] } },
-      { name: "ダノンシーマ", blood: { sire: "エピファネイア", damsire: "ディープインパクト", dam: "ダノンファンタジー" }, frame: 7, number: 8, sexAge: "牡4", ranks: [3, 3, 1, 1, 3], starts: 5, classLevel: 1.45, timeIdx: 92, agariIdx: 90, distApt: 9, lastDist: 2500, restWeeks: 8, jockey: "川田将雅", weight: 57, trainer: "中内田充正", odds: 3.6, popular: 2, going: { firm: 88, soft: 90, heavy: 86 }, styles: ["senko","senko","sashi","senko","nige"], passOrders: [3,4,5,3,1], courseApt: { 新潟: 8, 東京: 9, 中山: 7, 阪神: 8, 京都: 8, 中京: 7, 札幌: 6, 函館: 6, 小倉: 6 }, past: { note: "距離短縮で切れ味活きる。稍重もこなす。", best: "東京・新潟の中距離", recent: ["目黒記念3着", "阪神大賞典3着", "白富士S1着", "比叡S1着", "兵庫特別1着"] } },
-      { name: "アーバンシック", blood: { sire: "スクリーンヒーロー", damsire: "ハービンジャー", dam: "アーバンモード" }, frame: 7, number: 9, sexAge: "牡5", ranks: [14, 6, 5, 3, 2], starts: 5, classLevel: 1.55, timeIdx: 90, agariIdx: 86, distApt: 9, lastDist: 2000, restWeeks: 16, jockey: "三浦皇成", weight: 59, trainer: "武井亮", odds: 14.0, popular: 7, going: { firm: 82, soft: 84, heavy: 85 }, styles: ["oikomi","sashi","sashi","senko","senko"], passOrders: [12,7,6,4,3], courseApt: { 新潟: 7, 東京: 6, 中山: 8, 阪神: 6, 京都: 6, 中京: 7, 札幌: 5, 函館: 5, 小倉: 6 }, past: { note: "中山・タフな馬場向き。休み明け注意。", best: "中山・重めの馬場", recent: ["金鯱賞14着", "重賞", "中距離", "G1好走歴", "菊花賞系"] } },
-      { name: "バレエマスター", blood: { sire: "モーリス", damsire: "ディープインパクト", dam: "バレエクイーン" }, frame: 8, number: 10, sexAge: "牡7", ranks: [7, 2, 5, 8, 6], starts: 5, classLevel: 1.2, timeIdx: 80, agariIdx: 78, distApt: 7, lastDist: 2000, restWeeks: 10, jockey: "菊沢一樹", weight: 57, trainer: "梅田智之", odds: 27.5, popular: 8, going: { firm: 72, soft: 75, heavy: 73 }, styles: ["sashi","oikomi","sashi","senko","sashi"], passOrders: [7,9,8,6,5], courseApt: { 新潟: 7, 東京: 5, 中山: 5, 阪神: 5, 京都: 5, 中京: 6, 札幌: 7, 函館: 7, 小倉: 6 }, past: { note: "ローカル・平坦得意の差し脚。", best: "新潟・札幌", recent: ["ジューンS", "新潟大賞典2着", "オープン", "重賞", "中距離"] } },
-      { name: "ステレンボッシュ", blood: { sire: "エピファネイア", damsire: "ディープインパクト", dam: "ステラヴィーノ" }, frame: 8, number: 11, sexAge: "牝5", ranks: [10, 2, 10, 13, 3], starts: 5, classLevel: 1.65, timeIdx: 92, agariIdx: 89, distApt: 7, lastDist: 1600, restWeeks: 10, jockey: "戸崎圭太", weight: 56, trainer: "宮田敬介", odds: 12.0, popular: 5, going: { firm: 89, soft: 84, heavy: 77 }, styles: ["sashi","sashi","senko","senko","nige"], passOrders: [9,5,3,2,1], courseApt: { 新潟: 6, 東京: 8, 中山: 6, 阪神: 8, 京都: 7, 中京: 7, 札幌: 5, 函館: 5, 小倉: 5 }, past: { note: "良馬場の切れ味。距離延長は課題。", best: "良馬場マイル級", recent: ["安田記念10着", "エプソムC2着", "エリザベス女王杯10着", "大阪杯13着", "香港ヴァーズ3着"] } }
+      { name: "ボーンディスウェイ", blood: { sire: "ゴールドシップ", damsire: "ディープインパクト", dam: "ボーンフリー" }, frame: 1, number: 1, sexAge: "牡7", ranks: [7, 5, 8, 6, 9], starts: 5, classLevel: 1.15, timeIdx: 80, agariIdx: 78, distApt: 7, lastDist: 2000, restWeeks: 6, jockey: "丸山元気", weight: 57, trainer: "牧光二", odds: 57.1, popular: 11, going: { firm: 68, soft: 72, heavy: 74 }, styles: ["senko","sashi","senko","sashi","senko"], passOrders: [4,7,5,3,6], courseApt: { 新潟: 7, 東京: 5, 中山: 6, 阪神: 5, 京都: 5, 中京: 6, 札幌: 7, 函館: 6, 小倉: 6 }, past: { note: "重・稍重で粘るタイプ。平坦向き。", best: "稍重〜重の中距離", recent: ["七夕賞5着", "目黒記念8着相当", "中距離重賞", "オープン", "重賞"] } },
+      { name: "サヴォーナ", blood: { sire: "エピファネイア", damsire: "ディープインパクト", dam: "サヴォイア" }, frame: 2, number: 2, sexAge: "牡6", ranks: [4, 10, 6, 5, 8], starts: 5, classLevel: 1.22, timeIdx: 84, agariIdx: 82, distApt: 7, lastDist: 2000, restWeeks: 6, jockey: "池添謙一", weight: 57, trainer: "中竹和也", odds: 27.6, popular: 9, going: { firm: 70, soft: 73, heavy: 71 }, styles: ["sashi","sashi","senko","sashi","oikomi"], passOrders: [9,6,5,8,7], courseApt: { 新潟: 6, 東京: 7, 中山: 5, 阪神: 7, 京都: 6, 中京: 6, 札幌: 5, 函館: 5, 小倉: 6 }, past: { note: "差し遅れることあり。直線長い場が合う。", best: "東京・阪神の長い直線", recent: ["七夕賞10着", "京都2200 6着", "東京1800 5着", "重賞", "オープン"] } },
+      { name: "ロデオドライブ", blood: { sire: "ドゥラメンテ", damsire: "キングカメハメハ", dam: "ロデオガール" }, frame: 3, number: 3, sexAge: "牡3", ranks: [2, 1, 2, 1, 3], starts: 5, classLevel: 1.62, timeIdx: 95, agariIdx: 91, distApt: 5, lastDist: 1600, restWeeks: 14, jockey: "C.ルメール", weight: 57, trainer: "辻哲英", odds: 4.3, popular: 3, going: { firm: 92, soft: 86, heavy: 78 }, styles: ["senko","senko","nige","senko","senko"], passOrders: [2,3,1,4,2], courseApt: { 新潟: 6, 東京: 9, 中山: 7, 阪神: 7, 京都: 6, 中京: 7, 札幌: 6, 函館: 5, 小倉: 5 }, past: { note: "マイル実績優秀。2000mは未知数・延長不安。", best: "良馬場のマイル〜1800", recent: ["NHKマイルC1着", "東京1600 2着", "阪神1600 1着", "重賞3着", "オープン1着"] } },
+      { name: "ドゥレッツァ", blood: { sire: "ハービンジャー", damsire: "ディープインパクト", dam: "ドゥレス" }, frame: 4, number: 4, sexAge: "牡6", ranks: [6, 3, 4, 6, 2], starts: 5, classLevel: 1.5, timeIdx: 89, agariIdx: 85, distApt: 9, lastDist: 2400, restWeeks: 40, jockey: "田辺裕信", weight: 59, trainer: "尾関知人", odds: 8.3, popular: 4, going: { firm: 84, soft: 85, heavy: 83 }, styles: ["senko","sashi","senko","nige","senko"], passOrders: [3,5,2,1,4], courseApt: { 新潟: 7, 東京: 8, 中山: 7, 阪神: 8, 京都: 9, 中京: 7, 札幌: 6, 函館: 6, 小倉: 5 }, past: { note: "長期休養明け。スタミナ型で中長距離向き。", best: "京都・阪神のスタミナ戦", recent: ["長期休養明け前・京都2400 3着", "東京2400 4着", "重賞", "G1好走歴", "中長距離"] } },
+      { name: "ゾロアストロ", blood: { sire: "エピファネイア", damsire: "ディープインパクト", dam: "アストロラブ" }, frame: 5, number: 5, sexAge: "牡3", ranks: [1, 12, 1, 2, 3], starts: 5, classLevel: 1.55, timeIdx: 93, agariIdx: 90, distApt: 9, lastDist: 2000, restWeeks: 18, jockey: "岩田望来", weight: 55, trainer: "宮田敬介", odds: 3.5, popular: 1, going: { firm: 94, soft: 90, heavy: 82 }, styles: ["sashi","nige","senko","senko","sashi"], passOrders: [11,1,3,2,6], courseApt: { 新潟: 10, 東京: 8, 中山: 6, 阪神: 7, 京都: 7, 中京: 7, 札幌: 6, 函館: 6, 小倉: 6 }, formBoost: 8.5, past: { note: "新潟記念1着実績想定。新潟外回り適性◎・能力上位。", best: "新潟外回り・平坦長距離直線", recent: ["皐月賞12着", "きさらぎ賞1着", "東スポ杯2歳S2着", "サウジRC3着", "未勝利1着"] } },
+      { name: "チェルヴィニア", blood: { sire: "キタサンブラック", damsire: "ディープインパクト", dam: "チェルシー" }, frame: 6, number: 6, sexAge: "牝5", ranks: [8, 16, 5, 10, 4], starts: 5, classLevel: 1.55, timeIdx: 90, agariIdx: 87, distApt: 7, lastDist: 1600, restWeeks: 12, jockey: "津村明秀", weight: 56, trainer: "木村哲也", odds: 12.8, popular: 6, going: { firm: 86, soft: 82, heavy: 76 }, styles: ["oikomi","sashi","senko","sashi","senko"], passOrders: [14,6,4,5,3], courseApt: { 新潟: 7, 東京: 9, 中山: 5, 阪神: 7, 京都: 6, 中京: 6, 札幌: 5, 函館: 5, 小倉: 6 }, past: { note: "東京巧者。距離延長は慎重。", best: "東京マイル前後", recent: ["ヴィクトリアM16着", "中山記念5着", "マイル戦", "G1好走", "秋華賞1着歴"] } },
+      { name: "ジュンブロッサム", blood: { sire: "キズナ", damsire: "ディープインパクト", dam: "ブロッサム" }, frame: 6, number: 7, sexAge: "牡7", ranks: [9, 6, 8, 5, 7], starts: 5, classLevel: 1.08, timeIdx: 76, agariIdx: 74, distApt: 7, lastDist: 1800, restWeeks: 5, jockey: "杉原誠人", weight: 58, trainer: "友道康夫", odds: 42.0, popular: 10, going: { firm: 70, soft: 74, heavy: 75 }, styles: ["sashi","sashi","oikomi","sashi","senko"], passOrders: [8,7,9,6,5], courseApt: { 新潟: 6, 東京: 5, 中山: 6, 阪神: 7, 京都: 8, 中京: 6, 札幌: 5, 函館: 5, 小倉: 5 }, past: { note: "高齢・実績薄め。京都で好走歴。", best: "京都芝", recent: ["関越S", "オープン", "中距離", "重賞", "オープン"] } },
+      { name: "ダノンシーマ", blood: { sire: "エピファネイア", damsire: "ディープインパクト", dam: "ダノンファンタジー" }, frame: 7, number: 8, sexAge: "牡4", ranks: [3, 3, 3, 1, 1], starts: 5, classLevel: 1.48, timeIdx: 93, agariIdx: 90, distApt: 9, lastDist: 2500, restWeeks: 8, jockey: "川田将雅", weight: 57, trainer: "中内田充正", odds: 3.6, popular: 2, going: { firm: 88, soft: 90, heavy: 86 }, styles: ["senko","senko","sashi","senko","nige"], passOrders: [3,4,5,3,1], courseApt: { 新潟: 8, 東京: 9, 中山: 7, 阪神: 8, 京都: 8, 中京: 7, 札幌: 6, 函館: 6, 小倉: 6 }, past: { note: "距離短縮で切れ味活きる。稍重もこなす。", best: "東京・新潟の中距離", recent: ["目黒記念3着", "阪神大賞典3着", "白富士S1着", "比叡S1着", "兵庫特別1着"] } },
+      { name: "アーバンシック", blood: { sire: "スクリーンヒーロー", damsire: "ハービンジャー", dam: "アーバンモード" }, frame: 7, number: 9, sexAge: "牡5", ranks: [5, 14, 6, 5, 3], starts: 5, classLevel: 1.5, timeIdx: 88, agariIdx: 85, distApt: 9, lastDist: 2000, restWeeks: 16, jockey: "三浦皇成", weight: 59, trainer: "武井亮", odds: 14.0, popular: 7, going: { firm: 82, soft: 84, heavy: 85 }, styles: ["oikomi","sashi","sashi","senko","senko"], passOrders: [12,7,6,4,3], courseApt: { 新潟: 7, 東京: 6, 中山: 8, 阪神: 6, 京都: 6, 中京: 7, 札幌: 5, 函館: 5, 小倉: 6 }, past: { note: "中山・タフな馬場向き。休み明け注意。", best: "中山・重めの馬場", recent: ["金鯱賞14着", "重賞", "中距離", "G1好走歴", "菊花賞系"] } },
+      { name: "バレエマスター", blood: { sire: "モーリス", damsire: "ディープインパクト", dam: "バレエクイーン" }, frame: 8, number: 10, sexAge: "牡7", ranks: [10, 7, 2, 5, 8], starts: 5, classLevel: 1.15, timeIdx: 78, agariIdx: 76, distApt: 7, lastDist: 2000, restWeeks: 10, jockey: "菊沢一樹", weight: 57, trainer: "梅田智之", odds: 27.5, popular: 8, going: { firm: 72, soft: 75, heavy: 73 }, styles: ["sashi","oikomi","sashi","senko","sashi"], passOrders: [7,9,8,6,5], courseApt: { 新潟: 7, 東京: 5, 中山: 5, 阪神: 5, 京都: 5, 中京: 6, 札幌: 7, 函館: 7, 小倉: 6 }, past: { note: "ローカル・平坦得意の差し脚。", best: "新潟・札幌", recent: ["ジューンS", "新潟大賞典2着", "オープン", "重賞", "中距離"] } },
+      { name: "ステレンボッシュ", blood: { sire: "エピファネイア", damsire: "ディープインパクト", dam: "ステラヴィーノ" }, frame: 8, number: 11, sexAge: "牝5", ranks: [11, 10, 2, 10, 13], starts: 5, classLevel: 1.55, timeIdx: 88, agariIdx: 85, distApt: 7, lastDist: 1600, restWeeks: 10, jockey: "戸崎圭太", weight: 56, trainer: "宮田敬介", odds: 12.0, popular: 5, going: { firm: 89, soft: 84, heavy: 77 }, styles: ["sashi","sashi","senko","senko","nige"], passOrders: [9,5,3,2,1], courseApt: { 新潟: 6, 東京: 8, 中山: 6, 阪神: 8, 京都: 7, 中京: 7, 札幌: 5, 函館: 5, 小倉: 5 }, past: { note: "良馬場の切れ味。距離延長は課題。", best: "良馬場マイル級", recent: ["安田記念10着", "エプソムC2着", "エリザベス女王杯10着", "大阪杯13着", "香港ヴァーズ3着"] } }
     ]
   },
   {
@@ -2582,9 +2598,19 @@ function historyRaceLabel(title, raceId) {
 
 
 // ========== お知らせ・更新履歴 ==========
-const NEWS_VERSION = "2026-09-06j";
+const NEWS_VERSION = "2026-09-07a";
 const NEWS_SEEN_KEY = "keiba_sim_news_seen";
 const NEWS_ITEMS = [
+  {
+    ver: "2026-09-07a",
+    date: "2026/9/7",
+    title: "新潟記念の結果を能力値に反映",
+    body: [
+      "新潟記念（G3）の着順を各馬の近走先頭に追加",
+      "ゾロアストロ1着・ロデオドライブ2着・ダノンシーマ3着などを反映",
+      "好走馬は指数・格付けを調整"
+    ]
+  },
   {
     ver: "2026-09-06j",
     date: "2026/9/6",
@@ -2863,10 +2889,7 @@ function formatNewsHtml(items) {
   }).join("");
 }
 
-function renderNewsPanel() {
-  const el = document.getElementById("newsListBody");
-  if (el) el.innerHTML = formatNewsHtml(NEWS_ITEMS);
-}
+function renderNewsPanel() { /* お知らせは上部バー＋ポップアップに移行 */ updateNewsBar(); }
 
 function getSeenNewsVer() {
   try { return localStorage.getItem(NEWS_SEEN_KEY) || ""; } catch (e) { return ""; }
@@ -2875,19 +2898,34 @@ function setSeenNewsVer(v) {
   try { localStorage.setItem(NEWS_SEEN_KEY, v); } catch (e) {}
 }
 
-function showNewsModalIfNeeded() {
-  const seen = getSeenNewsVer();
-  if (seen === NEWS_VERSION) return;
+/** お知らせポップアップを開く（all=true で全履歴） */
+function openNewsModal(opts) {
+  opts = opts || {};
   const modal = document.getElementById("newsModal");
   const body = document.getElementById("newsModalBody");
   const sub = document.getElementById("newsModalSub");
   if (!modal || !body) return;
-  // 未読：最新バージョンの項目のみ、または全体
-  const unread = NEWS_ITEMS.filter(it => it.ver === NEWS_VERSION);
-  const show = unread.length ? unread : NEWS_ITEMS.slice(0, 1);
-  if (sub) sub.textContent = "バージョン " + NEWS_VERSION;
+  let show;
+  if (opts.all) {
+    show = NEWS_ITEMS.slice();
+    if (sub) sub.textContent = "更新履歴（新しい順）";
+  } else {
+    const unread = NEWS_ITEMS.filter(it => it.ver === NEWS_VERSION);
+    show = unread.length ? unread : NEWS_ITEMS.slice(0, 1);
+    if (sub) sub.textContent = "バージョン " + NEWS_VERSION;
+  }
   body.innerHTML = formatNewsHtml(show);
   modal.classList.remove("hidden");
+}
+
+function showNewsModalIfNeeded() {
+  const seen = getSeenNewsVer();
+  if (seen === NEWS_VERSION) {
+    updateNewsBar();
+    return;
+  }
+  openNewsModal({ all: false });
+  updateNewsBar();
 }
 
 function hideNewsModal(markSeen) {
@@ -2896,7 +2934,40 @@ function hideNewsModal(markSeen) {
   if (markSeen !== false) {
     setSeenNewsVer(NEWS_VERSION);
   }
-  try { renderNewsPanel(); } catch (e) {}
+  updateNewsBar();
+}
+
+function updateNewsBar() {
+  const bar = document.getElementById("newsBarBtn");
+  const sub = document.getElementById("newsBarSub");
+  if (!bar) return;
+  const seen = getSeenNewsVer();
+  const unread = seen !== NEWS_VERSION;
+  bar.classList.toggle("has-unread", unread);
+  if (sub) {
+    const latest = NEWS_ITEMS[0];
+    if (unread && latest) {
+      sub.textContent = "新着: " + (latest.title || NEWS_VERSION);
+    } else if (latest) {
+      sub.textContent = "最新: " + (latest.title || "更新履歴を表示");
+    } else {
+      sub.textContent = "更新履歴を表示";
+    }
+  }
+}
+
+function bindNewsBar() {
+  const bar = document.getElementById("newsBarBtn");
+  if (!bar || bar.dataset.bound) return;
+  bar.dataset.bound = "1";
+  const open = () => openNewsModal({ all: true });
+  bar.addEventListener("click", open);
+  bar.addEventListener("keydown", e => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      open();
+    }
+  });
 }
 
 
@@ -6216,7 +6287,9 @@ try {
       if (e.target === _newsModal) hideNewsModal(true);
     });
   }
-  setTimeout(function () { showNewsModalIfNeeded(); }, 400);
+  setTimeout(function () { bindNewsBar();
+  updateNewsBar();
+  showNewsModalIfNeeded(); }, 400);
 } catch (e) { console.warn("news init", e); }
 
 
