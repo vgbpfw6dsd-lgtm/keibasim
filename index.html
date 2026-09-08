@@ -992,6 +992,111 @@
   100% { opacity: 0; transform: translateY(-28px) scale(1.4); }
 }
 
+
+/* お知らせポップアップ：目立たせる */
+#newsModal .bet-modal {
+  animation: newsPopIn 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes newsPopIn {
+  0% { opacity: 0; transform: scale(0.88) translateY(18px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.news-item-latest {
+  background: linear-gradient(135deg, rgba(240,196,20,0.12), rgba(56,189,248,0.08));
+  border: 1px solid rgba(240,196,20,0.45);
+  border-radius: 12px;
+  padding: 12px 12px 8px !important;
+  margin-bottom: 16px !important;
+  animation: newsGlow 2.2s ease-in-out infinite alternate;
+}
+@keyframes newsGlow {
+  0% { box-shadow: 0 0 0 0 rgba(240,196,20,0.15); }
+  100% { box-shadow: 0 0 18px 2px rgba(240,196,20,0.28); }
+}
+.news-item-latest .news-item-title {
+  font-size: 1.02rem !important;
+  animation: newsTitlePulse 1.6s ease-in-out infinite alternate;
+}
+@keyframes newsTitlePulse {
+  0% { filter: brightness(1); }
+  100% { filter: brightness(1.15); }
+}
+.news-li-hot {
+  margin: 8px 0 !important;
+  font-size: 0.92rem !important;
+  line-height: 1.55 !important;
+  font-weight: 650;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(240,196,20,0.08);
+  border-left: 3px solid #f0c414;
+  animation: newsLiIn 0.5s ease backwards;
+}
+.news-li-hot:nth-child(1) { animation-delay: 0.08s; }
+.news-li-hot:nth-child(2) { animation-delay: 0.16s; }
+.news-li-hot:nth-child(3) { animation-delay: 0.24s; }
+.news-li-hot:nth-child(4) { animation-delay: 0.32s; }
+.news-li-hot:nth-child(5) { animation-delay: 0.40s; }
+@keyframes newsLiIn {
+  0% { opacity: 0; transform: translateX(-12px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+.news-badge-new {
+  display: inline-block;
+  background: linear-gradient(90deg, #f59e0b, #ef4444);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-right: 6px;
+  vertical-align: middle;
+  animation: newsBadgePop 0.9s ease-in-out infinite alternate;
+}
+@keyframes newsBadgePop {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.08); }
+}
+
+
+.news-li-feature {
+  margin: 12px 0 6px !important;
+  font-size: 0.95rem !important;
+  font-weight: 800 !important;
+  line-height: 1.5 !important;
+  padding: 10px 12px !important;
+  border-radius: 10px;
+  list-style: none;
+  color: #fff;
+  background: linear-gradient(105deg, #f59e0b, #ef4444 45%, #ec4899 80%, #f59e0b);
+  background-size: 220% 100%;
+  animation: newsFeatureSlide 0.55s ease backwards, newsFeatureShine 2.4s linear infinite;
+  animation-delay: 0.35s, 0.55s;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+.news-li-feature::after {
+  content: "";
+  position: absolute;
+  top: 0; left: -40%;
+  width: 40%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  animation: newsFeatureSweep 2.2s ease-in-out infinite;
+}
+@keyframes newsFeatureShine {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 220% 50%; }
+}
+@keyframes newsFeatureSweep {
+  0% { left: -40%; }
+  60%, 100% { left: 120%; }
+}
+@keyframes newsFeatureSlide {
+  0% { opacity: 0; transform: scale(0.92) translateY(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
 </style>
 </head>
 <body>
@@ -2466,21 +2571,22 @@ function pickNearestRace(list) {
   if (!list || !list.length) return null;
   const today = new Date();
   const t0 = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
-  let best = list[0];
-  let bestDiff = Infinity;
-  list.forEach(r => {
+  const parsed = list.map(r => {
     const ds = r.date || "";
     const parts = ds.split("-").map(Number);
-    if (parts.length < 3 || !parts[0]) return;
-    const rt = new Date(parts[0], parts[1] - 1, parts[2]).getTime();
-    const diff = Math.abs(rt - t0);
-    // 同日は優先、その後は近い方。同差なら未来を優先
-    if (diff < bestDiff || (diff === bestDiff && rt >= t0)) {
-      bestDiff = diff;
-      best = r;
-    }
-  });
-  return best;
+    if (parts.length < 3 || !parts[0]) return { r, t: null };
+    return { r, t: new Date(parts[0], parts[1] - 1, parts[2]).getTime() };
+  }).filter(x => x.t != null);
+  if (!parsed.length) return list[0];
+  // 1) 当日のレースがあればそれを優先
+  const onDay = parsed.filter(x => x.t === t0);
+  if (onDay.length) return onDay[0].r;
+  // 2) 当日が過ぎている／当日なし → 未来の最も近いレース（次の週の開催など）
+  const future = parsed.filter(x => x.t > t0).sort((a, b) => a.t - b.t);
+  if (future.length) return future[0].r;
+  // 3) すべて過去なら、最も直近の（一番新しい）過去レース
+  const past = parsed.filter(x => x.t < t0).sort((a, b) => b.t - a.t);
+  return past.length ? past[0].r : list[0];
 }
 
 function fillOneRaceSelect(selectId, gradeId) {
@@ -3119,10 +3225,21 @@ function historyRaceLabel(title, raceId) {
 
 
 // ========== お知らせ・更新履歴 ==========
-const NEWS_VERSION = "2026-09-07d";
+const NEWS_VERSION = "2026-09-08c";
 const NEWS_SEEN_KEY = "keiba_sim_news_seen";
 const NEWS_ITEMS = [
   {
+    ver: "2026-09-08c",
+    date: "2026/9/8",
+    title: "レース映像コース大幅更新（阪神・中山）",
+    body: [
+      "★【チャレンジC】阪神芝2000m内回りの写真コースを追加（黄ライン走路）",
+      "★【ローズS】阪神芝1800m外回りの写真コースを追加（黄ライン走路）",
+      "★【セントライト記念】中山芝2200m外回りの写真コースを追加（黄ライン走路・最終コーナー円滑化）",
+      "★開催レースプルダウンの初期位置を「当日」優先、過ぎていれば次の開催日に変更"
+    ]
+  },
+    {
     ver: "2026-09-07e",
     date: "2026/9/7",
     title: "セントライト記念・ローズS・チャレンジCを追加",
@@ -3484,15 +3601,27 @@ function weatherHighlightHtml() {
 }
 
 function formatNewsHtml(items) {
-  return items.map(it => {
-    const lis = (it.body || []).map(b => `<li style="margin:5px 0;font-size:0.86rem;line-height:1.5">${b}</li>`).join("");
+  return items.map((it, idx) => {
+    const isLatest = it.ver === NEWS_VERSION || idx === 0;
+    const lis = (it.body || []).map(b => {
+      const raw = String(b);
+      const text = raw.replace(/^★\s*/, "");
+      const isFeature = text.indexOf("開催レース") >= 0 && text.indexOf("初期位置") >= 0;
+      if (isFeature) return `<li class="news-li-feature">✨ ${text}</li>`;
+      const hot = isLatest || raw.indexOf("★") === 0;
+      if (hot) return `<li class="news-li-hot">${text}</li>`;
+      return `<li style="margin:5px 0;font-size:0.86rem;line-height:1.5">${text}</li>`;
+    }).join("");
     const demo = it.showSwipeDemo ? swipeDemoHtml() : "";
     const themeTry = it.showThemeTry ? themeTryHtml() : "";
     const weatherBox = it.highlightWeather ? weatherHighlightHtml() : "";
-    return `<div class="news-item" style="margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border)">
-      <div class="news-item-title" style="font-weight:800;color:#f0c414;margin-bottom:6px;font-size:0.92rem;line-height:1.35">${it.date} ${it.title}</div>
+    const badge = isLatest ? `<span class="news-badge-new">NEW</span>` : "";
+    const wrapClass = isLatest ? "news-item news-item-latest" : "news-item";
+    const wrapStyle = isLatest ? "" : "margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border)";
+    return `<div class="${wrapClass}" style="${wrapStyle}">
+      <div class="news-item-title" style="font-weight:800;color:#f0c414;margin-bottom:8px;font-size:0.92rem;line-height:1.35">${badge}${it.date} ${it.title}</div>
       ${weatherBox}
-      <ul style="margin:0;padding-left:1.2em;color:var(--text);font-size:0.86rem">${lis}</ul>
+      <ul style="margin:0;padding-left:${isLatest ? "0.4em" : "1.2em"};color:var(--text);list-style:${isLatest ? "none" : "disc"}">${lis}</ul>
       ${themeTry}
       ${demo}
     </div>`;
