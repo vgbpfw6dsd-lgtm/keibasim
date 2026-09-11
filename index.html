@@ -1112,6 +1112,92 @@
   0% { text-shadow: 0 0 4px rgba(250,204,21,0.3); }
   100% { text-shadow: 0 0 16px rgba(250,204,21,0.85); }
 }
+
+  /* 展開予想 見やすいレイアウト v2 */
+  .pace-flow { display: flex; flex-direction: column; gap: 14px; }
+  .pace-summary-bar {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 6px;
+  }
+  .pace-pill {
+    font-size: 0.78rem; font-weight: 700;
+    padding: 6px 12px; border-radius: 999px;
+    background: var(--card2); border: 1px solid var(--border);
+  }
+  .pace-chart {
+    display: flex; gap: 6px; overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+  }
+  .pace-col {
+    flex: 1 1 0; min-width: 72px;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px 6px 10px;
+    display: flex; flex-direction: column;
+  }
+  .pace-col-title {
+    text-align: center; font-weight: 800; font-size: 0.72rem;
+    color: var(--accent); margin-bottom: 8px;
+    padding-bottom: 6px; border-bottom: 1px solid var(--border);
+    line-height: 1.3;
+  }
+  .pace-col-list {
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+  }
+  .pace-slot {
+    display: flex; flex-direction: column; align-items: center; gap: 1px;
+    width: 100%;
+  }
+  .pace-slot-pos {
+    font-size: 0.58rem; color: var(--muted); font-weight: 600;
+  }
+  .pace-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px; border-radius: 50%;
+    font-weight: 800; font-size: 0.82rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+    border: 1px solid rgba(0,0,0,0.18);
+  }
+  .pace-num.lead {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .pace-divider {
+    width: 60%; height: 1px; background: var(--border);
+    margin: 2px 0;
+  }
+  .pace-legend {
+    display: flex; justify-content: center; gap: 14px;
+    font-size: 0.7rem; color: var(--muted); margin-top: 4px;
+  }
+  .pace-style-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px;
+  }
+  .pace-style-card {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px;
+  }
+  .pace-style-top {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pace-style-name {
+    font-size: 0.84rem; font-weight: 600; flex: 1;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .pace-style-badge {
+    font-size: 0.72rem; font-weight: 800;
+    padding: 3px 9px; border-radius: 999px;
+    background: rgba(255,255,255,0.08);
+    white-space: nowrap;
+  }
+  .pace-style-hist {
+    font-size: 0.68rem; color: var(--muted); margin-top: 5px;
+  }
 </style>
 </head>
 <body>
@@ -1145,7 +1231,7 @@
 <!-- ===== 予想 ===== -->
 <div id="panel-predict" class="panel">
   <div class="info-box">
-    <strong>【2026/8/30 新潟記念】</strong>を対象に。過去着順・タイム・上がりなどから勝率を算出します（指数はデモ想定値）。<br>
+    過去着順・タイム・上がりなどから勝率を算出します（指数はデモ想定値）。<br>
     <strong>ペースの目安</strong> … ハイ:差し有利／スロー:前残り／ミドル:バランス（映像・勝率の両方に反映）。
   </div>
   <div class="card">
@@ -3235,9 +3321,22 @@ function historyRaceLabel(title, raceId) {
 
 
 // ========== お知らせ・更新履歴 ==========
-const NEWS_VERSION = "2026-09-11a";
+const NEWS_VERSION = "2026-09-11b";
 const NEWS_SEEN_KEY = "keiba_sim_news_seen";
 const NEWS_ITEMS = [
+  {
+    ver: "2026-09-11b",
+    date: "2026/9/11",
+    title: "【枠順確定＋展開予想リニューアル】",
+    body: [
+      "★【チャレンジC】9/12 阪神G3｜枠順確定！ ジョバンニ8枠15番・マテンロウゲイル5枠9番",
+      "★【セントライト記念】9/13 中山G2｜枠順確定！ ゴーイントゥスカイ4枠8番・バステール5枠10番",
+      "★【ローズS】9/13 阪神G2｜枠順確定！ モンローウォーク6枠7番・イクシード5枠6番・タイセイボーグ大外12番",
+      "★★【展開予想】大幅リニューアル！ 通過地点を横並び表示・上が先頭／下が後方の隊列図に変更",
+      "★展開予想は枠色馬番・想定ペース表示・各馬脚質カードでひと目で分かるUIに刷新",
+      "★出走表・能力値・レース映像・まとめて予想・AI予想すべて最新枠番に対応"
+    ]
+  },
   {
     ver: "2026-09-11a",
     date: "2026/9/11",
@@ -4368,51 +4467,66 @@ function runPacePredict() {
   document.getElementById("paceResult").classList.remove("hidden");
   document.getElementById("paceTitle").textContent =
     (race.raceName || race.name) + " 展開予想";
-  document.getElementById("paceSummary").textContent =
-    `想定ペース: ${paceLabel}｜逃げ${nigeN}・先行${senkoN}・差し${styles.filter(s=>s.style==="sashi").length}・追込${styles.filter(s=>s.style==="oikomi").length}`;
 
-  // 各地点ボード
-  document.getElementById("paceBoard").innerHTML = stages.map(st => {
+  document.getElementById("paceResult").classList.remove("hidden");
+  document.getElementById("paceTitle").textContent =
+    (race.raceName || race.name) + " 展開予想";
+
+  const sashiN = styles.filter(s => s.style === "sashi").length;
+  const oikomiN = styles.filter(s => s.style === "oikomi").length;
+  document.getElementById("paceSummary").innerHTML = `
+    <div class="pace-summary-bar">
+      <span class="pace-pill" style="border-color:var(--accent);color:var(--accent)">想定ペース: ${paceLabel}</span>
+      <span class="pace-pill" style="color:${STYLE_COLORS.nige}">逃げ ${nigeN}</span>
+      <span class="pace-pill" style="color:${STYLE_COLORS.senko}">先行 ${senkoN}</span>
+      <span class="pace-pill" style="color:${STYLE_COLORS.sashi}">差し ${sashiN}</span>
+      <span class="pace-pill" style="color:${STYLE_COLORS.oikomi}">追込 ${oikomiN}</span>
+    </div>`;
+
+  function numBadge(h, isLead) {
+    const fi = Math.min(7, Math.max(0, (h.frame || 1) - 1));
+    return `<span class="pace-num${isLead ? " lead" : ""}" style="background:${FRAME_COLORS[fi]};color:${FRAME_TEXT[fi]}" title="${h.name}">${h.number}</span>`;
+  }
+
+  // 通過地点を横並びカラム：上が先頭・下が後方（netkeiba風）
+  const cols = stages.map(st => {
     const order = buildPaceOrder(race.horses, st.id);
-    // 脚質行ごとに分類しつつ、全体の前後も表示
-    const byStyle = {};
-    STYLE_ORDER.forEach(k => { byStyle[k] = order.filter(o => o.style === k); });
-    const front = order.slice(0, Math.min(4, order.length));
-    const rows = STYLE_ORDER.map(k => {
-      const list = byStyle[k];
-      if (!list.length) return "";
-      const nums = list.map(o => {
-        const fi = Math.min(7, Math.max(0, (o.h.frame || 1) - 1));
-        return `<span class="pace-num" style="background:${FRAME_COLORS[fi]};color:${FRAME_TEXT[fi]}" title="${o.h.name}">${o.h.number}</span>`;
-      }).join("");
-      return `<div class="pace-row"><span class="pace-label" style="color:${STYLE_COLORS[k]}">${STYLE_LABELS[k]}</span><div class="pace-nums">${nums}</div></div>`;
+    const slots = order.map((o, i) => {
+      const showDiv = i > 0 && i === Math.ceil(order.length * 0.35);
+      const showDiv2 = i > 0 && i === Math.ceil(order.length * 0.7);
+      let div = "";
+      if (showDiv) div = `<div class="pace-divider" title="中団"></div>`;
+      if (showDiv2) div = `<div class="pace-divider" title="後方"></div>`;
+      return `${div}<div class="pace-slot">
+        <span class="pace-slot-pos">${i + 1}</span>
+        ${numBadge(o.h, i === 0)}
+      </div>`;
     }).join("");
-    const orderNums = order.map(o => {
-      const fi = Math.min(7, Math.max(0, (o.h.frame || 1) - 1));
-      return `<span class="pace-num" style="background:${FRAME_COLORS[fi]};color:${FRAME_TEXT[fi]}">${o.h.number}</span>`;
-    }).join("");
-    return `<div class="pace-stage">
-      <div class="pace-stage-title">📍 ${st.name}
-        <span class="horse-meta" style="font-weight:500">先頭付近: ${front.map(f=>f.h.number).join("-")}</span>
-      </div>
-      <div class="pace-row" style="margin-bottom:8px"><span class="pace-label">隊列</span><div class="pace-nums">${orderNums}</div></div>
-      ${rows}
+    return `<div class="pace-col">
+      <div class="pace-col-title">${st.name}</div>
+      <div class="pace-col-list">${slots}</div>
     </div>`;
   }).join("");
 
+  document.getElementById("paceBoard").innerHTML = `
+    <div class="pace-chart">${cols}</div>
+    <div class="pace-legend"><span>↑ 先頭</span><span>↓ 後方</span><span>○枠色＝馬番</span></div>`;
+
   // 脚質一覧
   document.getElementById("paceStyles").innerHTML =
-    `<h2 style="font-size:0.88rem;color:#f0c414;margin-bottom:8px">各馬の脚質予想（過去脚質を反映）</h2>` +
+    `<h2 style="font-size:0.9rem;color:var(--accent);margin:16px 0 8px">各馬の脚質予想</h2>
+    <div class="pace-style-grid">` +
     styles.map(s => {
-      const fi = Math.min(7, Math.max(0, (s.h.frame || 1) - 1));
-      const hist = (s.h.styles || []).map(x => STYLE_LABELS[x] || x).join("→");
-      return `<div class="pace-style-chip" style="display:flex;flex-wrap:wrap;width:100%;box-sizing:border-box">
-        <span class="pace-num" style="background:${FRAME_COLORS[fi]};color:${FRAME_TEXT[fi]}">${s.h.number}</span>
-        <span>${s.h.name}</span>
-        <strong style="color:${STYLE_COLORS[s.style]}">→${STYLE_LABELS[s.style]}</strong>
-        ${hist ? `<span class="horse-meta" style="width:100%;margin-top:2px">過去: ${hist}</span>` : ""}
+      const hist = (s.h.styles || []).map(x => STYLE_LABELS[x] || x).join(" → ");
+      return `<div class="pace-style-card">
+        <div class="pace-style-top">
+          ${numBadge(s.h, false)}
+          <span class="pace-style-name" title="${s.h.name}">${s.h.name}</span>
+          <span class="pace-style-badge" style="color:${STYLE_COLORS[s.style]}">${STYLE_LABELS[s.style]}</span>
+        </div>
+        ${hist ? `<div class="pace-style-hist">過去 ${hist}</div>` : ""}
       </div>`;
-    }).join("");
+    }).join("") + `</div>`;
 }
 
 // ========== レース映像（俯瞰ミニマップ：馬番のみ） ==========
