@@ -1205,6 +1205,44 @@
   .pace-style-hist {
     font-size: 0.68rem; color: var(--muted); margin-top: 5px;
   }
+
+  /* 選択ボタン式（馬場・ペース・天候・重視） */
+  .choice-group {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    position: relative; z-index: 5;
+    pointer-events: auto;
+  }
+  .choice-btn {
+    appearance: none; -webkit-appearance: none;
+    border: 1px solid var(--border);
+    background: var(--card2); color: var(--text);
+    padding: 8px 12px; border-radius: 999px;
+    font-size: 0.78rem; font-weight: 700;
+    cursor: pointer; line-height: 1.2;
+    transition: background .15s, border-color .15s, color .15s, transform .1s;
+    pointer-events: auto !important;
+    touch-action: manipulation;
+    position: relative; z-index: 6;
+    width: auto !important;
+    min-height: 36px;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .choice-btn:active { transform: scale(0.97); }
+  .choice-btn.active {
+    background: var(--btn-primary);
+    color: var(--btn-primary-text);
+    border-color: transparent;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  }
+  .choice-btn.compact { padding: 6px 10px; font-size: 0.72rem; min-height: 32px; }
+  select.choice-source {
+    position: absolute !important;
+    left: -9999px !important;
+    width: 1px !important; height: 1px !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+  }
 </style>
 </head>
 <body>
@@ -1255,44 +1293,27 @@
     <div id="raceInfo" class="horse-meta"></div>
     <div style="margin-top:10px">
       <label class="horse-meta" style="display:block;margin-bottom:6px">馬場状態</label>
-      <div id="goingBtns" style="display:flex;gap:8px;flex-wrap:wrap">
-        <button type="button" class="btn btn-secondary going-btn" data-going="良" style="width:auto;padding:8px 16px">良</button>
-        <button type="button" class="btn btn-secondary going-btn" data-going="稍重" style="width:auto;padding:8px 16px">稍重</button>
-        <button type="button" class="btn btn-secondary going-btn" data-going="重" style="width:auto;padding:8px 16px">重</button>
+      <div id="goingBtns" class="choice-group">
+        <button type="button" class="choice-btn going-btn active" data-going="良">良</button>
+        <button type="button" class="choice-btn going-btn" data-going="稍重">稍重</button>
+        <button type="button" class="choice-btn going-btn" data-going="重">重</button>
       </div>
     </div>
     <div style="margin-top:10px">
       <label class="horse-meta" style="display:block;margin-bottom:6px">想定ペース</label>
-      <select id="paceSelectPredict" class="race-select">
-        <option value="auto" selected>自動（メンバーから推定）</option>
-        <option value="high">ハイペース</option>
-        <option value="mid">ミドルペース</option>
-        <option value="slow">スローペース</option>
-      </select>
+<div class="choice-group" data-for="paceSelectPredict"><button type="button" class="choice-btn active" data-value="auto">自動</button><button type="button" class="choice-btn" data-value="high">ハイ</button><button type="button" class="choice-btn" data-value="mid">ミドル</button><button type="button" class="choice-btn" data-value="slow">スロー</button></div>
+      <select id="paceSelectPredict" class="choice-source" aria-hidden="true"><option value="auto" selected>自動</option><option value="high">ハイ</option><option value="mid">ミドル</option><option value="slow">スロー</option></select>
     </div>
     <div style="margin-top:10px">
       <label class="horse-meta" style="display:block;margin-bottom:6px">天候</label>
-      <select id="weatherSelectPredict" class="race-select">
-        <option value="晴れ">晴れ</option>
-        <option value="曇り">曇り</option>
-        <option value="小雨">小雨</option>
-        <option value="雨">雨</option>
-        <option value="大雨">大雨</option>
-        <option value="雪">雪</option>
-        <option value="大雪">大雪</option>
-      </select>
+<div class="choice-group" data-for="weatherSelectPredict"><button type="button" class="choice-btn compact active" data-value="晴れ">晴れ</button><button type="button" class="choice-btn compact" data-value="曇り">曇り</button><button type="button" class="choice-btn compact" data-value="小雨">小雨</button><button type="button" class="choice-btn compact" data-value="雨">雨</button><button type="button" class="choice-btn compact" data-value="大雨">大雨</button><button type="button" class="choice-btn compact" data-value="雪">雪</button><button type="button" class="choice-btn compact" data-value="大雪">大雪</button></div>
+      <select id="weatherSelectPredict" class="choice-source" aria-hidden="true"><option value="晴れ" selected>晴れ</option><option value="曇り">曇り</option><option value="小雨">小雨</option><option value="雨">雨</option><option value="大雨">大雨</option><option value="雪">雪</option><option value="大雪">大雪</option></select>
       <p class="weather-api-note">※天候の初期値は、競馬場付近のリアルタイム天気データから取得しています（Open-Meteo）。手動変更も可能です。</p>
     </div>
     <div style="margin-top:10px">
       <label class="horse-meta" style="display:block;margin-bottom:6px">予想の重視ポイント</label>
-      <select id="weightSelectPredict" class="race-select">
-        <option value="balance" selected>バランス</option>
-        <option value="speed">タイム重視</option>
-        <option value="last">末脚重視</option>
-        <option value="going">馬場重視</option>
-        <option value="frame">馬番重視</option>
-        <option value="blood">血統重視</option>
-      </select>
+<div class="choice-group" data-for="weightSelectPredict"><button type="button" class="choice-btn compact active" data-value="balance">バランス</button><button type="button" class="choice-btn compact" data-value="speed">タイム</button><button type="button" class="choice-btn compact" data-value="last">末脚</button><button type="button" class="choice-btn compact" data-value="going">馬場</button><button type="button" class="choice-btn compact" data-value="frame">馬番</button><button type="button" class="choice-btn compact" data-value="blood">血統</button></div>
+      <select id="weightSelectPredict" class="choice-source" aria-hidden="true"><option value="balance" selected>バランス</option><option value="speed">タイム</option><option value="last">末脚</option><option value="going">馬場</option><option value="frame">馬番</option><option value="blood">血統</option></select>
     </div>
     <div style="margin-top:10px">
       <label class="horse-meta" style="display:block;margin-bottom:6px">シミュレーション回数</label>
@@ -1420,44 +1441,24 @@
     <div id="viewRaceInfo" class="horse-meta" style="margin-top:6px"></div>
     <div style="margin-top:10px">
       <label class="horse-meta" style="display:block;margin-bottom:6px">馬場状態</label>
-      <select id="goingSelectRace" class="race-select">
-        <option value="良" selected>良</option>
-        <option value="稍重">稍重</option>
-        <option value="重">重</option>
-      </select>
+<div class="choice-group" data-for="goingSelectRace"><button type="button" class="choice-btn active" data-value="良">良</button><button type="button" class="choice-btn" data-value="稍重">稍重</button><button type="button" class="choice-btn" data-value="重">重</button></div>
+      <select id="goingSelectRace" class="choice-source" aria-hidden="true"><option value="良" selected>良</option><option value="稍重">稍重</option><option value="重">重</option></select>
     </div>
     <div style="margin-top:10px">
       <label class="horse-meta" style="display:block;margin-bottom:6px">想定ペース</label>
-      <select id="paceSelectRace" class="race-select">
-        <option value="auto" selected>自動（メンバーから推定）</option>
-        <option value="high">ハイペース</option>
-        <option value="mid">ミドルペース</option>
-        <option value="slow">スローペース</option>
-      </select>
+<div class="choice-group" data-for="paceSelectRace"><button type="button" class="choice-btn active" data-value="auto">自動</button><button type="button" class="choice-btn" data-value="high">ハイ</button><button type="button" class="choice-btn" data-value="mid">ミドル</button><button type="button" class="choice-btn" data-value="slow">スロー</button></div>
+      <select id="paceSelectRace" class="choice-source" aria-hidden="true"><option value="auto" selected>自動</option><option value="high">ハイ</option><option value="mid">ミドル</option><option value="slow">スロー</option></select>
     </div>
     <div style="margin-top:10px">
       <label class="horse-meta" style="display:block;margin-bottom:6px">天候</label>
-      <select id="weatherSelectRace" class="race-select">
-        <option value="晴れ">晴れ</option>
-        <option value="曇り">曇り</option>
-        <option value="小雨">小雨</option>
-        <option value="雨">雨</option>
-        <option value="大雨">大雨</option>
-        <option value="雪">雪</option>
-        <option value="大雪">大雪</option>
-      </select>
+<div class="choice-group" data-for="weatherSelectRace"><button type="button" class="choice-btn compact active" data-value="晴れ">晴れ</button><button type="button" class="choice-btn compact" data-value="曇り">曇り</button><button type="button" class="choice-btn compact" data-value="小雨">小雨</button><button type="button" class="choice-btn compact" data-value="雨">雨</button><button type="button" class="choice-btn compact" data-value="大雨">大雨</button><button type="button" class="choice-btn compact" data-value="雪">雪</button><button type="button" class="choice-btn compact" data-value="大雪">大雪</button></div>
+      <select id="weatherSelectRace" class="choice-source" aria-hidden="true"><option value="晴れ" selected>晴れ</option><option value="曇り">曇り</option><option value="小雨">小雨</option><option value="雨">雨</option><option value="大雨">大雨</option><option value="雪">雪</option><option value="大雪">大雪</option></select>
       <p class="weather-api-note">※天候の初期値は、競馬場付近のリアルタイム天気データから取得しています（Open-Meteo）。手動変更も可能です。</p>
     </div>
     <div style="margin-top:10px">
       <label class="horse-meta" style="display:block;margin-bottom:6px">予想の重視ポイント</label>
-      <select id="weightSelectRace" class="race-select">
-        <option value="balance" selected>バランス</option>
-        <option value="speed">タイム重視</option>
-        <option value="last">末脚重視</option>
-        <option value="going">馬場重視</option>
-        <option value="frame">馬番重視</option>
-        <option value="blood">血統重視</option>
-      </select>
+<div class="choice-group" data-for="weightSelectRace"><button type="button" class="choice-btn compact active" data-value="balance">バランス</button><button type="button" class="choice-btn compact" data-value="speed">タイム</button><button type="button" class="choice-btn compact" data-value="last">末脚</button><button type="button" class="choice-btn compact" data-value="going">馬場</button><button type="button" class="choice-btn compact" data-value="frame">馬番</button><button type="button" class="choice-btn compact" data-value="blood">血統</button></div>
+      <select id="weightSelectRace" class="choice-source" aria-hidden="true"><option value="balance" selected>バランス</option><option value="speed">タイム</option><option value="last">末脚</option><option value="going">馬場</option><option value="frame">馬番</option><option value="blood">血統</option></select>
     </div>
     <div style="margin-top:10px">
       <label class="horse-meta" style="display:block;margin-bottom:6px">再生速度</label>
@@ -2870,6 +2871,7 @@ function setWeatherSelectValue(selId, value) {
   if (!el) return;
   const has = Array.from(el.options).some(o => o.value === value);
   el.value = has ? value : "晴れ";
+  try { syncChoiceGroup(selId); } catch (e) {}
 }
 
 /**
@@ -2903,13 +2905,13 @@ async function fetchCourseWeather(courseName) {
 
 async function applyWeatherDefaultsForRace(race) {
   if (!race) return;
-  const course = race.course || (race.track) || "";
-  const label = await fetchCourseWeather(course);
-  if (!label) return;
-  // ユーザーが既に手動変更していない場合のみ反映したいが、
-  // レース切替時は新しい競馬場に合わせる
-  setWeatherSelectValue("weatherSelectRace", label);
-  setWeatherSelectValue("weatherSelectPredict", label);
+  try {
+    const course = race.course || (race.track) || "";
+    const label = await fetchCourseWeather(course);
+    if (!label) return;
+    setWeatherSelectValue("weatherSelectRace", label);
+    setWeatherSelectValue("weatherSelectPredict", label);
+  } catch (e) {}
 }
 
 
@@ -2993,12 +2995,17 @@ function updateViewRaceInfo() {
 
 function setRaceGoing(going) {
   const race = getCurrentRace("raceSelect");
-  if (!race) return;
-  race.condition = going;
-  updateRaceInfo();
-  renderEntries();
+  if (race) race.condition = going;
+  document.querySelectorAll(".going-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.getAttribute("data-going") === going);
+  });
   const gr = document.getElementById("goingSelectRace");
-  if (gr) gr.value = going;
+  if (gr) {
+    gr.value = going; try { syncChoiceGroup("goingSelectRace"); } catch (e) {}
+    try { syncChoiceGroup("goingSelectRace"); } catch (e) {}
+  }
+  try { updateRaceInfo(); } catch (e) {}
+  try { renderEntries(); } catch (e) {}
 }
 
 function renderHorseList(containerId, horses, race, probs, placeP, extra) {
@@ -3237,9 +3244,9 @@ function runPredict() {
     nSim
   };
   const gr = document.getElementById("goingSelectRace");
-  if (gr) gr.value = race.condition;
+  if (gr) gr.value = race.condition; try { syncChoiceGroup("goingSelectRace"); } catch (e) {}
   const pr = document.getElementById("paceSelectRace");
-  if (pr && paceOpt !== "auto") pr.value = paceKey;
+  if (pr && paceOpt !== "auto") pr.value = paceKey; try { syncChoiceGroup("paceSelectRace"); } catch (e) {}
   const pl = paceOpt === "auto" ? "自動" : paceOpt === "high" ? "ハイ" : paceOpt === "slow" ? "スロー" : "ミドル";
   const note = document.getElementById("predictNote");
   if (note) {
@@ -6800,7 +6807,7 @@ function startRace(horses, raceMeta) {
   }
   // 予想タブのペースも同期（同じ条件で見られるように）
   const predPace = document.getElementById("paceSelectPredict");
-  if (predPace && pace !== "auto") predPace.value = pace;
+  if (predPace && pace !== "auto") predPace.value = pace; try { syncChoiceGroup("paceSelectPredict"); } catch (e) {}
 
   const timeScale = getRaceSpeed();
   const plan = paceTimePlan(dist, pace);
@@ -7675,7 +7682,7 @@ function applyWeightPreset(key, fromEl) {
   // 全UIを同期
   ["weightSelectPredict", "weightSelectRace"].forEach(id => {
     const el = document.getElementById(id);
-    if (el && el !== fromEl) el.value = k;
+    if (el && el !== fromEl) el.value = k; try { if (el.id) syncChoiceGroup(el.id); } catch (e) {}
   });
   document.querySelectorAll(".weight-preset").forEach(b => {
     b.classList.toggle("active", b.dataset.preset === k);
@@ -7719,7 +7726,7 @@ function bindWeights() {
     if (!e.touches || e.touches.length !== 1) return;
     // 入力欄・横スクロールUI上は無視
     const t = e.target;
-    if (t && (t.closest && (t.closest("input,select,textarea,button,.tabs")))) return;
+    if (t && (t.closest && (t.closest("input,select,textarea,button,.tabs,.choice-btn,.choice-group,.going-btn")))) return;
     sx = e.touches[0].clientX;
     sy = e.touches[0].clientY;
     st = Date.now();
@@ -7884,11 +7891,62 @@ try {
   try {
     const r0 = getCurrentRace("viewRaceSelect") || getCurrentRace("raceSelect") || (typeof SAMPLE_RACES !== "undefined" ? SAMPLE_RACES[0] : null);
     applyWeatherDefaultsForRace(r0);
+    try { syncAllChoiceGroups(); } catch (e3) {}
   } catch (e) {} }, 400);
 } catch (e) { console.warn("news init", e); }
 
 
+
+// 選択ボタン式UI：隠しselectとボタンを同期
+function syncChoiceGroup(selectId) {
+  const sel = document.getElementById(selectId);
+  const group = document.querySelector('.choice-group[data-for="' + selectId + '"]');
+  if (!sel || !group) return;
+  const v = sel.value;
+  group.querySelectorAll('.choice-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-value') === v);
+  });
+}
+function bindChoiceGroups() {
+  document.querySelectorAll('.choice-group[data-for]').forEach(group => {
+    const sid = group.getAttribute('data-for');
+    const sel = document.getElementById(sid);
+    group.querySelectorAll('.choice-btn').forEach(btn => {
+      if (btn.dataset.choiceBound) return;
+      btn.dataset.choiceBound = '1';
+      const activate = (e) => {
+        if (e) { e.preventDefault(); e.stopPropagation(); }
+        const v = btn.getAttribute('data-value');
+        if (sel) {
+          sel.value = v;
+          try { sel.dispatchEvent(new Event('change', { bubbles: true })); } catch (err) {}
+        }
+        group.querySelectorAll('.choice-btn').forEach(b => b.classList.toggle('active', b === btn));
+      };
+      btn.addEventListener('click', activate);
+      btn.addEventListener('pointerup', activate);
+      btn.addEventListener('touchend', activate, { passive: false });
+    });
+    syncChoiceGroup(sid);
+    if (sel && !sel.dataset.choiceSync) {
+      sel.dataset.choiceSync = '1';
+      sel.addEventListener('change', () => syncChoiceGroup(sid));
+    }
+  });
+}
+// select.value を書き換えたあとの見た目同期用
+const _choiceIds = ['paceSelectPredict','weatherSelectPredict','weightSelectPredict','goingSelectRace','paceSelectRace','weatherSelectRace','weightSelectRace'];
+function syncAllChoiceGroups() { _choiceIds.forEach(syncChoiceGroup); }
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  try { bindChoiceGroups(); } catch (e) {}
+});
+setTimeout(function () { try { bindChoiceGroups(); } catch (e) {} }, 100);
+setTimeout(function () { try { bindChoiceGroups(); } catch (e) {} }, 500);
+
 // AI予想・テーマ初期化
+try { bindChoiceGroups(); } catch (e0) {}
 try {
   initTheme();
 } catch (e) { console.warn("theme", e); }
