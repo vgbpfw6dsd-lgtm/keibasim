@@ -4413,39 +4413,51 @@ function getPaceStages(race) {
  * 後半: 差し・追込が徐々に浮上
  */
 function buildPaceOrder(horses, stageId) {
+  // 地点ごとに隊列が大きく動くよう、脚質ベース＋能力＋枠の影響を段階的に強める
+  const stageW = {
+    start:  { nige: 0,  senko: 0,  sashi: 0,  oikomi: 0,  spd: 0.35, sta: 0.05, acc: 0.05, frame: 0.8 },
+    c2:     { nige: 2,  senko: 1,  sashi: -6, oikomi: -3, spd: 0.30, sta: 0.12, acc: 0.10, frame: 0.5 },
+    mid:    { nige: 3,  senko: 1,  sashi: -8, oikomi: -5, spd: 0.25, sta: 0.18, acc: 0.15, frame: 0.4 },
+    c3:     { nige: 8,  senko: 3,  sashi: -16,oikomi: -12,spd: 0.15, sta: 0.25, acc: 0.28, frame: 0.25 },
+    c4:     { nige: 16, senko: 6,  sashi: -24,oikomi: -28,spd: 0.08, sta: 0.20, acc: 0.45, frame: 0.15 },
+    finish: { nige: 20, senko: 8,  sashi: -28,oikomi: -34,spd: 0.05, sta: 0.15, acc: 0.55, frame: 0.1 }
+  };
+  const w = stageW[stageId] || stageW.start;
+  const base = { nige: 8, senko: 28, sashi: 52, oikomi: 72 };
+
   const scored = horses.map(h => {
     const ab = calcAbility(h);
     const style = predictStyle(h, ab);
-    let pos = 0;
-    if (style === "nige") pos = 10;
-    else if (style === "senko") pos = 30;
-    else if (style === "sashi") pos = 55;
-    else pos = 75;
-    // 地点で差し・追込が前へ
-    if (stageId === "c2" || stageId === "mid") {
-      if (style === "sashi") pos -= 5;
-      if (style === "oikomi") pos -= 3;
-      if (style === "nige") pos += 2;
+    let pos = (base[style] != null ? base[style] : 50) + (w[style] || 0);
+
+    // 能力：前半はスピード、後半は末脚・スタミナが隊列を押し上げ
+    pos -= (ab.speed - 70) * w.spd;
+    pos -= (ab.stamina - 70) * w.sta;
+    pos -= (ab.accel - 70) * w.acc;
+    // 総合力は終盤ほど効く
+    const late = (stageId === "c3" || stageId === "c4" || stageId === "finish") ? 0.12 : 0.03;
+    pos -= ((ab.total || 70) - 70) * late;
+
+    // 枠：スタート〜序盤は内枠が前へ出やすい
+    pos += ((h.frame || 4) - 1) * w.frame;
+
+    // 馬ごとの安定したバラつき（同脚質内の並びが地点で入れ替わる）
+    const seed = ((h.number || 1) * 17 + (h.frame || 1) * 31 + (stageId.charCodeAt(0) || 0) * 13) % 100;
+    const jitter = (seed / 100 - 0.5) * (stageId === "start" ? 6 : stageId === "c2" || stageId === "mid" ? 10 : 14);
+    pos += jitter;
+
+    // 逃げ馬が複数いる場合、スタート直後はさらに分散
+    if (style === "nige" && stageId === "start") {
+      pos += ((h.number || 0) % 3) * 2.5;
     }
-    if (stageId === "c3") {
-      if (style === "sashi") pos -= 12;
-      if (style === "oikomi") pos -= 8;
-      if (style === "nige") pos += 6;
-      if (style === "senko") pos += 2;
+    // 追込は序盤さらに後方へ、終盤に一気に浮上（上の w と合わせて）
+    if (style === "oikomi" && (stageId === "start" || stageId === "c2")) {
+      pos += 4 + ((h.number || 0) % 4);
     }
-    if (stageId === "c4" || stageId === "finish") {
-      if (style === "sashi") pos -= 18;
-      if (style === "oikomi") pos -= 22;
-      if (style === "nige") pos += 10;
-      if (style === "senko") pos += 4;
-      // 末脚強いほど前へ
-      pos -= (ab.accel - 70) * 0.25;
-    }
-    // 枠・能力で微調整（決定的な並びのため number も加味）
-    pos += (h.frame || 4) * 0.3 + (h.number || 0) * 0.05 - ab.total * 0.02;
+
     return { h, style, pos, ab };
   });
-  scored.sort((a, b) => a.pos - b.pos);
+  scored.sort((a, b) => a.pos - b.pos || (a.h.number || 0) - (b.h.number || 0));
   return scored;
 }
 
