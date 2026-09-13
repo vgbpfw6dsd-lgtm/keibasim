@@ -1817,7 +1817,7 @@ const COURSES = {
       { t: 0.92, h: 0.35 }, // 降り切り
       { t: 1.00, h: 0.2 }
     ],
-    theme: { grass: "#4caf50", rail: "#ffee58", stand: "bottom", label: "中山・内回り2000", accent: "#ffee58", hill: true, sky: true },
+    theme: { grass: "#4caf50", rail: "#ffee58", stand: "bottom", label: "", accent: "#ffee58", hill: true, sky: true },
     noteLong: "内回り。スタンド前直線右端スタート→1周強。1角まで約405m。直線約310m。ゴール手前に高低差2.4mの急坂（スタートも同地点を通過）。",
     // 外回り1600用
     elevationOuter: [
@@ -5614,7 +5614,7 @@ function drawMinimapTrack(ctx, w, h, cx, cy, rx, ry, courseName, surface, clockw
   const isHanshin2000 = pathType === "hanshin_2000_inner";
   const isHanshin1800 = pathType === "hanshin_1800_outer";
   const isNakayama2200 = pathType === "nakayama_2200_outer";
-  const isNakayama = pathType === "nakayama_2000" || (courseName === "中山" && !isNakayamaOuter);
+  const isNakayama = pathType === "nakayama_2000" || (courseName === "中山" && !isNakayamaOuter && !isNakayama2200);
   const isHanshin = pathType === "hanshin_1200" || (courseName === "阪神" && !isHanshin2000 && !isHanshin1800);
   if (isNiigata) {
     drawRx = rx * 1.05; drawRy = ry * 0.95; drawCW = false;
@@ -6138,7 +6138,7 @@ function drawMinimapTrack(ctx, w, h, cx, cy, rx, ry, courseName, surface, clockw
     gA = stadiumPoint(0, cx, cy, rx, ry, 0.95, clockwise);
     gB = stadiumPoint(0, cx, cy, rx, ry, -0.95, clockwise);
   }
-  if (!isNakayamaOuter && !isSapporo1800 && !isHanshin2000 && !isHanshin1800 || isNakayama2200) {
+  if (!isNakayamaOuter && !isSapporo1800 && !isHanshin2000 && !isHanshin1800 && !isNakayama2200) {
     ctx.strokeStyle = "#fff";
     ctx.lineWidth = 3;
     ctx.beginPath();
@@ -6164,8 +6164,8 @@ function drawMinimapTrack(ctx, w, h, cx, cy, rx, ry, courseName, surface, clockw
     });
   }
   if (isNakayamaOuter || isHanshin2000 || isHanshin1800 || isNakayama2200) {
-    // 写真側に START/GOAL 表記あり
-  } else if (isNakayama || isHanshin) {
+    // 写真コースは写真側の START/GOAL を使用（重複描画しない）
+  } else if ((isNakayama || isHanshin) && !isNakayama2200) {
     const st = isHanshin ? hanshin1200Point(0, cx, cy, rx, ry, 0) : nakayama2000Point(0, cx, cy, rx, ry, 0);
     const gl = isHanshin ? hanshin1200Point(1, cx, cy, rx, ry, 0) : nakayama2000Point(1, cx, cy, rx, ry, 0);
     const sx = Math.max(36, Math.min(w - 36, st.x + (isHanshin ? -8 : 6)));
@@ -6234,7 +6234,7 @@ function drawMinimapTrack(ctx, w, h, cx, cy, rx, ry, courseName, surface, clockw
     ctx.fillText("（ゴール手前）", hx0, hy0 - 11);
   }
   // 場名バッジ（写真コースでは出さない）
-  if (!isNakayamaOuter && !isSapporo1800 && !isHanshin2000 && !isHanshin1800 || isNakayama2200) {
+  if (!isNakayamaOuter && !isSapporo1800 && !isHanshin2000 && !isHanshin1800 && !isNakayama2200) {
     const badge = theme.label || courseName || "COURSE";
     ctx.fillStyle = "rgba(0,0,0,0.45)";
     const bw = Math.max(72, badge.length * 11);
