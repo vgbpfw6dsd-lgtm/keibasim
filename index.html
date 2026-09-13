@@ -914,7 +914,7 @@
 
 /* Level-up popup */
 .level-up-modal { overflow: hidden; }
-/* 能力値アップは常に画面中央 */
+/* 能力値変動は常に画面中央 */
 #levelUpModal.bet-modal-overlay {
   align-items: center !important;
   justify-content: center !important;
@@ -1699,8 +1699,8 @@
 <div id="levelUpModal" class="bet-modal-overlay hidden" role="dialog" aria-modal="true">
   <div class="bet-modal level-up-modal" style="max-width:560px">
     <div class="level-up-header">
-      <div class="level-up-badge">LEVEL UP</div>
-      <h2 style="font-size:1.15rem;margin:8px 0 4px">週末レース入着で能力値アップ！</h2>
+      <div class="level-up-badge">CHANGE</div>
+      <h2 style="font-size:1.15rem;margin:8px 0 4px">週末レース入着で能力値変動</h2>
       <p class="bet-sub" style="font-size:0.78rem;margin:0">9/12-13 週末3重賞 1〜3着馬の能力値変動（初回のみ表示）</p>
     </div>
     <div id="levelUpBody" class="level-up-body"></div>
@@ -2092,12 +2092,12 @@ const SAMPLE_RACES = [
     raceName: "セントライト記念",
     horses: [
       { name: "ウェイクフィールド", frame: 1, number: 1, sexAge: "牡3", ranks: [14, 10, 1, 1, 6], starts: 5, classLevel: 1.08, timeIdx: 76, agariIdx: 74, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "横山和生", weight: 57, trainer: "-", odds: 45, popular: 15, going: { firm: 76, soft: 70, heavy: 65 }, blood: { sire: "キズナ", damsire: "マンハッタンカフェ", dam: "ハーレムライン" }, styles: ["sashi"], past: { note: "ライラック賞10着", recent: [] }, manualRank: 12, manualScore: 83, manualComment: "中山2000m勝ち。距離延長は対応可能だが重賞実績で見劣り。" },
-      { name: "アウダーシア", frame: 1, number: 2, sexAge: "牡3", ranks: [3, 11, 1, 1, 2], starts: 5, classLevel: 1.48, timeIdx: 86, agariIdx: 83, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "津村明秀", weight: 57, trainer: "-", odds: 15, popular: 8, going: { firm: 82, soft: 74, heavy: 70 }, blood: { sire: "キズナ", damsire: "ルーラーシップ", dam: "リリーノーブル" }, styles: ["sashi", "oikomi"], past: { note: "日本ダービー11着", recent: [] }, manualRank: 7, manualScore: 88, manualComment: "スプリングS1着。重賞勝ちと成長余地を評価。" },
+      { name: "アウダーシア", frame: 1, number: 2, sexAge: "牡3", ranks: [3, 11, 1, 1, 2], starts: 5, classLevel: 1.32, timeIdx: 84, agariIdx: 82, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "津村明秀", weight: 57, trainer: "-", odds: 15, popular: 8, going: { firm: 82, soft: 74, heavy: 70 }, blood: { sire: "キズナ", damsire: "ルーラーシップ", dam: "リリーノーブル" }, styles: ["sashi", "oikomi"], past: { note: "日本ダービー11着", recent: [] }, manualRank: 7, manualScore: 86, manualComment: "スプリングS1着。重賞勝ちと成長余地を評価。" , abilityBoost: 3, form: 4},
       { name: "バドリナート", frame: 2, number: 3, sexAge: "牡3", ranks: [8, 4, 11, 5, 1], starts: 5, classLevel: 1.28, timeIdx: 86, agariIdx: 84, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "丸山元気", weight: 57, trainer: "-", odds: 10, popular: 5, going: { firm: 86, soft: 78, heavy: 74 }, blood: { sire: "コントレイル", damsire: "Galileo", dam: "モヒニ" }, styles: ["sashi", "oikomi"], past: { note: "ラジオNIKKEI賞4着", recent: [] }, manualRank: 9, manualScore: 86, manualComment: "ホープフルS5着＋萩S1着。重賞経験と成長力を評価。" },
       { name: "リッツパーティー", frame: 2, number: 4, sexAge: "牡3", ranks: [10, 3, 1, 4, 1], starts: 4, classLevel: 1.30, timeIdx: 87, agariIdx: 85, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "丹内祐次", weight: 57, trainer: "-", odds: 9.0, popular: 5, going: { firm: 87, soft: 79, heavy: 75 }, blood: { sire: "ミッキーロケット", damsire: "クロフネ", dam: "ハッピーパーティー" }, styles: ["senko", "sashi"], past: { note: "ラジオNIKKEI賞3着", recent: [] }, manualRank: 14, manualScore: 81, manualComment: "ラジオNIKKEI賞3着。キャリアが浅く上積みはある。" },
       { name: "アスクエジンバラ", frame: 3, number: 5, sexAge: "牡3", ranks: [4, 10, 4, 2, 3], starts: 5, classLevel: 1.45, timeIdx: 89, agariIdx: 87, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "岩田康誠", weight: 57, trainer: "-", odds: 18, popular: 9, going: { firm: 83, soft: 75, heavy: 71 }, blood: { sire: "リオンディーズ", damsire: "マンハッタンカフェ", dam: "ハニートリップ" }, styles: ["senko", "sashi"], past: { note: "日本ダービー10着", recent: [] }, manualRank: 1, manualScore: 96, manualComment: "G1で皐月賞4着・ホープフルS3着。中山実績と格を高評価。" },
-      { name: "サヴォアフェール", frame: 3, number: 6, sexAge: "牡3", ranks: [2, 1, 1, 4, 3], starts: 5, classLevel: 1.27, timeIdx: 89, agariIdx: 86, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "松山弘平", weight: 57, trainer: "-", odds: 14, popular: 7, going: { firm: 85, soft: 77, heavy: 73 }, blood: { sire: "エピファネイア", damsire: "キングカメハメハ", dam: "ナニアヒアヒ" }, styles: ["senko"], past: { note: "木曽川特別1着", recent: [] }, manualRank: 6, manualScore: 89, manualComment: "京都新聞杯4着。近走の安定感と2200m対応力を評価。" },
-      { name: "ジャスティンシカゴ", frame: 4, number: 7, sexAge: "牡3", ranks: [1, 2, 2, 6, 12], starts: 5, classLevel: 1.48, timeIdx: 85, agariIdx: 82, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "原優介", weight: 57, trainer: "-", odds: 35, popular: 12, going: { firm: 80, soft: 72, heavy: 68 }, blood: { sire: "スワーヴリチャード", damsire: "キングカメハメハ", dam: "エリカブライト" }, styles: ["sashi"], past: { note: "1勝クラス1着", recent: [] }, manualRank: 10, manualScore: 85, manualComment: "近走1着・2着・2着と安定。重賞実績不足を割り引き。" },
+      { name: "サヴォアフェール", frame: 3, number: 6, sexAge: "牡3", ranks: [2, 1, 1, 4, 3], starts: 5, classLevel: 1.34, timeIdx: 85, agariIdx: 83, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "松山弘平", weight: 57, trainer: "-", odds: 14, popular: 7, going: { firm: 85, soft: 77, heavy: 73 }, blood: { sire: "エピファネイア", damsire: "キングカメハメハ", dam: "ナニアヒアヒ" }, styles: ["senko"], past: { note: "木曽川特別1着", recent: [] }, manualRank: 6, manualScore: 87, manualComment: "京都新聞杯4着。近走の安定感と2200m対応力を評価。" , abilityBoost: 4, form: 4},
+      { name: "ジャスティンシカゴ", frame: 4, number: 7, sexAge: "牡3", ranks: [1, 2, 2, 6, 12], starts: 5, classLevel: 1.50, timeIdx: 85, agariIdx: 82, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "原優介", weight: 57, trainer: "-", odds: 35, popular: 12, going: { firm: 80, soft: 72, heavy: 68 }, blood: { sire: "スワーヴリチャード", damsire: "キングカメハメハ", dam: "エリカブライト" }, styles: ["sashi"], past: { note: "1勝クラス1着", recent: [] }, manualRank: 10, manualScore: 85, manualComment: "近走1着・2着・2着と安定。重賞実績不足を割り引き。" },
       { name: "ゴーイントゥスカイ", frame: 4, number: 8, sexAge: "牡3", ranks: [6, 4, 1, 6, 3], starts: 5, classLevel: 1.62, timeIdx: 92, agariIdx: 89, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "武豊", weight: 57, trainer: "-", odds: 4.5, popular: 2, going: { firm: 92, soft: 84, heavy: 80 }, blood: { sire: "コントレイル", damsire: "Tapit", dam: "ゴーイントゥザウィンドウ" }, styles: ["sashi", "oikomi"], past: { note: "日本ダービー4着", recent: [] }, manualRank: 3, manualScore: 92, manualComment: "日本ダービー4着＋青葉賞1着。2200mへの適性も高い。" },
       { name: "サノノグレーター", frame: 5, number: 9, sexAge: "牡3", ranks: [11, 1, 9, 5, 6], starts: 5, classLevel: 1.38, timeIdx: 90, agariIdx: 87, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "田辺裕信", weight: 57, trainer: "-", odds: 6.0, popular: 3, going: { firm: 90, soft: 82, heavy: 78 }, blood: { sire: "グレーターロンドン", damsire: "ジャングルポケット", dam: "メメクザリアーナ" }, styles: ["nige", "senko"], past: { note: "ラジオNIKKEI賞1着", recent: [] }, manualRank: 4, manualScore: 91, manualComment: "ラジオNIKKEI賞1着。中山2000mレコード勝ちの実績も魅力。" },
       { name: "バステール", frame: 5, number: 10, sexAge: "牡3", ranks: [13, 3, 11, 1, 1], starts: 5, classLevel: 1.68, timeIdx: 94, agariIdx: 91, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "川田将雅", weight: 57, trainer: "-", odds: 3.2, popular: 1, going: { firm: 94, soft: 86, heavy: 82 }, blood: { sire: "キタサンブラック", damsire: "アルデバランII", dam: "マンビア" }, styles: ["senko", "sashi"], past: { note: "日本ダービー3着", recent: [] }, manualRank: 2, manualScore: 93, manualComment: "日本ダービー3着＋弥生賞ディープインパクト記念1着。総合力上位。" },
@@ -2105,7 +2105,7 @@ const SAMPLE_RACES = [
       { name: "ラージアンサンブル", frame: 6, number: 12, sexAge: "牡3", ranks: [7, 8, 1, 6, 1], starts: 5, classLevel: 1.28, timeIdx: 85, agariIdx: 83, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "岩田望来", weight: 57, trainer: "-", odds: 11, popular: 6, going: { firm: 85, soft: 77, heavy: 73 }, blood: { sire: "ベンバトル", damsire: "ジャスタウェイ", dam: "ナスノフォルテ" }, styles: ["sashi", "oikomi"], past: { note: "皐月賞8着", recent: [] }, manualRank: 8, manualScore: 87, manualComment: "皐月賞8着＋すみれS1着。中距離適性と上積み。" },
       { name: "フウセン", frame: 7, number: 13, sexAge: "牡3", ranks: [8, 1, 2, 1, 4], starts: 5, classLevel: 1.08, timeIdx: 79, agariIdx: 77, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "鮫島克駿", weight: 57, trainer: "-", odds: 38, popular: 13, going: { firm: 79, soft: 71, heavy: 67 }, blood: { sire: "コントレイル", damsire: "Afleet Alex", dam: "フリートバーティー" }, styles: ["senko"], past: { note: "1勝クラス1着", recent: [] }, manualRank: 13, manualScore: 82, manualComment: "条件戦で安定。成長余地はあるが重賞級との比較では下位。" },
       { name: "ティラーノ", frame: 7, number: 14, sexAge: "牡3", ranks: [15, 10, 12, 1, 6], starts: 5, classLevel: 1.00, timeIdx: 74, agariIdx: 72, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "石橋脩", weight: 57, trainer: "-", odds: 50, popular: 16, going: { firm: 74, soft: 70, heavy: 65 }, blood: { sire: "ゴールドシップ", damsire: "バトルプラン", dam: "モハー" }, styles: ["oikomi"], past: { note: "燕特別10着", recent: [] }, manualRank: 17, manualScore: 78, manualComment: "未勝利勝ちはあるが、近走と重賞実績から評価を下げる。" },
-      { name: "エリプティクカーブ", frame: 8, number: 15, sexAge: "牡3", ranks: [5, 1, 4, 6, 4], starts: 5, classLevel: 1.18, timeIdx: 84, agariIdx: 82, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "横山武史", weight: 57, trainer: "-", odds: 12, popular: 6, going: { firm: 84, soft: 76, heavy: 72 }, blood: { sire: "レイデオロ", damsire: "メジロベイリー", dam: "メジロマリアン" }, styles: ["senko", "sashi"], past: { note: "稲城特別1着", recent: [] }, manualRank: 11, manualScore: 84, manualComment: "稲城特別1着。東京2400m勝ちで距離は魅力、重賞実績は不足。" },
+      { name: "エリプティクカーブ", frame: 8, number: 15, sexAge: "牡3", ranks: [5, 1, 4, 6, 4], starts: 5, classLevel: 1.30, timeIdx: 84, agariIdx: 82, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "横山武史", weight: 57, trainer: "-", odds: 12, popular: 6, going: { firm: 84, soft: 76, heavy: 72 }, blood: { sire: "レイデオロ", damsire: "メジロベイリー", dam: "メジロマリアン" }, styles: ["senko", "sashi"], past: { note: "稲城特別1着", recent: [] }, manualRank: 11, manualScore: 84, manualComment: "稲城特別1着。東京2400m勝ちで距離は魅力、重賞実績は不足。" },
       { name: "ラディアントスター", frame: 8, number: 16, sexAge: "牡3", ranks: [12, 3, 1, 4, 1], starts: 5, classLevel: 1.32, timeIdx: 88, agariIdx: 85, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "池添謙一", weight: 57, trainer: "-", odds: 8.0, popular: 4, going: { firm: 88, soft: 80, heavy: 76 }, blood: { sire: "サトノアラジン", damsire: "Blame", dam: "ミスエリカ" }, styles: ["sashi"], past: { note: "京都新聞杯3着", recent: [] }, manualRank: 5, manualScore: 90, manualComment: "京都新聞杯3着＋中山2000m1着。中山・距離適性を評価。" }
     ]
   },
@@ -2118,13 +2118,13 @@ const SAMPLE_RACES = [
     raceName: "ローズステークス",
     horses: [
       { name: "アンジュドジョワ", frame: 1, number: 1, sexAge: "牝3", ranks: [9,1,1], starts: 3, classLevel: 1.25, timeIdx: 82, agariIdx: 80, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "北村友一", weight: 55, trainer: "-", odds: 18, popular: 8, going: { firm: 82, soft: 74, heavy: 70 }, blood: { sire: "キタサンブラック", damsire: "Dark Angel", dam: "ピースエンジェル" }, styles: ["sashi"], past: { note: "オークス9着", recent: ["2026/5/24 優駿牝馬 9着","2026/3/28 君子蘭賞 1着","2026/2/8 3歳新馬 1着"] } },
-      { name: "エンネ", frame: 2, number: 2, sexAge: "牝3", ranks: [2, 7, 2, 1], starts: 3, classLevel: 1.37, timeIdx: 88, agariIdx: 85, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "坂井瑠星", weight: 55, trainer: "-", odds: 12, popular: 6, going: { firm: 84, soft: 76, heavy: 72 }, blood: { sire: "キズナ", damsire: "Medaglia d'Oro", dam: "ルパンII" }, styles: ["sashi", "oikomi"], past: { note: "オークス7着", recent: ["2026/5/24 優駿牝馬 7着","2026/4/26 フローラS 2着","2026/3/14 3歳未勝利 1着"] } },
+      { name: "エンネ", frame: 2, number: 2, sexAge: "牝3", ranks: [2, 7, 2, 1], starts: 3, classLevel: 1.42, timeIdx: 88, agariIdx: 85, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "坂井瑠星", weight: 55, trainer: "-", odds: 12, popular: 6, going: { firm: 84, soft: 76, heavy: 72 }, blood: { sire: "キズナ", damsire: "Medaglia d'Oro", dam: "ルパンII" }, styles: ["sashi", "oikomi"], past: { note: "オークス7着", recent: ["2026/5/24 優駿牝馬 7着","2026/4/26 フローラS 2着","2026/3/14 3歳未勝利 1着"] } },
       { name: "スマートプリエール", frame: 3, number: 3, sexAge: "牝3", ranks: [6, 15, 1, 6, 3], starts: 5, classLevel: 1.05, timeIdx: 74, agariIdx: 72, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "田山旺佑", weight: 55, trainer: "-", odds: 45, popular: 13, going: { firm: 74, soft: 70, heavy: 65 }, blood: { sire: "エピファネイア", damsire: "ディープインパクト", dam: "スマートレイアー" }, styles: ["oikomi"], past: { note: "オークス15着", recent: ["2026/5/24 優駿牝馬 15着","2026/3/21 フラワーC 1着","2026/3/1 チューリップ賞 6着","2026/1/25 河津桜賞 3着","2025/10/18 アイビーS 4着"] } },
       { name: "アンディムジーク", frame: 4, number: 4, sexAge: "牝3", ranks: [8, 1, 5, 11, 8], starts: 5, classLevel: 1.10, timeIdx: 80, agariIdx: 78, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "古川吉洋", weight: 55, trainer: "-", odds: 25, popular: 10, going: { firm: 80, soft: 72, heavy: 68 }, blood: { sire: "アドマイヤマーズ", damsire: "ノヴェリスト", dam: "ターフェルムジーク" }, styles: ["senko"], past: { note: "1勝クラス1着", recent: ["2026/8/15 3歳以上1勝クラス 1着","2026/8/1 3歳以上1勝クラス 5着","2026/5/2 3歳1勝クラス 11着","2026/3/1 チューリップ賞 8着","2026/1/25 河津桜賞 8着"] } },
-      { name: "ファストフォワード", frame: 5, number: 5, sexAge: "牝3", ranks: [4, 1, 1, 4, 5], starts: 5, classLevel: 1.15, timeIdx: 82, agariIdx: 80, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "小崎綾也", weight: 55, trainer: "-", odds: 20, popular: 9, going: { firm: 82, soft: 74, heavy: 70 }, blood: { sire: "ハービンジャー", damsire: "Get Stormy", dam: "ゴーノニゴー" }, styles: ["senko"], past: { note: "五頭連峰特別1着", recent: ["2026/8/2 五頭連峰特別 1着","2026/5/10 3歳未勝利 1着","2026/4/11 3歳未勝利 4着","2026/3/14 3歳未勝利 5着","2026/1/31 3歳未勝利 6着"] } },
+      { name: "ファストフォワード", frame: 5, number: 5, sexAge: "牝3", ranks: [4, 1, 1, 4, 5], starts: 5, classLevel: 1.28, timeIdx: 82, agariIdx: 80, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "小崎綾也", weight: 55, trainer: "-", odds: 20, popular: 9, going: { firm: 82, soft: 74, heavy: 70 }, blood: { sire: "ハービンジャー", damsire: "Get Stormy", dam: "ゴーノニゴー" }, styles: ["senko"], past: { note: "五頭連峰特別1着", recent: ["2026/8/2 五頭連峰特別 1着","2026/5/10 3歳未勝利 1着","2026/4/11 3歳未勝利 4着","2026/3/14 3歳未勝利 5着","2026/1/31 3歳未勝利 6着"] } },
       { name: "イクシード", frame: 5, number: 6, sexAge: "牝3", ranks: [3, 1, 3, 1], starts: 3, classLevel: 1.50, timeIdx: 94, agariIdx: 90, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "C.ルメール", weight: 55, trainer: "-", odds: 4.0, popular: 2, going: { firm: 90, soft: 82, heavy: 78 }, blood: { sire: "キタサンブラック", damsire: "キングヘイロー", dam: "シャトーブランシュ" }, styles: ["senko", "sashi"], past: { note: "カーネーションC1着", recent: ["2026/5/23 カーネーションC 1着","2026/3/21 フラワーC 3着","2025/10/12 2歳新馬 1着"] } },
-      { name: "モンローウォーク", frame: 6, number: 7, sexAge: "牝3", ranks: [1,1,1], starts: 3, classLevel: 1.52, timeIdx: 93, agariIdx: 89, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "戸崎圭太", weight: 55, trainer: "-", odds: 5.0, popular: 3, going: { firm: 89, soft: 81, heavy: 77 }, blood: { sire: "キズナ", damsire: "Sebring", dam: "アンフィトリテII" }, styles: ["nige", "senko"], past: { note: "無敗3連勝", recent: ["2026/7/19 かもめ島特別 1着","2026/6/14 八雲特別 1着","2025/8/16 2歳新馬 1着"] } },
-      { name: "ミリタリータトゥー", frame: 6, number: 8, sexAge: "牝3", ranks: [5, 1, 1], starts: 2, classLevel: 1.13, timeIdx: 81, agariIdx: 79, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "西塚洸二", weight: 55, trainer: "-", odds: 22, popular: 9, going: { firm: 81, soft: 73, heavy: 69 }, blood: { sire: "デクラレーションオブウォー", damsire: "ハーツクライ", dam: "レディマクベス" }, styles: ["senko", "sashi"], past: { note: "1勝クラス1着", recent: ["2026/7/12 3歳以上1勝クラス 1着","2026/6/27 3歳未勝利 1着"] } },
+      { name: "モンローウォーク", frame: 6, number: 7, sexAge: "牝3", ranks: [1,1,1], starts: 3, classLevel: 1.55, timeIdx: 93, agariIdx: 89, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "戸崎圭太", weight: 55, trainer: "-", odds: 5.0, popular: 3, going: { firm: 89, soft: 81, heavy: 77 }, blood: { sire: "キズナ", damsire: "Sebring", dam: "アンフィトリテII" }, styles: ["nige", "senko"], past: { note: "無敗3連勝", recent: ["2026/7/19 かもめ島特別 1着","2026/6/14 八雲特別 1着","2025/8/16 2歳新馬 1着"] } },
+      { name: "ミリタリータトゥー", frame: 6, number: 8, sexAge: "牝3", ranks: [5, 1, 1], starts: 2, classLevel: 1.25, timeIdx: 81, agariIdx: 79, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "西塚洸二", weight: 55, trainer: "-", odds: 22, popular: 9, going: { firm: 81, soft: 73, heavy: 69 }, blood: { sire: "デクラレーションオブウォー", damsire: "ハーツクライ", dam: "レディマクベス" }, styles: ["senko", "sashi"], past: { note: "1勝クラス1着", recent: ["2026/7/12 3歳以上1勝クラス 1着","2026/6/27 3歳未勝利 1着"] } },
       { name: "ナムラコスモス", frame: 7, number: 9, sexAge: "牝3", ranks: [11, 15, 6, 2, 1], starts: 5, classLevel: 1.12, timeIdx: 78, agariIdx: 76, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "田口貫太", weight: 55, trainer: "-", odds: 35, popular: 11, going: { firm: 78, soft: 70, heavy: 66 }, blood: { sire: "ダノンプレミアム", damsire: "ジョーカプチーノ", dam: "ナムラリコリス" }, styles: ["sashi"], past: { note: "中京記念15着", recent: ["2026/8/16 中京記念 15着","2026/4/12 桜花賞 6着","2026/3/1 チューリップ賞 2着","2026/2/14 こぶし賞 1着","2025/11/8 2歳未勝利 1着"] } },
       { name: "スウィートハピネス", frame: 7, number: 10, sexAge: "牝3", ranks: [7, 5, 13, 1, 4], starts: 5, classLevel: 1.35, timeIdx: 88, agariIdx: 85, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "佐々木大輔", weight: 55, trainer: "-", odds: 7.0, popular: 3, going: { firm: 88, soft: 80, heavy: 76 }, blood: { sire: "リアルインパクト", damsire: "ワークフォース", dam: "フラル" }, styles: ["sashi", "oikomi"], past: { note: "オークス5着", recent: ["2026/5/24 優駿牝馬 5着","2026/4/12 桜花賞 13着","2026/2/7 エルフィンS 1着","2025/12/14 阪神JF 4着","2025/11/30 白菊賞 2着"] } },
       { name: "レイクラシック", frame: 8, number: 11, sexAge: "牝3", ranks: [10, 1, 6, 2, 1], starts: 5, classLevel: 1.08, timeIdx: 80, agariIdx: 78, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "吉村誠之助", weight: 55, trainer: "-", odds: 28, popular: 10, going: { firm: 80, soft: 72, heavy: 68 }, blood: { sire: "キタサンブラック", damsire: "ホワイトマズル", dam: "メジロジェニファー" }, styles: ["sashi"], past: { note: "1勝クラス1着", recent: ["2026/8/8 3歳以上1勝クラス 1着","2026/5/24 優駿牝馬 6着","2026/5/2 矢車賞 2着","2026/3/21 3歳未勝利 1着","2026/1/17 3歳未勝利 8着"] } },
@@ -2145,15 +2145,15 @@ const SAMPLE_RACES = [
       { name: "ガイアメンテ", frame: 2, number: 4, sexAge: "牡4", ranks: [6, 4, 1, 2, 7], starts: 5, classLevel: 1.12, timeIdx: 80, agariIdx: 78, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "武豊", weight: 57, trainer: "-", odds: 22, popular: 2, going: { firm: 80, soft: 72, heavy: 68 }, blood: { sire: "ドゥラメンテ", damsire: "Concorde's Tune", dam: "ミュージカルロマンス" }, styles: ["senko", "sashi"], past: { note: "ガイアメンテ｜過去5走更新", recent: ["2026/7/19 小倉記念 4着", "2026/5/17 新潟大賞典 1着", "2026/3/15 金鯱賞 2着", "2026/1/25 AJCC 7着", "2025/10/26 菊花賞 17着"] } },
       { name: "ピースワンデュック", frame: 3, number: 5, sexAge: "牡5", ranks: [8, 3, 14, 5, 5], starts: 5, classLevel: 1.30, timeIdx: 87, agariIdx: 84, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "佐々木大輔", weight: 57, trainer: "-", odds: 7.0, popular: 13, going: { firm: 87, soft: 79, heavy: 75 }, blood: { sire: "グレーターロンドン", damsire: "ジャングルポケット", dam: "ピースワンオーレ" }, styles: ["sashi", "sashi"], past: { note: "ピースワンデュック｜過去5走更新", recent: ["2026/7/19 函館記念 3着", "2026/6/14 宝塚記念 14着", "2026/5/10 都大路S 5着", "2026/3/15 金鯱賞 5着", "2026/1/25 AJCC 6着"] } },
       { name: "カネフラ", frame: 3, number: 6, sexAge: "牡4", ranks: [13, 13, 7, 5, 17], starts: 5, classLevel: 1.05, timeIdx: 76, agariIdx: 74, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "酒井学", weight: 57, trainer: "-", odds: 40, popular: 3, going: { firm: 76, soft: 70, heavy: 65 }, blood: { sire: "グランデッツァ", damsire: "キングカメハメハ", dam: "ラカ" }, styles: ["oikomi", "sashi"], past: { note: "カネフラ｜過去5走更新", recent: ["2026/8/30 小倉日経オープン 13着", "2026/7/19 函館記念 7着", "2026/5/10 都大路S 5着", "2026/4/12 福島民報杯 17着", "2026/3/8 大阪城S 11着"] } },
-      { name: "ジーティーアダマン", frame: 4, number: 7, sexAge: "牡4", ranks: [3, 6, 3, 1, 2], starts: 5, classLevel: 1.20, timeIdx: 84, agariIdx: 81, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "岩田望来", weight: 57, trainer: "-", odds: 18, popular: 8, going: { firm: 81, soft: 73, heavy: 69 }, blood: { sire: "ルーラーシップ", damsire: "マンハッタンカフェ", dam: "カウニスクッカ" }, styles: ["senko", "sashi"], past: { note: "ジーティーアダマン｜過去5走更新", recent: ["2026/5/31 日本ダービー 6着", "2026/4/19 皐月賞 3着", "2026/3/8 すみれS 1着", "2026/2/8 きさらぎ賞 2着", "2025/12/28 ホープフルS 18着"] } },
-      { name: "カラマティアノス", frame: 4, number: 8, sexAge: "牡4", ranks: [2, 7, 6, 2, 1], starts: 5, classLevel: 1.33, timeIdx: 87, agariIdx: 84, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "C.ルメール", weight: 57, trainer: "-", odds: 12, popular: 4, going: { firm: 84, soft: 76, heavy: 72 }, blood: { sire: "レイデオロ", damsire: "ハーツクライ", dam: "ダンサール" }, styles: ["sashi", "sashi"], past: { note: "カラマティアノス｜過去5走更新", recent: ["2026/7/12 七夕賞 7着", "2026/6/14 エプソムC 6着", "2026/4/5 ダービー卿CT 2着", "2026/1/5 中山金杯 1着", "2025/11/15 福島記念 12着"] } },
+      { name: "ジーティーアダマン", frame: 4, number: 7, sexAge: "牡4", ranks: [3, 6, 3, 1, 2], starts: 5, classLevel: 1.36, timeIdx: 84, agariIdx: 81, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "岩田望来", weight: 57, trainer: "-", odds: 18, popular: 8, going: { firm: 81, soft: 73, heavy: 69 }, blood: { sire: "ルーラーシップ", damsire: "マンハッタンカフェ", dam: "カウニスクッカ" }, styles: ["senko", "sashi"], past: { note: "ジーティーアダマン｜過去5走更新", recent: ["2026/5/31 日本ダービー 6着", "2026/4/19 皐月賞 3着", "2026/3/8 すみれS 1着", "2026/2/8 きさらぎ賞 2着", "2025/12/28 ホープフルS 18着"] } },
+      { name: "カラマティアノス", frame: 4, number: 8, sexAge: "牡4", ranks: [2, 7, 6, 2, 1], starts: 5, classLevel: 1.40, timeIdx: 87, agariIdx: 84, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "C.ルメール", weight: 57, trainer: "-", odds: 12, popular: 4, going: { firm: 84, soft: 76, heavy: 72 }, blood: { sire: "レイデオロ", damsire: "ハーツクライ", dam: "ダンサール" }, styles: ["sashi", "sashi"], past: { note: "カラマティアノス｜過去5走更新", recent: ["2026/7/12 七夕賞 7着", "2026/6/14 エプソムC 6着", "2026/4/5 ダービー卿CT 2着", "2026/1/5 中山金杯 1着", "2025/11/15 福島記念 12着"] } },
       { name: "マテンロウゲイル", frame: 5, number: 9, sexAge: "牡3", ranks: [5, 5, 10, 1, 2], starts: 5, classLevel: 1.40, timeIdx: 91, agariIdx: 88, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "横山和生", weight: 57, trainer: "-", odds: 3.8, popular: 15, going: { firm: 91, soft: 83, heavy: 79 }, blood: { sire: "エピファネイア", damsire: "Candy Ride", dam: "デザートライド" }, styles: ["sashi", "sashi"], past: { note: "マテンロウゲイル｜過去5走更新", recent: ["2026/5/31 日本ダービー 5着", "2026/4/19 皐月賞 10着", "2026/3/8 弥生賞 1着", "2026/2/15 共同通信杯 2着", "2025/12/28 ホープフルS 1着"] } },
       { name: "タガノデュード", frame: 5, number: 10, sexAge: "牡4", ranks: [11, 5, 6, 4, 1], starts: 5, classLevel: 1.10, timeIdx: 78, agariIdx: 76, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "古川吉洋", weight: 57, trainer: "-", odds: 30, popular: 11, going: { firm: 78, soft: 70, heavy: 66 }, blood: { sire: "ヤマカツエース", damsire: "ハーツクライ", dam: "タガノミューチャン" }, styles: ["senko", "sashi"], past: { note: "タガノデュード｜過去5走更新", recent: ["2026/6/14 宝塚記念 5着", "2026/5/3 天皇賞(春) 6着", "2026/4/5 大阪杯 4着", "2026/2/22 小倉大賞典 1着", "2026/1/5 寿S 1着"] } },
-      { name: "マリアイリダータ", frame: 6, number: 11, sexAge: "牝4", ranks: [4, 1, 1, 1, 2], starts: 5, classLevel: 1.13, timeIdx: 79, agariIdx: 77, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "坂井瑠星", weight: 57, trainer: "-", odds: 26, popular: 15, going: { firm: 79, soft: 71, heavy: 67 }, blood: { sire: "ドゥラメンテ", damsire: "オルフェーヴル", dam: "マルケッサ" }, styles: ["sashi", "sashi"], past: { note: "マリアイリダータ｜過去5走更新", recent: ["2026/6/27 バーデンバーデンC 1着", "2026/5/17 谷川岳S 1着", "2026/4/19 福島牝馬S 1着", "2026/2/22 小倉大賞典 2着", "2026/1/18 愛知杯 2着"] } },
+      { name: "マリアイリダータ", frame: 6, number: 11, sexAge: "牝4", ranks: [4, 1, 1, 1, 2], starts: 5, classLevel: 1.32, timeIdx: 79, agariIdx: 77, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "坂井瑠星", weight: 57, trainer: "-", odds: 26, popular: 15, going: { firm: 79, soft: 71, heavy: 67 }, blood: { sire: "ドゥラメンテ", damsire: "オルフェーヴル", dam: "マルケッサ" }, styles: ["sashi", "sashi"], past: { note: "マリアイリダータ｜過去5走更新", recent: ["2026/6/27 バーデンバーデンC 1着", "2026/5/17 谷川岳S 1着", "2026/4/19 福島牝馬S 1着", "2026/2/22 小倉大賞典 2着", "2026/1/18 愛知杯 2着"] } },
       { name: "レーゼドラマ", frame: 6, number: 12, sexAge: "牝4", ranks: [7, 3, 6, 6, 1], starts: 5, classLevel: 1.12, timeIdx: 80, agariIdx: 78, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "松若風馬", weight: 57, trainer: "-", odds: 19, popular: 15, going: { firm: 80, soft: 72, heavy: 68 }, blood: { sire: "キズナ", damsire: "Burning Roma", dam: "シアードラマ" }, styles: ["sashi", "sashi"], past: { note: "レーゼドラマ｜過去5走更新", recent: ["2026/7/19 小倉記念 3着", "2026/5/31 日本ダービー 6着", "2026/4/19 皐月賞 6着", "2026/3/8 すみれS 1着", "2025/10/26 菊花賞 17着"] } },
       { name: "グランヴィノス", frame: 7, number: 13, sexAge: "牡4", ranks: ["除", 4, 2, 1, 2], starts: 5, classLevel: 1.18, timeIdx: 82, agariIdx: 80, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "川田将雅", weight: 57, trainer: "-", odds: 16, popular: 5, going: { firm: 82, soft: 74, heavy: 70 }, blood: { sire: "キタサンブラック", damsire: "Machiavellian", dam: "ハルーワスウィート" }, styles: ["senko", "sashi"], past: { note: "グランヴィノス｜過去5走更新", recent: ["2026/8/30 小倉日経オープン 4着", "2026/6/14 宝塚記念 2着", "2026/5/10 都大路S 1着", "2026/3/15 金鯱賞 2着", "2026/1/25 AJCC 1着"] } },
       { name: "ミッキーゴールド", frame: 7, number: 14, sexAge: "牡4", ranks: [8, 1, 10, 10, 3], starts: 5, classLevel: 1.15, timeIdx: 81, agariIdx: 79, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "西村淳也", weight: 57, trainer: "-", odds: 17, popular: 15, going: { firm: 81, soft: 73, heavy: 69 }, blood: { sire: "リアルスティール", damsire: "Global Hunter", dam: "グローバルビューティ" }, styles: ["senko", "sashi"], past: { note: "ミッキーゴールド｜過去5走更新", recent: ["2026/8/30 3歳以上2勝クラス 1着", "2026/7/12 3歳以上2勝クラス 10着", "2026/6/14 3歳以上2勝クラス 10着", "2026/5/10 3歳1勝クラス 3着", "2026/3/15 3歳1勝クラス 5着"] } },
-      { name: "ジョバンニ", frame: 8, number: 15, sexAge: "牡4", ranks: [1, 2, 5, 2, 7], starts: 5, classLevel: 1.47, timeIdx: 91, agariIdx: 87, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "松山弘平", weight: 57, trainer: "-", odds: 5.5, popular: 7, going: { firm: 88, soft: 80, heavy: 76 }, blood: { sire: "エピファネイア", damsire: "Footstepsinthesand", dam: "ベアフットレディ" }, styles: ["sashi", "sashi"], past: { note: "ジョバンニ｜過去5走更新", recent: ["2026/7/19 小倉記念 2着", "2026/5/31 QE2世C 5着", "2026/3/15 金鯱賞 2着", "2026/1/25 AJCC 7着", "2025/10/26 菊花賞 8着"] } },
+      { name: "ジョバンニ", frame: 8, number: 15, sexAge: "牡4", ranks: [1, 2, 5, 2, 7], starts: 5, classLevel: 1.48, timeIdx: 91, agariIdx: 87, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "松山弘平", weight: 57, trainer: "-", odds: 5.5, popular: 7, going: { firm: 88, soft: 80, heavy: 76 }, blood: { sire: "エピファネイア", damsire: "Footstepsinthesand", dam: "ベアフットレディ" }, styles: ["sashi", "sashi"], past: { note: "ジョバンニ｜過去5走更新", recent: ["2026/7/19 小倉記念 2着", "2026/5/31 QE2世C 5着", "2026/3/15 金鯱賞 2着", "2026/1/25 AJCC 7着", "2025/10/26 菊花賞 8着"] } },
       { name: "マテンロウスカイ", frame: 8, number: 16, sexAge: "せん7", ranks: [14, 6, 17, 12, 14], starts: 5, classLevel: 1.28, timeIdx: 85, agariIdx: 82, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "横山典弘", weight: 57, trainer: "-", odds: 10, popular: 15, going: { firm: 85, soft: 77, heavy: 73 }, blood: { sire: "モーリス", damsire: "スペシャルウィーク", dam: "レッドラヴィータ" }, styles: ["nige", "sashi"], past: { note: "マテンロウスカイ｜過去5走更新", recent: ["2026/8/9 関屋記念 6着", "2026/6/14 エプソムC 17着", "2026/5/10 都大路S 12着", "2026/3/1 中山記念 14着", "2026/1/25 AJCC 2着"] } }
     ]
   }
@@ -2207,11 +2207,18 @@ function calcAbility(horse, raceCondition) {
   const rankNums = numericRanks(ranks);
   rankNums.forEach((rk, i) => {
     const w = Math.pow(rankNums.length - i, 1.35);
-    let s = rk <= 1 ? 100 : rk === 2 ? 88 : rk === 3 ? 76 : Math.max(8, 70 - (rk - 3) * 9);
+    let s = rk <= 1 ? 100 : rk === 2 ? 88 : rk === 3 ? 80 : rk === 4 ? 70 : rk === 5 ? 62 : Math.max(8, 68 - (rk - 3) * 8);
+    // 直近入賞（1〜5着）は能力が下がらないよう底上げ
+    if (i === 0) {
+      if (rk === 1) s = Math.max(s, 100);
+      else if (rk === 2) s = Math.max(s, 90);
+      else if (rk === 3) s = Math.max(s, 82);
+      else if (rk === 4) s = Math.max(s, 72);
+      else if (rk === 5) s = Math.max(s, 64);
+    }
     // 重賞安定馬（3着以内が複数）は直近の単発大敗のペナルティを緩和
     const showCnt = rankNums.filter(r => r <= 3).length;
     if (showCnt >= 3 && i === 0 && rk >= 8) {
-      // 直近だけ極端に悪い場合、着順スコアを「6着相当」まで引き上げて過大な減点を防ぐ
       s = Math.max(s, 48);
     } else if (showCnt >= 3 && i === 0 && rk >= 6) {
       s = Math.max(s, 55);
@@ -2219,6 +2226,15 @@ function calcAbility(horse, raceCondition) {
     formScore += s * w;
     formW += w;
   });
+  // 直近が入賞なら総合formにボーナス（能力値低下防止）
+  if (rankNums.length && rankNums[0] <= 5) {
+    const r0 = rankNums[0];
+    formScore += r0 === 1 ? 10 : r0 === 2 ? 8 : r0 === 3 ? 7 : r0 === 4 ? 4 : 3;
+    // 過去に1着がある馬の直近3着以内は、単発の大敗をさらに緩和
+    if (r0 <= 3 && rankNums.some((r, i) => i > 0 && r === 1)) {
+      formScore += 5;
+    }
+  }
   formScore = formScore / (formW || 1);
   // 重賞で安定上位（3着以内3回以上）なら formを底上げ
   {
@@ -2288,9 +2304,21 @@ function calcAbility(horse, raceCondition) {
   // 除・取消・- は着順計算に含めない（numericRanks で除外済み）
   const consistency = (() => {
     if (rankNums.length < 2) return 60;
-    const mean = rankNums.reduce((a, b) => a + b, 0) / rankNums.length;
-    const variance = rankNums.reduce((a, b) => a + (b - mean) ** 2, 0) / rankNums.length;
-    return clamp(96 - variance * 5, 38, 96);
+    // 直近が3着以内なら大敗1回のばらつきペナルティを軽減
+    let use = rankNums.slice();
+    if (use[0] <= 3 && use.length >= 3) {
+      const rest = use.slice(1);
+      const maxI = rest.indexOf(Math.max(...rest));
+      if (rest[maxI] >= 10) {
+        // 外れ値を平均寄りの値に置換して分散を抑える
+        const adj = rest.slice();
+        adj[maxI] = Math.min(rest[maxI], 6);
+        use = [use[0]].concat(adj);
+      }
+    }
+    const mean = use.reduce((a, b) => a + b, 0) / use.length;
+    const variance = use.reduce((a, b) => a + (b - mean) ** 2, 0) / use.length;
+    return clamp(96 - variance * 4.2, 42, 96);
   })();
 
   const nValid = rankNums.length || 1;
@@ -2349,10 +2377,11 @@ function calcAbility(horse, raceCondition) {
   const goingToday = cond === "重" ? going.heavy : cond === "稍重" ? going.soft : going.firm;
   const condBoost = (condition - 3) * 3; // 調子を総合に微反映
   const gradedPart = (typeof gradedBonus === "number" ? gradedBonus : 0);
+  const abilityBoost = Number(horse.abilityBoost) || 0;
   const total = (Math.round(clamp(
     speed * 0.18 + stamina * 0.13 + accel * 0.16 + consistency * 0.08 +
     formScore * 0.16 + goingToday * 0.12 + (50 + condBoost) * 0.07 +
-    (50 + gradedPart) * 0.10
+    (50 + gradedPart) * 0.10 + abilityBoost
   , 40, 99) * 10) / 10);
 
   return {
@@ -3408,18 +3437,18 @@ function historyRaceLabel(title, raceId) {
 
 
 // ========== お知らせ・更新履歴 ==========
-const NEWS_VERSION = "2026-09-13a";
+const NEWS_VERSION = "2026-09-13b";
 const NEWS_SEEN_KEY = "keiba_sim_news_seen";
 const NEWS_ITEMS = [
   {
-    ver: "2026-09-13a",
+    ver: "2026-09-13b",
     date: "2026/9/13",
-    title: "【週末3重賞結果】能力値アップデート",
+    title: "【週末3重賞結果】能力値変動",
     body: [
       "★★チャレンジC：ジョバンニが重賞初V／2着カラマティアノス／3着ジーティーアダマン",
       "★★セントライト記念：12番人気ジャスティンシカゴが大波乱V／2着サヴォアフェール／3着アウダーシア",
       "★★ローズS：モンローウォークが無傷4連勝で重賞初V／2着エンネ／3着イクシード",
-      "★各馬の近走着順・能力値に反映。起動時に1〜3着のレベルアップ演出を表示"
+      "★各馬の近走着順・能力値に反映。起動時に1〜3着の能力値変動演出を表示"
     ]
   },
   {
@@ -3437,10 +3466,10 @@ const NEWS_ITEMS = [
   {
     ver: "2026-09-12a",
     date: "2026/9/12",
-    title: "【チャレンジC結果反映】能力値アップデート",
+    title: "【チャレンジC結果反映】能力値変動",
     body: [
       "★★チャレンジC（9/12阪神G3）の着順を各馬の近走・能力値に反映",
-      "★優勝ジョバンニ／2着カラマティアノス／3着ジーティーアダマンを中心に能力値アップ"
+      "★優勝ジョバンニ／2着カラマティアノス／3着ジーティーアダマンを中心に能力値変動"
     ]
   },
   {
