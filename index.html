@@ -1314,6 +1314,90 @@
     0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(240,196,20,0.35); }
     50% { transform: scale(1.06); box-shadow: 0 0 0 6px rgba(240,196,20,0); }
   }
+
+.news-feature-showcase {
+  margin: 10px 0 12px;
+  padding: 14px 12px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #1a1030 0%, #0d2137 45%, #1a2a12 100%);
+  border: 1px solid rgba(240,196,20,0.55);
+  box-shadow: 0 0 24px rgba(240,196,20,0.18), inset 0 0 30px rgba(56,189,248,0.08);
+  animation: featurePulse 2.4s ease-in-out infinite alternate;
+  position: relative;
+  overflow: hidden;
+}
+@keyframes featurePulse {
+  0% { box-shadow: 0 0 12px rgba(240,196,20,0.12), inset 0 0 20px rgba(56,189,248,0.05); }
+  100% { box-shadow: 0 0 28px rgba(240,196,20,0.35), inset 0 0 40px rgba(56,189,248,0.12); }
+}
+.news-feature-showcase::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.08) 50%, transparent 70%);
+  animation: featureShine 3.2s linear infinite;
+  pointer-events: none;
+}
+@keyframes featureShine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.news-feature-row {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;
+}
+.news-feature-card {
+  flex: 1; min-width: 120px;
+  padding: 10px 10px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  text-align: center;
+  animation: featureCardIn 0.7s ease both;
+}
+.news-feature-card:nth-child(2) { animation-delay: 0.15s; }
+@keyframes featureCardIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.news-feature-emoji {
+  font-size: 1.6rem;
+  display: block;
+  margin-bottom: 4px;
+  animation: featureBounce 1.6s ease-in-out infinite;
+}
+.news-feature-card:nth-child(2) .news-feature-emoji { animation-delay: 0.3s; }
+@keyframes featureBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.news-feature-title {
+  font-weight: 800;
+  font-size: 0.88rem;
+  color: #f0c414;
+  letter-spacing: 0.02em;
+}
+.news-feature-desc {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.78);
+  margin-top: 4px;
+  line-height: 1.35;
+}
+.news-feature-ribbon {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #f59e0b, #ef4444);
+  color: #fff;
+  margin-bottom: 6px;
+  animation: ribbonFlash 1.4s ease-in-out infinite alternate;
+}
+@keyframes ribbonFlash {
+  0% { filter: brightness(1); }
+  100% { filter: brightness(1.25); }
+}
+
 </style>
 </head>
 <body>
@@ -1341,6 +1425,8 @@
   <button class="tab" data-tab="pace">展開予想</button>
   <button class="tab" data-tab="history">履歴</button>
   <button class="tab" data-tab="stats">統計</button>
+  <button class="tab" data-tab="dream">ドリームマッチ</button>
+  <button class="tab" data-tab="zukan">競走馬図鑑</button>
   <button class="tab" data-tab="settings">設定</button>
   </div>
 
@@ -1635,6 +1721,208 @@
 
 <!-- ===== お知らせ ===== -->
 <!-- ===== 設定 ===== -->
+
+<!-- ===== ドリームマッチ ===== -->
+<div id="panel-dream" class="panel">
+  <div class="info-box">
+    開催に関係なく、好きな馬を集めてオリジナルレースができます。<br>
+    出走頭数は9〜18頭。競馬場・馬場・ペース・天候は【レース映像】と同じ操作感です。
+  </div>
+  <div class="card">
+    <h2>レース設定</h2>
+    <label class="horse-meta" style="display:block;margin-bottom:4px">競馬場</label>
+    <select id="dreamCourseSelect" class="race-select">
+      <option value="東京">東京</option>
+      <option value="中山">中山</option>
+      <option value="阪神">阪神</option>
+      <option value="京都">京都</option>
+      <option value="中京">中京</option>
+      <option value="新潟">新潟</option>
+      <option value="札幌">札幌</option>
+      <option value="小倉">小倉</option>
+    </select>
+    <label class="horse-meta" style="display:block;margin:8px 0 4px">距離</label>
+    <select id="dreamDistSelect" class="race-select">
+      <option value="1200">1200m</option>
+      <option value="1400">1400m</option>
+      <option value="1600" selected>1600m</option>
+      <option value="1800">1800m</option>
+      <option value="2000">2000m</option>
+      <option value="2200">2200m</option>
+      <option value="2400">2400m</option>
+    </select>
+    <label class="horse-meta" style="display:block;margin:8px 0 4px">出走頭数</label>
+    <select id="dreamFieldSelect" class="race-select">
+      <option value="9">9頭</option>
+      <option value="10">10頭</option>
+      <option value="11">11頭</option>
+      <option value="12" selected>12頭</option>
+      <option value="13">13頭</option>
+      <option value="14">14頭</option>
+      <option value="15">15頭</option>
+      <option value="16">16頭</option>
+      <option value="17">17頭</option>
+      <option value="18">18頭</option>
+    </select>
+    <p class="horse-meta" id="dreamFieldHint" style="margin:6px 0 0">最大12頭まで選択できます（現在の出走頭数設定）</p>
+    <div style="margin-top:10px">
+      <label class="horse-meta" style="display:block;margin-bottom:6px">馬場状態</label>
+      <div class="choice-group" data-for="dreamGoingSelect">
+        <button type="button" class="choice-btn active" data-value="良">良</button>
+        <button type="button" class="choice-btn" data-value="稍重">稍重</button>
+        <button type="button" class="choice-btn" data-value="重">重</button>
+      </div>
+      <select id="dreamGoingSelect" class="choice-source" aria-hidden="true">
+        <option value="良" selected>良</option>
+        <option value="稍重">稍重</option>
+        <option value="重">重</option>
+      </select>
+    </div>
+    <div style="margin-top:10px">
+      <label class="horse-meta" style="display:block;margin-bottom:6px">想定ペース</label>
+      <div class="choice-group" data-for="dreamPaceSelect">
+        <button type="button" class="choice-btn active" data-value="auto">自動</button>
+        <button type="button" class="choice-btn" data-value="high">ハイ</button>
+        <button type="button" class="choice-btn" data-value="mid">ミドル</button>
+        <button type="button" class="choice-btn" data-value="slow">スロー</button>
+      </div>
+      <select id="dreamPaceSelect" class="choice-source" aria-hidden="true">
+        <option value="auto" selected>自動</option>
+        <option value="high">ハイ</option>
+        <option value="mid">ミドル</option>
+        <option value="slow">スロー</option>
+      </select>
+    </div>
+    <div style="margin-top:10px">
+      <label class="horse-meta" style="display:block;margin-bottom:6px">天候</label>
+      <div class="choice-group" data-for="dreamWeatherSelect">
+        <button type="button" class="choice-btn compact active" data-value="晴れ">晴れ</button>
+        <button type="button" class="choice-btn compact" data-value="曇り">曇り</button>
+        <button type="button" class="choice-btn compact" data-value="小雨">小雨</button>
+        <button type="button" class="choice-btn compact" data-value="雨">雨</button>
+        <button type="button" class="choice-btn compact" data-value="大雨">大雨</button>
+        <button type="button" class="choice-btn compact" data-value="雪">雪</button>
+        <button type="button" class="choice-btn compact" data-value="大雪">大雪</button>
+      </div>
+      <select id="dreamWeatherSelect" class="choice-source" aria-hidden="true">
+        <option value="晴れ" selected>晴れ</option>
+        <option value="曇り">曇り</option>
+        <option value="小雨">小雨</option>
+        <option value="雨">雨</option>
+        <option value="大雨">大雨</option>
+        <option value="雪">雪</option>
+        <option value="大雪">大雪</option>
+      </select>
+    </div>
+    <div style="margin-top:10px">
+      <label class="horse-meta" style="display:block;margin-bottom:6px">予想の重視ポイント</label>
+      <div class="choice-group" data-for="dreamWeightSelect">
+        <button type="button" class="choice-btn compact active" data-value="balance">バランス</button>
+        <button type="button" class="choice-btn compact" data-value="speed">タイム</button>
+        <button type="button" class="choice-btn compact" data-value="last">末脚</button>
+        <button type="button" class="choice-btn compact" data-value="going">馬場</button>
+        <button type="button" class="choice-btn compact" data-value="frame">馬番</button>
+        <button type="button" class="choice-btn compact" data-value="blood">血統</button>
+      </div>
+      <select id="dreamWeightSelect" class="choice-source" aria-hidden="true">
+        <option value="balance" selected>バランス</option>
+        <option value="speed">タイム</option>
+        <option value="last">末脚</option>
+        <option value="going">馬場</option>
+        <option value="frame">馬番</option>
+        <option value="blood">血統</option>
+      </select>
+    </div>
+    <div style="margin-top:10px">
+      <label class="horse-meta" style="display:block;margin-bottom:6px">再生速度</label>
+      <select id="speedSelectDream" class="race-select">
+        <option value="1">1倍速</option>
+        <option value="2">2倍速</option>
+        <option value="3">3倍速</option>
+        <option value="4" selected>4倍速</option>
+        <option value="5">5倍速</option>
+        <option value="6">6倍速</option>
+        <option value="8">8倍速</option>
+        <option value="10">10倍速</option>
+        <option value="20">20倍速</option>
+        <option value="40">40倍速</option>
+      </select>
+    </div>
+    <div class="flex-gap" style="margin-top:12px">
+      <button type="button" class="btn btn-secondary" id="btnDreamRandomSettings">レース設定をランダム</button>
+    </div>
+  </div>
+  <div class="card mt-10">
+    <h2>出走馬選択 <span class="horse-meta" id="dreamPickCount">0 / 12頭</span></h2>
+    <p class="horse-meta" style="margin:0 0 8px">チェックで選択／解除。枠番は選択順に自動割当します。</p>
+    <input type="search" id="dreamHorseSearch" class="race-select" placeholder="馬名で検索..." style="margin-bottom:8px">
+    <div id="dreamHorsePool" style="max-height:320px;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:6px;position:relative;z-index:5"></div>
+    <div class="flex-gap" style="margin-top:10px">
+      <button type="button" class="btn btn-secondary" id="btnDreamClear">選択クリア</button>
+      <button type="button" class="btn btn-secondary" id="btnDreamRandom">ランダム選出</button>
+    </div>
+  </div>
+  <div class="card mt-10">
+    <h2>選択中の出走表</h2>
+    <div id="dreamSelectedList" class="horse-meta">まだ選ばれていません</div>
+  </div>
+  <div class="card mt-10">
+    <div id="dreamCanvasWrap" class="race-canvas-wrap" style="width:100%;max-width:100%;margin:0 auto;position:relative">
+      <canvas id="dreamCanvas"></canvas>
+    </div>
+    <div class="live-ticker" id="dreamLiveTicker" style="margin-top:8px">
+      <div class="live-ticker-head">
+        <span id="dreamTickerInfo">馬番速報</span>
+        <strong id="dreamTickerRemain">—</strong>
+      </div>
+      <div class="live-ticker-track" id="dreamTickerTrack">
+        <div class="live-ticker-rail inner"></div>
+        <div class="live-ticker-rail mid"></div>
+        <div class="live-ticker-rail outer"></div>
+        <span class="live-ticker-label" id="dreamTickerStartLab" style="left:4px;bottom:4px">START</span>
+        <span class="live-ticker-label" id="dreamTickerGoalLab" style="right:4px;bottom:4px">GOAL</span>
+        <span class="live-ticker-label" style="left:4px;top:4px">内</span>
+        <span class="live-ticker-label" style="left:4px;top:50%;transform:translateY(-50%)">中</span>
+        <span class="live-ticker-label" style="left:4px;bottom:18px">外</span>
+        <div class="live-ticker-dist" id="dreamTickerDist">READY</div>
+      </div>
+    </div>
+  </div>
+  <div class="flex-gap">
+    <button class="btn btn-green" id="btnDreamStart">レース開始</button>
+    <button class="btn btn-secondary" id="btnDreamStop">停止</button>
+  </div>
+  <div class="card mt-10">
+    <h2>現在順位</h2>
+    <div class="leaderboard" id="dreamLiveBoard"></div>
+  </div>
+  <div id="dreamFinishCard" class="card mt-10 hidden">
+    <h2>着順結果</h2>
+    <div id="dreamFinishList"></div>
+  </div>
+</div>
+
+
+<!-- ===== 競走馬図鑑 ===== -->
+<div id="panel-zukan" class="panel">
+  <div class="info-box">
+    これまでアプリに登録した競走馬の一覧です。名前検索・ソートができます。
+  </div>
+  <div class="card">
+    <h2>競走馬図鑑 <span class="horse-meta" id="zukanCount">—</span></h2>
+    <input type="search" id="zukanSearch" class="race-select" placeholder="馬名で検索..." style="margin-bottom:8px">
+    <label class="horse-meta" style="display:block;margin-bottom:4px">並び替え</label>
+    <select id="zukanSort" class="race-select">
+      <option value="name">名前順</option>
+      <option value="ability" selected>能力値が高い順</option>
+      <option value="ability_asc">能力値が低い順</option>
+    </select>
+  </div>
+  <div class="card mt-10">
+    <div id="zukanList"></div>
+  </div>
+</div>
+
 <div id="panel-settings" class="panel">
   <div class="card">
     <h2>デザインテーマ</h2>
@@ -2200,6 +2488,64 @@ function rankScore(ranks) {
   return Math.max(0, Math.min(100, (11 - avg) * 10));
 }
 
+
+function distBandOf(meters) {
+  const d = Number(meters) || 0;
+  if (d > 0 && d < 1400) return "short";
+  if (d >= 1400 && d < 1800) return "mile";
+  if (d >= 1800 && d < 2200) return "middle";
+  if (d >= 2200 && d < 2800) return "midLong";
+  if (d >= 2800) return "long";
+  return "mile";
+}
+const DIST_BAND_LABELS = {
+  short: "短距離",
+  mile: "マイル",
+  middle: "中距離",
+  midLong: "中長距離",
+  long: "長距離"
+};
+function scoreToGrade(s) {
+  if (s >= 4.6) return "S";
+  if (s >= 3.9) return "A";
+  if (s >= 3.2) return "B";
+  if (s >= 2.5) return "C";
+  if (s >= 1.8) return "D";
+  return "E";
+}
+/** 距離適性 S〜E（近走距離・着順・distAptから推定） */
+function calcDistAptitude(horse) {
+  const ranks = typeof numericRanks === "function" ? numericRanks(horse.ranks || []) : [];
+  const avg = ranks.length ? ranks.reduce((a, b) => a + b, 0) / ranks.length : 8;
+  const formBoost = avg <= 2.2 ? 1.1 : avg <= 3.5 ? 0.7 : avg <= 5.5 ? 0.25 : avg <= 8 ? -0.2 : -0.6;
+  const da = Number(horse.distApt);
+  const daN = isFinite(da) ? Math.max(1, Math.min(10, da)) : 5;
+  const last = Number(horse.lastDist) || 1600;
+  const primary = distBandOf(last);
+  const centers = { short: 1200, mile: 1600, middle: 2000, midLong: 2400, long: 3000 };
+  const order = ["short", "mile", "middle", "midLong", "long"];
+  const grades = {};
+  order.forEach(band => {
+    const gap = Math.abs(last - centers[band]);
+    let s = 3.2 - Math.min(2.4, gap / 450);
+    s += formBoost;
+    s += (daN - 5) * 0.18;
+    if (band === primary) s += 0.85;
+    const di = Math.abs(order.indexOf(band) - order.indexOf(primary));
+    if (di === 1) s += 0.25;
+    if (di >= 3) s -= 0.45;
+    if (band === primary && ranks[0] === 1) s += 0.35;
+    if (band === primary && ranks[0] && ranks[0] <= 3) s += 0.2;
+    grades[band] = scoreToGrade(s);
+  });
+  return {
+    primary,
+    primaryLabel: DIST_BAND_LABELS[primary] || primary,
+    grades,
+    line: order.map(b => DIST_BAND_LABELS[b] + grades[b]).join(" / ")
+  };
+}
+
 function calcAbility(horse, raceCondition) {
   const ranks = horse.ranks || [8, 8, 8, 8, 8];
   // 直近ほど重み大の着順スコア（1着高・着外低）
@@ -2399,7 +2745,8 @@ function calcAbility(horse, raceCondition) {
       placeRate: Math.round(placeRate * 100),
       showRate: Math.round(showRate * 100),
       timeIdx: timeN,
-      agariIdx: agariN
+      agariIdx: agariN,
+      distAptitude: (typeof calcDistAptitude === "function" ? calcDistAptitude(horse) : null)
     }
   };
 }
@@ -3252,7 +3599,13 @@ function getSimCount() {
 }
 
 function getRaceSpeed() {
-  const el = document.getElementById("speedSelectRace");
+  let el = null;
+  try {
+    if (typeof isDreamRaceActive === "function" && isDreamRaceActive()) {
+      el = document.getElementById("speedSelectDream");
+    }
+  } catch (e) {}
+  if (!el) el = document.getElementById("speedSelectRace");
   const n = el ? parseFloat(el.value) : 4;
   return Math.max(1, Math.min(40, n || 4));
 }
@@ -3437,9 +3790,20 @@ function historyRaceLabel(title, raceId) {
 
 
 // ========== お知らせ・更新履歴 ==========
-const NEWS_VERSION = "2026-09-13b";
+const NEWS_VERSION = "2026-09-14a";
 const NEWS_SEEN_KEY = "keiba_sim_news_seen";
 const NEWS_ITEMS = [
+  {
+    ver: "2026-09-14a",
+    date: "2026/9/14",
+    title: "✨ NEW MODE ドリームマッチ ＆ 競走馬図鑑",
+    showFeatureShowcase: true,
+    body: [
+      "★★【ドリームマッチ】好きな馬を集めて自由レース！競馬場・距離・天候までお好みで",
+      "★★【競走馬図鑑】登録馬を一覧でチェック。能力・距離適性・血統をすぐ確認",
+      "★タブ右寄りに新設。レース設定のランダム化・馬番速報・倍速も対応"
+    ]
+  },
   {
     ver: "2026-09-13b",
     date: "2026/9/13",
@@ -3796,6 +4160,27 @@ const NEWS_ITEMS = [
 ];
 
 
+
+function featureShowcaseHtml() {
+  return `<div class="news-feature-showcase">
+    <div class="news-feature-ribbon">NEW FEATURE</div>
+    <div style="font-weight:800;font-size:0.95rem;color:#fff;margin-bottom:2px">遊び方が広がった2つの新タブ</div>
+    <div class="news-feature-row">
+      <div class="news-feature-card">
+        <span class="news-feature-emoji">🏇</span>
+        <div class="news-feature-title">ドリームマッチ</div>
+        <div class="news-feature-desc">好きな馬を集めて<br>好きな競馬場で自由にレース</div>
+      </div>
+      <div class="news-feature-card">
+        <span class="news-feature-emoji">📖</span>
+        <div class="news-feature-title">競走馬図鑑</div>
+        <div class="news-feature-desc">登録馬を一覧で<br>能力・距離適性をチェック</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;font-size:0.72rem;color:rgba(255,255,255,0.7);text-align:center">タブ欄の右寄りからすぐ遊べます</div>
+  </div>`;
+}
+
 function choiceDemoHtml() {
   return `<div class="news-choice-demo">
     <div class="news-choice-demo-title">操作イメージ（プルダウン → 選択ボタン）</div>
@@ -3909,6 +4294,7 @@ function formatNewsHtml(items) {
     const themeTry = it.showThemeTry ? themeTryHtml() : "";
     const weatherBox = it.highlightWeather ? weatherHighlightHtml() : "";
     const choiceDemo = it.showChoiceDemo ? choiceDemoHtml() : "";
+    const featureShow = it.showFeatureShowcase ? featureShowcaseHtml() : "";
     const badge = isLatest ? `<span class="news-badge-new">NEW</span>` : "";
     const wrapClass = isLatest ? "news-item news-item-latest" : "news-item";
     const wrapStyle = isLatest ? "" : "margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border)";
@@ -3917,7 +4303,7 @@ function formatNewsHtml(items) {
       ${weatherBox}
       <ul style="margin:0;padding-left:${isLatest ? "0.4em" : "1.2em"};color:var(--text);list-style:${isLatest ? "none" : "disc"}">${lis}</ul>
       ${themeTry}
-      ${choiceDemo}
+      ${featureShow}${choiceDemo}
       ${demo}
     </div>`;
   }).join("");
@@ -4482,6 +4868,9 @@ function runAbility() {
         <div class="horse-meta" style="margin:4px 0 6px">
           近走:${formatRanksDisplay(getDisplayRanks(h))} ／タイム${fmtIdx(d.timeIdx)} 上がり${fmtIdx(d.agariIdx)}
         </div>
+        <div class="horse-meta" style="margin:0 0 6px">
+          距離適性: ${(() => { const da = d.distAptitude || calcDistAptitude(h); return da ? (da.primaryLabel + "向き｜" + da.line) : "—"; })()}
+        </div>
         <div class="ability-grid">
           <div class="ability-item"><span class="label">スピード</span><span class="val">${fmtIdx(ab.speed)}</span>
             <div class="ability-bar"><div class="ability-fill ab-spd" style="width:${ab.speed}%"></div></div></div>
@@ -4716,9 +5105,46 @@ function runPacePredict() {
 }
 
 // ========== レース映像（俯瞰ミニマップ：馬番のみ） ==========
+function isDreamRaceActive() {
+  const p = document.getElementById("panel-dream");
+  return !!(p && p.classList.contains("active"));
+}
+function getRaceUiIds() {
+  if (isDreamRaceActive()) {
+    return {
+      canvas: "dreamCanvas",
+      wrap: "dreamCanvasWrap",
+      board: "dreamLiveBoard",
+      finishCard: "dreamFinishCard",
+      finishList: "dreamFinishList",
+      ticker: "dreamLiveTicker",
+      tickerTrack: "dreamTickerTrack",
+      tickerInfo: "dreamTickerInfo",
+      tickerRemain: "dreamTickerRemain",
+      tickerDist: "dreamTickerDist",
+      tickerStartLab: "dreamTickerStartLab",
+      tickerGoalLab: "dreamTickerGoalLab"
+    };
+  }
+  return {
+    canvas: "raceCanvas",
+    wrap: "raceCanvasWrap",
+    board: "liveBoard",
+    finishCard: "finishCard",
+    finishList: "finishList",
+    ticker: "liveTicker",
+    tickerTrack: "liveTickerTrack",
+    tickerInfo: "liveTickerInfo",
+    tickerRemain: "liveTickerRemain",
+    tickerDist: "liveTickerDist",
+    tickerStartLab: "liveTickerStartLab",
+    tickerGoalLab: "liveTickerGoalLab"
+  };
+}
 function setupCanvas() {
-  const canvas = document.getElementById("raceCanvas");
-  const wrap = document.getElementById("raceCanvasWrap");
+  const ids = getRaceUiIds();
+  const canvas = document.getElementById(ids.canvas);
+  const wrap = document.getElementById(ids.wrap);
   const dpr = window.devicePixelRatio || 1;
   const w = wrap.clientWidth || 360;
   // 大きく見やすいアスペクト（ほぼ正方形寄り）
@@ -6445,10 +6871,11 @@ function formatRaceTime(sec) {
 
 /** 中継風・馬番速報（位置取りバー） */
 function renderLiveTicker(order, remain, raceMeta, dist) {
-  const info = document.getElementById("liveTickerInfo");
-  const remainEl = document.getElementById("liveTickerRemain");
-  const track = document.getElementById("liveTickerTrack");
-  const distEl = document.getElementById("liveTickerDist");
+  const ids = (typeof getRaceUiIds === "function") ? getRaceUiIds() : {};
+  const info = document.getElementById(ids.tickerInfo || "liveTickerInfo");
+  const remainEl = document.getElementById(ids.tickerRemain || "liveTickerRemain");
+  const track = document.getElementById(ids.tickerTrack || "liveTickerTrack");
+  const distEl = document.getElementById(ids.tickerDist || "liveTickerDist");
   if (!track) return;
   const courseName = raceMeta ? (raceMeta.course || "") : "";
   const cInfo = (typeof COURSES !== "undefined" && COURSES[courseName]) ? COURSES[courseName] : null;
@@ -6460,8 +6887,8 @@ function renderLiveTicker(order, remain, raceMeta, dist) {
   if (info) info.textContent = courseName + " " + surface + (d0 ? d0 + "m" : "") + "｜" + dirLabel + "｜馬番速報";
   if (remainEl) remainEl.textContent = remain <= 0 ? "GOAL" : ("残り " + remain + "m");
   if (distEl) distEl.textContent = remain <= 0 ? "GOAL" : String(remain);
-  const startLab = document.getElementById("liveTickerStartLab");
-  const goalLab = document.getElementById("liveTickerGoalLab");
+  const startLab = document.getElementById(ids.tickerStartLab || "liveTickerStartLab");
+  const goalLab = document.getElementById(ids.tickerGoalLab || "liveTickerGoalLab");
   if (startLab && goalLab) {
     if (isLeft) {
       startLab.style.left = "4px"; startLab.style.right = "auto";
@@ -6918,8 +7345,8 @@ function drawRunnerRealistic(ctx, pt, ang, num, fi, leadPos, r, raceTime) {
 
 function startRace(horses, raceMeta) {
   stopRace();
-  document.getElementById("finishCard").classList.add("hidden");
-  const _tt = document.getElementById("liveTickerTrack");
+  const _ui0 = getRaceUiIds(); const _fc0 = document.getElementById(_ui0.finishCard); if (_fc0) _fc0.classList.add("hidden");
+  const _tt = document.getElementById(getRaceUiIds().tickerTrack);
   if (_tt) {
     if (_tt._dotMap) {
       Object.keys(_tt._dotMap).forEach(k => { try { _tt._dotMap[k].remove(); } catch(e) {} });
@@ -7335,7 +7762,7 @@ function startRace(horses, raceMeta) {
 
       if (boardAcc >= (timeScale >= 8 ? 0.2 : 0.12) || finishedCount >= nRun) {
         boardAcc = 0;
-        document.getElementById("liveBoard").innerHTML = order.map((r, idx) => {
+        document.getElementById(getRaceUiIds().board).innerHTML = order.map((r, idx) => {
           const fi = Math.min(7, Math.max(0, (r.horse.frame || 1) - 1));
           const tstr = r.finished ? formatRaceTime(r.finishTime) : (Math.round((r.drawPos != null ? r.drawPos : r.pos) * dist) + "m");
           return `<div class="lb-row">
@@ -7420,8 +7847,8 @@ function hideHorseFinishModal() {
 }
 
 function showFinish(order, raceMeta, pace, leadSplit) {
-  document.getElementById("finishCard").classList.remove("hidden");
-  document.getElementById("finishList").innerHTML = order.map((r, i) => {
+  document.getElementById(getRaceUiIds().finishCard).classList.remove("hidden");
+  document.getElementById(getRaceUiIds().finishList).innerHTML = order.map((r, i) => {
     const badge = i===0?"r1":i===1?"r2":i===2?"r3":"";
     const split = r.split1000 != null ? "／1000m " + formatRaceTime(r.split1000) : "";
     const jk = r.horse.jockey ? "・" + r.horse.jockey : "";
@@ -7528,6 +7955,404 @@ function runCustomRace() {
 }
 
 
+
+
+
+// ========== 競走馬図鑑 ==========
+function getZukanHorses() {
+  if (typeof getAllRegisteredHorses === "function") return getAllRegisteredHorses();
+  const map = new Map();
+  (SAMPLE_RACES || []).forEach(r => {
+    (r.horses || []).forEach(h => {
+      if (h && h.name && !map.has(h.name)) map.set(h.name, h);
+    });
+  });
+  return Array.from(map.values());
+}
+
+function renderZukan() {
+  const listEl = document.getElementById("zukanList");
+  const cntEl = document.getElementById("zukanCount");
+  if (!listEl) return;
+  let horses = getZukanHorses();
+  const q = ((document.getElementById("zukanSearch") || {}).value || "").trim();
+  if (q) horses = horses.filter(h => (h.name || "").indexOf(q) !== -1);
+  const sort = ((document.getElementById("zukanSort") || {}).value) || "ability";
+  const withAb = horses.map(h => {
+    let ab = null, da = null;
+    try { ab = calcAbility(h, "良"); } catch (e) {}
+    try { da = typeof calcDistAptitude === "function" ? calcDistAptitude(h) : null; } catch (e) {}
+    return { h, ab, da, total: ab && ab.total != null ? ab.total : 0 };
+  });
+  if (sort === "name") {
+    withAb.sort((a, b) => (a.h.name || "").localeCompare(b.h.name || "", "ja"));
+  } else if (sort === "ability_asc") {
+    withAb.sort((a, b) => a.total - b.total);
+  } else {
+    withAb.sort((a, b) => b.total - a.total);
+  }
+  if (cntEl) cntEl.textContent = withAb.length + "頭";
+  if (!withAb.length) {
+    listEl.innerHTML = '<p class="horse-meta">該当する馬がありません</p>';
+    return;
+  }
+  listEl.innerHTML = withAb.map((item, i) => {
+    const h = item.h;
+    const ab = item.ab || {};
+    const d = ab.detail || {};
+    const da = item.da;
+    const ranks = typeof formatRanksDisplay === "function"
+      ? formatRanksDisplay(typeof getDisplayRanks === "function" ? getDisplayRanks(h) : (h.ranks || []))
+      : (h.ranks || []).join(",");
+    const blood = h.blood ? ((h.blood.sire || "") + (h.blood.damsire ? " × " + h.blood.damsire : "")) : "";
+    const distLine = da ? (da.primaryLabel + "向き｜" + da.line) : "—";
+    return `<div style="padding:12px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div style="min-width:0">
+          <div style="font-weight:800;font-size:0.95rem">${i + 1}. ${h.name}</div>
+          <div class="horse-meta">${h.sexAge || ""} ${h.jockey ? "／" + h.jockey : ""}</div>
+        </div>
+        <div style="font-weight:800;color:#f0c414;white-space:nowrap">総合 ${typeof fmtIdx === "function" ? fmtIdx(item.total) : item.total}</div>
+      </div>
+      <div class="horse-meta" style="margin-top:4px">近走: ${ranks}</div>
+      <div class="horse-meta">距離適性: ${distLine}</div>
+      ${blood ? `<div class="horse-meta">血統: ${blood}</div>` : ""}
+      <div class="horse-meta">スピード ${typeof fmtIdx === "function" ? fmtIdx(ab.speed) : (ab.speed || "-")}
+        ／スタミナ ${typeof fmtIdx === "function" ? fmtIdx(ab.stamina) : (ab.stamina || "-")}
+        ／末脚 ${typeof fmtIdx === "function" ? fmtIdx(ab.accel) : (ab.accel || "-")}</div>
+    </div>`;
+  }).join("");
+}
+
+function bindZukan() {
+  const search = document.getElementById("zukanSearch");
+  if (search) search.oninput = function () { renderZukan(); };
+  const sort = document.getElementById("zukanSort");
+  if (sort) sort.onchange = function () { renderZukan(); };
+  try { renderZukan(); } catch (e) { console.warn("zukan", e); }
+}
+
+// ========== ドリームマッチ ==========
+let dreamSelected = []; // horse refs (copies)
+
+function getAllRegisteredHorses() {
+  const map = new Map();
+  try {
+    (SAMPLE_RACES || []).forEach(r => {
+      (r.horses || []).forEach(h => {
+        if (!h || !h.name) return;
+        if (!map.has(h.name)) map.set(h.name, h);
+      });
+    });
+  } catch (e) {}
+  return Array.from(map.values()).sort((a, b) => (a.name || "").localeCompare(b.name || "", "ja"));
+}
+
+function dreamFieldSize() {
+  const el = document.getElementById("dreamFieldSelect");
+  const n = parseInt(el && el.value, 10);
+  return Math.max(9, Math.min(18, isFinite(n) ? n : 12));
+}
+
+function renumberDreamSelected() {
+  dreamSelected.forEach((h, i) => {
+    h.number = i + 1;
+    h.frame = Math.min(8, Math.ceil((i + 1) / 2));
+  });
+}
+
+function renderDreamHorsePool() {
+  const pool = document.getElementById("dreamHorsePool");
+  if (!pool) return;
+  const max = dreamFieldSize();
+  const all = getAllRegisteredHorses();
+  const selectedNames = new Set(dreamSelected.map(h => h.name));
+
+  // 検索フィルタ
+  let q = "";
+  const search = document.getElementById("dreamHorseSearch");
+  if (search) q = (search.value || "").trim();
+
+  const filtered = !q ? all : all.filter(h => (h.name || "").indexOf(q) !== -1);
+
+  pool.innerHTML = filtered.map((h, i) => {
+    const on = selectedNames.has(h.name);
+    let total = "-";
+    try {
+      const ab = calcAbility(h, "良");
+      if (ab && ab.total != null) total = ab.total;
+    } catch (e) {}
+    const id = "dream_h_" + i + "_" + String(h.name).length;
+    const safeName = String(h.name)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/"/g, "&quot;");
+    return `<label class="dream-horse-item ${on ? "selected" : ""}" for="${id}">
+      <input type="checkbox" id="${id}" class="dream-horse-check" data-name="${safeName}" ${on ? "checked" : ""}>
+      <span class="dream-horse-name">${safeName}</span>
+      <span class="horse-meta">能力 ${total}</span>
+    </label>`;
+  }).join("") || '<p class="horse-meta">該当する馬がありません</p>';
+
+  pool.querySelectorAll(".dream-horse-check").forEach(inp => {
+    inp.addEventListener("change", function () {
+      const name = this.getAttribute("data-name");
+      // HTML entity decode for name attribute is automatic via getAttribute
+      const realName = name; // data-name stores original via browser
+      // recover real name from all list by matching
+      const src = all.find(x => x.name === this.getAttribute("data-name")) ||
+        all.find(x => String(x.name).replace(/"/g, "&quot;") === this.getAttribute("data-name"));
+      const horseName = src ? src.name : this.getAttribute("data-name");
+      if (this.checked) {
+        if (dreamSelected.some(h => h.name === horseName)) return;
+        if (dreamSelected.length >= max) {
+          this.checked = false;
+          alert("出走頭数は最大" + max + "頭です。先に「出走頭数」を増やすか、他の馬を外してください。");
+          return;
+        }
+        if (src) dreamSelected.push(Object.assign({}, src));
+        else {
+          // fallback find
+          const s2 = getAllRegisteredHorses().find(h => h.name === horseName);
+          if (s2) dreamSelected.push(Object.assign({}, s2));
+        }
+      } else {
+        dreamSelected = dreamSelected.filter(h => h.name !== horseName);
+      }
+      renumberDreamSelected();
+      renderDreamSelected();
+      // update selected class without full re-render to keep scroll
+      const label = this.closest(".dream-horse-item");
+      if (label) label.classList.toggle("selected", this.checked);
+      const cnt = document.getElementById("dreamPickCount");
+      if (cnt) cnt.textContent = dreamSelected.length + " / " + max + "頭";
+    });
+  });
+  renderDreamSelected();
+}
+
+function toggleDreamHorse(name) {
+  if (!name) return;
+  const max = dreamFieldSize();
+  const idx = dreamSelected.findIndex(h => h.name === name);
+  if (idx >= 0) dreamSelected.splice(idx, 1);
+  else {
+    if (dreamSelected.length >= max) {
+      alert("出走頭数は最大" + max + "頭です。");
+      return;
+    }
+    const src = getAllRegisteredHorses().find(h => h.name === name);
+    if (src) dreamSelected.push(Object.assign({}, src));
+  }
+  renumberDreamSelected();
+  renderDreamHorsePool();
+}
+
+function renderDreamSelected() {
+  const max = dreamFieldSize();
+  const cnt = document.getElementById("dreamPickCount");
+  if (cnt) cnt.textContent = dreamSelected.length + " / " + max + "頭";
+  const hint = document.getElementById("dreamFieldHint");
+  if (hint) hint.textContent = "最大" + max + "頭まで選択できます（現在の出走頭数設定）";
+  const el = document.getElementById("dreamSelectedList");
+  if (!el) return;
+  if (!dreamSelected.length) {
+    el.innerHTML = "まだ選ばれていません（最大" + max + "頭）";
+    return;
+  }
+  el.innerHTML = dreamSelected.map(h => {
+    let total = "-";
+    let distLine = "—";
+    try { total = calcAbility(h, "良").total; } catch (e) {}
+    try {
+      if (typeof calcDistAptitude === "function") {
+        const da = calcDistAptitude(h);
+        if (da) distLine = da.primaryLabel + "向き｜" + da.line;
+      }
+    } catch (e) {}
+    return `<div class="horse-row">
+      <div class="rank-badge">${h.number}</div>
+      <div style="flex:1">
+        <div class="horse-name">${h.frame}枠${h.number}番 ${h.name}</div>
+        <div class="horse-meta">能力 ${total}</div>
+        <div class="horse-meta">距離適性: ${distLine}</div>
+      </div>
+      <button type="button" class="btn btn-secondary dream-remove-btn" style="width:auto;padding:4px 8px;font-size:0.7rem" data-name="${String(h.name).replace(/"/g, "&quot;")}">外す</button>
+    </div>`;
+  }).join("");
+  el.querySelectorAll(".dream-remove-btn").forEach(btn => {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleDreamHorse(this.getAttribute("data-name"));
+    });
+  });
+}
+
+function dreamRandomPick() {
+  const max = dreamFieldSize();
+  const all = getAllRegisteredHorses().slice();
+  for (let i = all.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = all[i]; all[i] = all[j]; all[j] = t;
+  }
+  dreamSelected = all.slice(0, Math.min(max, all.length)).map(h => Object.assign({}, h));
+  renumberDreamSelected();
+  renderDreamHorsePool();
+}
+
+function buildDreamRaceMeta() {
+  const course = (document.getElementById("dreamCourseSelect") || {}).value || "東京";
+  const distance = parseInt((document.getElementById("dreamDistSelect") || {}).value, 10) || 1600;
+  const condition = (document.getElementById("dreamGoingSelect") || {}).value || "良";
+  const weather = (document.getElementById("dreamWeatherSelect") || {}).value || "晴れ";
+  return {
+    id: "dream_match",
+    name: "ドリームマッチ",
+    course,
+    surface: "芝",
+    distance,
+    condition,
+    weather,
+    note: "ドリームマッチ｜自由編成",
+    horses: dreamSelected.slice()
+  };
+}
+
+function startDreamRace() {
+  const max = dreamFieldSize();
+  if (dreamSelected.length < 9) {
+    alert("9頭以上選択してください（現在" + dreamSelected.length + "頭）");
+    return;
+  }
+  if (dreamSelected.length > max) {
+    alert("出走頭数は" + max + "頭までです");
+    return;
+  }
+  // sync pace/weight to race selects temporarily for shared engine
+  const pace = (document.getElementById("dreamPaceSelect") || {}).value || "auto";
+  const weight = (document.getElementById("dreamWeightSelect") || {}).value || "balance";
+  const pr = document.getElementById("paceSelectRace");
+  const wr = document.getElementById("weightSelectRace");
+  if (pr) { pr.value = pace; try { syncChoiceGroup("paceSelectRace"); } catch (e) {} }
+  if (wr) { wr.value = weight; try { syncChoiceGroup("weightSelectRace"); } catch (e) {} }
+  const meta = buildDreamRaceMeta();
+  // mark panel active already; startRace uses dream canvas via getRaceUiIds
+  startRace(meta.horses, meta);
+}
+
+
+function onDreamCourseChange() {
+  const course = (document.getElementById("dreamCourseSelect") || {}).value;
+  const distEl = document.getElementById("dreamDistSelect");
+  if (!distEl) return;
+  // レース映像と同じ写真コースが出やすい距離に合わせる
+  const prefer = {
+    "中山": "2200",
+    "阪神": "2000",
+    "新潟": "2000",
+    "札幌": "1800",
+    "東京": "1600",
+    "京都": "1600",
+    "中京": "1600",
+    "小倉": "1200"
+  };
+  if (prefer[course]) distEl.value = prefer[course];
+}
+
+
+function pickRandom(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+function setSelectValue(id, value) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.value = value;
+  try { el.dispatchEvent(new Event("change", { bubbles: true })); } catch (e) {}
+}
+function setChoiceValue(selectId, value) {
+  const sel = document.getElementById(selectId);
+  if (sel) {
+    sel.value = value;
+    try { sel.dispatchEvent(new Event("change", { bubbles: true })); } catch (e) {}
+  }
+  const group = document.querySelector('.choice-group[data-for="' + selectId + '"]');
+  if (group) {
+    group.querySelectorAll(".choice-btn").forEach(btn => {
+      const on = btn.getAttribute("data-value") === value;
+      btn.classList.toggle("active", on);
+    });
+  }
+  try { if (typeof syncChoiceGroup === "function") syncChoiceGroup(selectId); } catch (e) {}
+}
+/** ドリームマッチのレース設定をすべてランダム */
+function randomizeDreamSettings() {
+  const courses = ["東京", "中山", "阪神", "京都", "中京", "新潟", "札幌", "小倉"];
+  const dists = ["1200", "1400", "1600", "1800", "2000", "2200", "2400"];
+  const fields = ["9", "10", "11", "12", "13", "14", "15", "16", "17", "18"];
+  const goings = ["良", "稍重", "重"];
+  const paces = ["auto", "high", "mid", "slow"];
+  const weathers = ["晴れ", "曇り", "小雨", "雨", "大雨", "雪", "大雪"];
+  const weights = ["balance", "speed", "last", "going", "frame", "blood"];
+  const speeds = ["1", "2", "3", "4", "5", "6", "8", "10", "20", "40"];
+
+  setSelectValue("dreamCourseSelect", pickRandom(courses));
+  setSelectValue("dreamDistSelect", pickRandom(dists));
+  setSelectValue("dreamFieldSelect", pickRandom(fields));
+  setChoiceValue("dreamGoingSelect", pickRandom(goings));
+  setChoiceValue("dreamPaceSelect", pickRandom(paces));
+  setChoiceValue("dreamWeatherSelect", pickRandom(weathers));
+  setChoiceValue("dreamWeightSelect", pickRandom(weights));
+  setSelectValue("speedSelectDream", pickRandom(speeds));
+
+  // 頭数変更に合わせて選択馬を調整
+  const max = dreamFieldSize();
+  if (dreamSelected.length > max) dreamSelected = dreamSelected.slice(0, max);
+  if (typeof renumberDreamSelected === "function") renumberDreamSelected();
+  try { renderDreamHorsePool(); } catch (e) {}
+  try { renderDreamSelected(); } catch (e) {}
+}
+
+function bindDreamMatch() {
+  const rndSet = document.getElementById("btnDreamRandomSettings");
+  if (rndSet) {
+    rndSet.onclick = function () { randomizeDreamSettings(); };
+  }
+  const courseSel = document.getElementById("dreamCourseSelect");
+  if (courseSel) {
+    courseSel.onchange = function () { onDreamCourseChange(); };
+  }
+  const field = document.getElementById("dreamFieldSelect");
+  if (field) {
+    field.onchange = function () {
+      const max = dreamFieldSize();
+      if (dreamSelected.length > max) dreamSelected = dreamSelected.slice(0, max);
+      renumberDreamSelected();
+      renderDreamHorsePool();
+    };
+  }
+  const search = document.getElementById("dreamHorseSearch");
+  if (search) {
+    search.oninput = function () { renderDreamHorsePool(); };
+  }
+  const clear = document.getElementById("btnDreamClear");
+  if (clear) {
+    clear.onclick = function () { dreamSelected = []; renderDreamHorsePool(); };
+  }
+  const rnd = document.getElementById("btnDreamRandom");
+  if (rnd) {
+    rnd.onclick = function () { dreamRandomPick(); };
+  }
+  const start = document.getElementById("btnDreamStart");
+  if (start) {
+    start.onclick = function () { startDreamRace(); };
+  }
+  const stop = document.getElementById("btnDreamStop");
+  if (stop) {
+    stop.onclick = function () { try { stopRace(); } catch (e) {} };
+  }
+  try { renderDreamHorsePool(); } catch (e) { console.warn("dream pool", e); }
+}
 
 // ========== AI予想 ==========
 function confidenceStars(level) {
@@ -7880,7 +8705,7 @@ function bindWeights() {
     if (!e.touches || e.touches.length !== 1) return;
     // 入力欄・横スクロールUI上は無視
     const t = e.target;
-    if (t && (t.closest && (t.closest("input,select,textarea,button,.tabs,.choice-btn,.choice-group,.going-btn")))) return;
+    if (t && (t.closest && (t.closest("input,select,textarea,button,.tabs,.choice-btn,.choice-group,.going-btn,.dream-horse-item,.dream-horse-check,label")))) return;
     sx = e.touches[0].clientX;
     sy = e.touches[0].clientY;
     st = Date.now();
@@ -7914,6 +8739,15 @@ document.querySelectorAll(".tab").forEach(tab => {
     try { tab.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" }); } catch (e) {}
     const panel = document.getElementById("panel-" + tab.dataset.tab);
     if (panel) { panel.classList.add("active"); try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch (e2) {} }
+    if (tab.dataset.tab === "zukan") {
+      setTimeout(function () { try { bindZukan(); renderZukan(); } catch (e) {} }, 40);
+    }
+    if (tab.dataset.tab === "dream") {
+      setTimeout(function () {
+        try { bindDreamMatch(); } catch (e) {}
+        try { renderDreamHorsePool(); } catch (e) {}
+      }, 40);
+    }
     if (tab.dataset.tab === "raceview") {
       setTimeout(() => {
         const { ctx, w, h } = setupCanvas();
@@ -8089,7 +8923,7 @@ function bindChoiceGroups() {
   });
 }
 // select.value を書き換えたあとの見た目同期用
-const _choiceIds = ['paceSelectPredict','weatherSelectPredict','weightSelectPredict','goingSelectRace','paceSelectRace','weatherSelectRace','weightSelectRace'];
+const _choiceIds = ['paceSelectPredict','weatherSelectPredict','weightSelectPredict','goingSelectRace','paceSelectRace','weatherSelectRace','weightSelectRace','dreamGoingSelect','dreamPaceSelect','dreamWeatherSelect','dreamWeightSelect'];
 function syncAllChoiceGroups() { _choiceIds.forEach(syncChoiceGroup); }
 
 
