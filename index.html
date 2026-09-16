@@ -8324,6 +8324,15 @@ function startRace(horses, raceMeta) {
     };
   });
 
+  // 先行馬に 2〜5番手スロットを割り当て（強い順に前め）
+  (function assignSenkoSlots() {
+    const senkos = runners.filter(r => r.styleKey === "senko" && !r.isBigEscape);
+    senkos.sort((a, b) => (a.ord || 9) - (b.ord || 9));
+    senkos.forEach((r, i) => {
+      r._senkoSlot = 1 + (i % 4); // 1..4 → 2〜5番手相当
+    });
+  })();
+
   runners._railAssigned = false;
   runners.forEach(r => { r._railHolder = false; r._laneAtFinalCorner = null; r._bigEscapeLead = null; r._beLastPos = null; });
   let last = performance.now();
@@ -8391,7 +8400,7 @@ function startRace(horses, raceMeta) {
       let styleOff = 0;
       if (r.isBigEscape) styleOff = 0.08;
       else if (r.styleKey === "nige") styleOff = 0.045;
-      else if (r.styleKey === "senko") styleOff = 0.028;
+      else if (r.styleKey === "senko") styleOff = 0.010; // 2〜5番手想定（逃げの直後）
       else if (r.styleKey === "sashi") styleOff = -0.022;
       else if (r.styleKey === "oikomi") styleOff = -0.038;
       styleOff += (6 - (r.avgPass || 6)) * 0.004;
@@ -8434,6 +8443,37 @@ function startRace(horses, raceMeta) {
       const lerp = Math.min(1, 0.14 + dtWall * 2.2);
       r.displayPos = r.displayPos + (pos - r.displayPos) * lerp;
       r.pos = pos;
+
+      // 先行馬: 逃げ馬ではないので先頭固定せず 2〜5番手で脚を溜め、最終直線で差し切る
+      if (r.styleKey === "senko" && !r.isBigEscape && !r.finished) {
+        const STRAIGHT_IN = 0.70;
+        if (r._senkoSlot == null) r._senkoSlot = 1 + Math.floor(Math.random() * 4); // 1〜4 → 2〜5番手相当
+        const slot = Math.max(1, Math.min(4, r._senkoSlot));
+        // 1馬身 ≒ 0.0095。2番手=約1.2馬身、5番手=約4.5馬身後ろ
+        const holdBehind = 0.0095 * (1.0 + slot * 0.9);
+        if (r.pos < STRAIGHT_IN) {
+          // 先頭・大逃げの直後に控える（自分が先頭なら押し下げる）
+          let leadPos = 0;
+          for (let j = 0; j < runners.length; j++) {
+            const o = runners[j];
+            if (o === r || o.finished) continue;
+            if (o.pos > leadPos) leadPos = o.pos;
+          }
+          if (leadPos > 0.002) {
+            const cap = leadPos - holdBehind;
+            if (r.pos > cap) r.pos = Math.max(0, cap);
+          }
+        } else {
+          // 最終直線: 溜めた脚で加速（差し切りイメージ）
+          const along = Math.min(1, (r.pos - STRAIGHT_IN) / 0.28);
+          const kick = (0.006 + 0.010 * along) * Math.min(2.0, dt * 2.0);
+          // 実力上位の先行ほど伸びる
+          const skill = 1 + Math.max(0, (10 - (r.ord != null ? r.ord : 5)) * 0.04);
+          r.pos = Math.min(0.998, r.pos + kick * skill);
+        }
+        pos = r.pos;
+        r.displayPos = r.displayPos + (r.pos - r.displayPos) * Math.min(1, lerp * 1.2);
+      }
 
       // 大逃げ: スタミナ消費なし。スタート直後に先頭＋最内。最終直線入りまで最低8馬身キープ
       // 1馬身 ≒ 進度 0.0095
