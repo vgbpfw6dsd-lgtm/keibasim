@@ -1240,6 +1240,29 @@
 }
 
 
+.margin-cell {
+  flex-shrink: 0;
+  min-width: 4.6em;
+  text-align: right;
+  padding-left: 8px;
+}
+.margin-label {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #fde68a;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(253,230,138,0.35);
+  border-radius: 999px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+.margin-label.margin-win {
+  color: #94a3b8;
+  border-color: rgba(148,163,184,0.35);
+  font-weight: 700;
+}
+
 #finishCard:not(.hidden) {
   animation: finishCardIn 0.55s cubic-bezier(0.22,1,0.36,1);
 }
@@ -1677,7 +1700,7 @@
   0% { background-position: 0% 50%; }
   100% { background-position: 200% 50%; }
 }
-/* 図鑑：名馬名は金色 */
+/* 名鑑：名馬名は金色 */
 .zukan-legend-name {
   background: linear-gradient(90deg, #fff6a0, #ffd700, #ffb347, #ffd700, #fff6a0);
   background-size: 200% 100%;
@@ -1693,7 +1716,7 @@
   0% { background-position: 0% 50%; }
   100% { background-position: 200% 50%; }
 }
-/* 図鑑：能力値100超は虹色 */
+/* 名鑑：能力値100超は虹色 */
 .zukan-ability-rainbow {
   background: linear-gradient(90deg, #ff4d4d, #ff9f1a, #ffe566, #4ade80, #38bdf8, #a78bfa, #ff4d4d);
   background-size: 220% 100%;
@@ -1738,7 +1761,7 @@
   <button class="tab" data-tab="history">履歴</button>
   <button class="tab" data-tab="stats">統計</button>
   <button class="tab tab-dream-rainbow" data-tab="dream"><span class="tab-rainbow-text">ドリームマッチ</span></button>
-  <button class="tab" data-tab="zukan">競走馬図鑑</button>
+  <button class="tab" data-tab="zukan">競走馬名鑑</button>
   <button class="tab" data-tab="settings">設定</button>
   </div>
 
@@ -2241,13 +2264,13 @@
 </div>
 
 
-<!-- ===== 競走馬図鑑 ===== -->
+<!-- ===== 競走馬名鑑 ===== -->
 <div id="panel-zukan" class="panel">
   <div class="info-box">
     これまでアプリに登録した競走馬の一覧です。名前検索・ソートができます。
   </div>
   <div class="card">
-    <h2>競走馬図鑑 <span class="horse-meta" id="zukanCount">—</span></h2>
+    <h2>競走馬名鑑 <span class="horse-meta" id="zukanCount">—</span></h2>
     <input type="search" id="zukanSearch" class="race-select" placeholder="馬名で検索..." style="margin-bottom:8px">
     <label class="horse-meta" style="display:block;margin-bottom:4px">並び替え</label>
     <select id="zukanSort" class="race-select">
@@ -2605,72 +2628,72 @@ function pedigreeBonus(horse, race) {
 // ========== サンプルレース（実在馬・実在コース構成のデモ） ==========
 // ※近走着順・タイム指数はデモ用の想定値。公式結果そのものではありません。
 
-/** 過去の名馬（図鑑・ドリームマッチ用）※能力値は100超可 */
+/** 過去の名馬（名鑑・ドリームマッチ用）※能力値は100超可 */
 const LEGENDARY_HORSES = [
-  { name: "イクイノックス", frame: 1, number: 1, sexAge: "牡（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.92, timeIdx: 128, agariIdx: 124, distApt: 9, lastDist: 2500, restWeeks: 0, jockey: "ルメール", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 96, soft: 90, heavy: 84 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 88, manualComment: "過去の名馬", legend: true, abilityBoost: 18, specialAbility: { id: "equinox", name: "世界一の馬", desc: "全能力が歴代最高水準" } },
-  { name: "ディープインパクト", frame: 2, number: 2, sexAge: "牡（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.90, timeIdx: 126, agariIdx: 128, distApt: 9, lastDist: 2400, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 95, soft: 88, heavy: 80 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi","oikomi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 87, manualComment: "過去の名馬", legend: true, abilityBoost: 17, specialAbility: { id: "impact", name: "衝撃の末脚", desc: "末脚・総合が歴代級" } },
-  { name: "アーモンドアイ", frame: 3, number: 3, sexAge: "牝（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.86, timeIdx: 124, agariIdx: 122, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "ルメール", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 94, soft: 88, heavy: 80 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko","sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 85, manualComment: "過去の名馬", legend: true, abilityBoost: 15, specialAbility: { id: "almond", name: "絶対女王", desc: "マイル〜中距離で歴代級" } },
-  { name: "シンボリルドルフ", frame: 4, number: 4, sexAge: "牡（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.84, timeIdx: 122, agariIdx: 116, distApt: 9, lastDist: 2400, restWeeks: 0, jockey: "内藤繁春", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 93, soft: 86, heavy: 80 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 84, manualComment: "過去の名馬", legend: true, abilityBoost: 14, specialAbility: { id: "emperor", name: "皇帝", desc: "クラシック総合力が突出" } },
-  { name: "オルフェーヴル", frame: 5, number: 5, sexAge: "牡（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.82, timeIdx: 120, agariIdx: 126, distApt: 9, lastDist: 2400, restWeeks: 0, jockey: "池添謙一", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 93, soft: 88, heavy: 82 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["oikomi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 84, manualComment: "過去の名馬", legend: true, abilityBoost: 14, specialAbility: { id: "wild", name: "荒ぶる天才", desc: "追込末脚が規格外" } },
-  { name: "ナリタブライアン", frame: 6, number: 6, sexAge: "牡（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.80, timeIdx: 121, agariIdx: 118, distApt: 9, lastDist: 2400, restWeeks: 0, jockey: "南井克巳", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 92, soft: 85, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 83, manualComment: "過去の名馬", legend: true, abilityBoost: 13, specialAbility: { id: "triple", name: "三冠の輝き", desc: "中長距離の完成度" } },
-  { name: "トウカイテイオー", frame: 7, number: 7, sexAge: "牡（名馬）", ranks: [1,1,1,2,1], starts: 5, classLevel: 1.78, timeIdx: 118, agariIdx: 120, distApt: 8, lastDist: 2200, restWeeks: 0, jockey: "清水成駿", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 84, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko","sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 82, manualComment: "過去の名馬", legend: true, abilityBoost: 12, specialAbility: { id: "phoenix", name: "不死鳥", desc: "不利でも粘る安定性" } },
-  { name: "テイエムオペラオー", frame: 8, number: 8, sexAge: "牡（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.78, timeIdx: 117, agariIdx: 114, distApt: 9, lastDist: 2200, restWeeks: 0, jockey: "和田竜二", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 92, soft: 86, heavy: 80 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 82, manualComment: "過去の名馬", legend: true, abilityBoost: 12, specialAbility: { id: "eightCrown", name: "八冠", desc: "安定と総合が非常に高い" } },
-  { name: "コントレイル", frame: 1, number: 9, sexAge: "牡（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.76, timeIdx: 119, agariIdx: 118, distApt: 9, lastDist: 2400, restWeeks: 0, jockey: "福永祐一", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 92, soft: 86, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 82, manualComment: "過去の名馬", legend: true, abilityBoost: 12, specialAbility: { id: "contrail", name: "無敗三冠", desc: "中長距離の完成度" } },
-  { name: "オグリキャップ", frame: 2, number: 10, sexAge: "牡（名馬）", ranks: [1,1,2,1,1], starts: 5, classLevel: 1.75, timeIdx: 116, agariIdx: 122, distApt: 8, lastDist: 2000, restWeeks: 0, jockey: "南井克巳", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 87, heavy: 82 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi","oikomi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 81, manualComment: "過去の名馬", legend: true, abilityBoost: 11, specialAbility: { id: "people", name: "民衆の支持", desc: "末脚と勝負根" } },
-  { name: "メジロマックイーン", frame: 3, number: 11, sexAge: "牡（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.74, timeIdx: 114, agariIdx: 108, distApt: 10, lastDist: 3200, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 88, heavy: 84 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 81, manualComment: "過去の名馬", legend: true, abilityBoost: 11, specialAbility: { id: "staminaKing", name: "スタミナ王", desc: "長距離スタミナが突出" } },
-  { name: "キタサンブラック", frame: 4, number: 12, sexAge: "牡（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.72, timeIdx: 115, agariIdx: 112, distApt: 9, lastDist: 2500, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 87, heavy: 82 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 80, manualComment: "過去の名馬", legend: true, abilityBoost: 10, specialAbility: { id: "kitasan", name: "国民的号", desc: "中長距離の底力" } },
-  { name: "スペシャルウィーク", frame: 5, number: 13, sexAge: "牡（名馬）", ranks: [1,1,1,2,1], starts: 5, classLevel: 1.72, timeIdx: 116, agariIdx: 114, distApt: 9, lastDist: 2400, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 86, heavy: 80 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko","sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 80, manualComment: "過去の名馬", legend: true, abilityBoost: 10, specialAbility: { id: "japanCup", name: "ジャパンCの記憶", desc: "中長距離総合" } },
-  { name: "リバティアイランド", frame: 6, number: 14, sexAge: "牝（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.70, timeIdx: 116, agariIdx: 118, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "川田将雅", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 86, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 80, manualComment: "過去の名馬", legend: true, abilityBoost: 10, specialAbility: { id: "liberty", name: "自由な末脚", desc: "牝馬中長距離" } },
-  { name: "エルコンドルパサー", frame: 7, number: 15, sexAge: "牡（名馬）", ranks: [1,1,2,1,1], starts: 5, classLevel: 1.70, timeIdx: 118, agariIdx: 114, distApt: 8, lastDist: 2000, restWeeks: 0, jockey: "的場均", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 92, soft: 87, heavy: 82 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 80, manualComment: "過去の名馬", legend: true, abilityBoost: 10, specialAbility: { id: "world", name: "世界級", desc: "良馬場スピード" } },
-  { name: "サイレンススズカ", frame: 8, number: 16, sexAge: "牡（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.68, timeIdx: 125, agariIdx: 110, distApt: 7, lastDist: 2000, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 94, soft: 82, heavy: 74 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["nige"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 81, manualComment: "過去の名馬", legend: true, abilityBoost: 11, specialAbility: { id: "bigEscape", name: "大逃げ", desc: "スタート直後にスタミナを消費し先頭へ出る" } },
-  { name: "ウオッカ", frame: 1, number: 17, sexAge: "牝（名馬）", ranks: [1,1,1,2,1], starts: 5, classLevel: 1.68, timeIdx: 117, agariIdx: 116, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "四位洋文", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 85, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko","sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 79, manualComment: "過去の名馬", legend: true, abilityBoost: 9, specialAbility: { id: "vodka", name: "牝馬の革命", desc: "マイル〜中距離" } },
-  { name: "ジェンティルドンナ", frame: 2, number: 18, sexAge: "牝（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.68, timeIdx: 115, agariIdx: 115, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "岩田康誠", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 85, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko","sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 79, manualComment: "過去の名馬", legend: true, abilityBoost: 9, specialAbility: { id: "gentildonna", name: "牝馬三冠+", desc: "中長距離総合" } },
-  { name: "ゴールドシップ", frame: 3, number: 1, sexAge: "牡（名馬）", ranks: [1,1,1,2,1], starts: 5, classLevel: 1.66, timeIdx: 113, agariIdx: 114, distApt: 10, lastDist: 2500, restWeeks: 0, jockey: "内田博幸", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 87, heavy: 83 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["oikomi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 79, manualComment: "過去の名馬", legend: true, abilityBoost: 9, specialAbility: { id: "gold", name: "金子のスタミナ", desc: "長距離追込" } },
-  { name: "ドウデュース", frame: 4, number: 2, sexAge: "牡（名馬）", ranks: [1,1,2,1,1], starts: 5, classLevel: 1.66, timeIdx: 116, agariIdx: 117, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 85, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi","oikomi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 79, manualComment: "過去の名馬", legend: true, abilityBoost: 9, specialAbility: { id: "dodeuce", name: "大舞台の強さ", desc: "末脚と勝負根" } },
-  { name: "グランアレグリア", frame: 5, number: 3, sexAge: "牝（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.66, timeIdx: 122, agariIdx: 121, distApt: 6, lastDist: 1600, restWeeks: 0, jockey: "ルメール", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 93, soft: 86, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 80, manualComment: "過去の名馬", legend: true, abilityBoost: 10, specialAbility: { id: "alegria", name: "歓喜のマイル", desc: "短〜マイル最高峰" } },
-  { name: "ロードカナロア", frame: 6, number: 4, sexAge: "牡（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.64, timeIdx: 123, agariIdx: 120, distApt: 6, lastDist: 1400, restWeeks: 0, jockey: "岩田康誠", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 93, soft: 87, heavy: 81 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 79, manualComment: "過去の名馬", legend: true, abilityBoost: 9, specialAbility: { id: "canaloa", name: "スプリント帝王", desc: "短〜マイルで圧倒" } },
-  { name: "デアリングタクト", frame: 7, number: 5, sexAge: "牝（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.64, timeIdx: 114, agariIdx: 115, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "松山弘平", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 85, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 78, manualComment: "過去の名馬", legend: true, abilityBoost: 8, specialAbility: { id: "daring", name: "無敗牝馬三冠", desc: "安定と差し脚" } },
-  { name: "ブエナビスタ", frame: 8, number: 6, sexAge: "牝（名馬）", ranks: [1,1,1,2,1], starts: 5, classLevel: 1.62, timeIdx: 114, agariIdx: 117, distApt: 8, lastDist: 2200, restWeeks: 0, jockey: "岩田康誠", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 86, heavy: 80 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 78, manualComment: "過去の名馬", legend: true, abilityBoost: 8, specialAbility: { id: "buena", name: "美しい差し脚", desc: "末脚と安定" } },
-  { name: "ダイワスカーレット", frame: 1, number: 7, sexAge: "牝（名馬）", ranks: [1,1,2,1,1], starts: 5, classLevel: 1.62, timeIdx: 116, agariIdx: 114, distApt: 8, lastDist: 2200, restWeeks: 0, jockey: "安藤勝己", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 84, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["nige","senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 78, manualComment: "過去の名馬", legend: true, abilityBoost: 8, specialAbility: { id: "scarlet", name: "真っ赤な逃げ", desc: "先行スピード" } },
-  { name: "リスグラシュー", frame: 2, number: 8, sexAge: "牝（名馬）", ranks: [1,1,1,2,1], starts: 5, classLevel: 1.62, timeIdx: 115, agariIdx: 118, distApt: 8, lastDist: 2200, restWeeks: 0, jockey: "ルメール", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 86, heavy: 80 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 78, manualComment: "過去の名馬", legend: true, abilityBoost: 8, specialAbility: { id: "lis", name: "秋の華", desc: "末脚と良馬場" } },
-  { name: "グラスワンダー", frame: 3, number: 9, sexAge: "牡（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.60, timeIdx: 114, agariIdx: 116, distApt: 8, lastDist: 2000, restWeeks: 0, jockey: "的場均", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 87, heavy: 83 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi","oikomi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 77, manualComment: "過去の名馬", legend: true, abilityBoost: 7, specialAbility: { id: "lastSpurt", name: "強襲の末脚", desc: "差し追込末脚" } },
-  { name: "シンボリクリスエス", frame: 4, number: 10, sexAge: "牡（名馬）", ranks: [1,1,1,2,1], starts: 5, classLevel: 1.60, timeIdx: 114, agariIdx: 112, distApt: 9, lastDist: 2200, restWeeks: 0, jockey: "オリビエ・ペリエ", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 85, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 77, manualComment: "過去の名馬", legend: true, abilityBoost: 7, specialAbility: { id: "tenno", name: "天皇賞の馬", desc: "中〜中長距離" } },
-  { name: "ゼンノロブロイ", frame: 5, number: 11, sexAge: "牡（名馬）", ranks: [1,1,2,1,1], starts: 5, classLevel: 1.58, timeIdx: 112, agariIdx: 111, distApt: 9, lastDist: 2500, restWeeks: 0, jockey: "オリビエ・ペリエ", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 86, heavy: 81 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko","sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 77, manualComment: "過去の名馬", legend: true, abilityBoost: 7, specialAbility: { id: "autumn", name: "秋の王者", desc: "スタミナと安定" } },
-  { name: "クロノジェネシス", frame: 6, number: 12, sexAge: "牝（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.58, timeIdx: 113, agariIdx: 114, distApt: 8, lastDist: 2200, restWeeks: 0, jockey: "北村友一", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 85, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 77, manualComment: "過去の名馬", legend: true, abilityBoost: 7, specialAbility: { id: "chrono", name: "時を超える", desc: "中距離差し" } },
-  { name: "タイトルホルダー", frame: 7, number: 13, sexAge: "牡（名馬）", ranks: [1,1,2,1,1], starts: 5, classLevel: 1.58, timeIdx: 112, agariIdx: 106, distApt: 10, lastDist: 3200, restWeeks: 0, jockey: "横山和生", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 86, heavy: 82 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["nige","senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 77, manualComment: "過去の名馬", legend: true, abilityBoost: 7, specialAbility: { id: "title", name: "逃げ切り長距離", desc: "長距離逃げ有利" } },
-  { name: "エフフォーリア", frame: 8, number: 14, sexAge: "牡（名馬）", ranks: [1,1,1,2,2], starts: 5, classLevel: 1.56, timeIdx: 113, agariIdx: 112, distApt: 8, lastDist: 2200, restWeeks: 0, jockey: "横山武史", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 84, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 76, manualComment: "過去の名馬", legend: true, abilityBoost: 6, specialAbility: { id: "efforia", name: "令和の星", desc: "中距離バランス" } },
-  { name: "ジャスタウェイ", frame: 1, number: 15, sexAge: "牡（名馬）", ranks: [1,1,2,1,1], starts: 5, classLevel: 1.56, timeIdx: 115, agariIdx: 114, distApt: 8, lastDist: 2000, restWeeks: 0, jockey: "福永祐一", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 85, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 76, manualComment: "過去の名馬", legend: true, abilityBoost: 6, specialAbility: { id: "justaway", name: "世界への挑戦", desc: "マイル〜中距離" } },
-  { name: "モーリス", frame: 2, number: 16, sexAge: "牡（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.56, timeIdx: 117, agariIdx: 115, distApt: 7, lastDist: 1600, restWeeks: 0, jockey: "川田将雅", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 86, heavy: 80 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 76, manualComment: "過去の名馬", legend: true, abilityBoost: 6, specialAbility: { id: "maurice", name: "マイル王", desc: "マイル戦特化" } },
-  { name: "エアグルーヴ", frame: 3, number: 17, sexAge: "牝（名馬）", ranks: [1,1,2,1,1], starts: 5, classLevel: 1.55, timeIdx: 113, agariIdx: 114, distApt: 8, lastDist: 2200, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 84, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko","sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 76, manualComment: "過去の名馬", legend: true, abilityBoost: 6, specialAbility: { id: "queen", name: "女王の風格", desc: "牝馬中距離" } },
-  { name: "サクラバクシンオー", frame: 4, number: 18, sexAge: "牡（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.54, timeIdx: 124, agariIdx: 118, distApt: 5, lastDist: 1200, restWeeks: 0, jockey: "小島貞博", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 93, soft: 84, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["nige","senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 78, manualComment: "過去の名馬", legend: true, abilityBoost: 8, specialAbility: { id: "sprintKing", name: "スプリント王", desc: "短距離スピード最大級" } },
-  { name: "タイキシャトル", frame: 5, number: 1, sexAge: "牡（名馬）", ranks: [1,1,1,2,1], starts: 5, classLevel: 1.54, timeIdx: 120, agariIdx: 116, distApt: 6, lastDist: 1400, restWeeks: 0, jockey: "横山典弘", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 85, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 77, manualComment: "過去の名馬", legend: true, abilityBoost: 7, specialAbility: { id: "sprinterMile", name: "マイルの鬼", desc: "短〜マイル" } },
-  { name: "ハーツクライ", frame: 6, number: 2, sexAge: "牡（名馬）", ranks: [1,2,1,1,2], starts: 5, classLevel: 1.54, timeIdx: 112, agariIdx: 113, distApt: 9, lastDist: 2500, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 85, heavy: 80 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 75, manualComment: "過去の名馬", legend: true, abilityBoost: 5, specialAbility: { id: "heart", name: "心の強さ", desc: "差しと粘り" } },
-  { name: "ジャングルポケット", frame: 7, number: 3, sexAge: "牡（名馬）", ranks: [1,1,2,1,2], starts: 5, classLevel: 1.54, timeIdx: 112, agariIdx: 110, distApt: 9, lastDist: 2400, restWeeks: 0, jockey: "オリビエ・ペリエ", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 84, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 75, manualComment: "過去の名馬", legend: true, abilityBoost: 5, specialAbility: { id: "derby", name: "ダービーホース", desc: "2400m底力" } },
-  { name: "アグネスタキオン", frame: 8, number: 4, sexAge: "牡（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.54, timeIdx: 115, agariIdx: 114, distApt: 8, lastDist: 2000, restWeeks: 0, jockey: "河内洋", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 83, heavy: 75 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 75, manualComment: "過去の名馬", legend: true, abilityBoost: 5, specialAbility: { id: "talent", name: "天才肌", desc: "スピードと上がり" } },
-  { name: "サトノダイヤモンド", frame: 1, number: 5, sexAge: "牡（名馬）", ranks: [1,1,2,1,2], starts: 5, classLevel: 1.52, timeIdx: 110, agariIdx: 109, distApt: 9, lastDist: 2400, restWeeks: 0, jockey: "川田将雅", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 84, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 74, manualComment: "過去の名馬", legend: true, abilityBoost: 4, specialAbility: { id: "diamond", name: "輝き", desc: "中距離スタミナ" } },
-  { name: "フィエールマン", frame: 2, number: 6, sexAge: "牡（名馬）", ranks: [1,1,1,2,1], starts: 5, classLevel: 1.52, timeIdx: 110, agariIdx: 108, distApt: 9, lastDist: 3200, restWeeks: 0, jockey: "ルメール", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 86, heavy: 82 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 75, manualComment: "過去の名馬", legend: true, abilityBoost: 5, specialAbility: { id: "fierman", name: "盾の守護者", desc: "長距離適性" } },
-  { name: "パンサラッサ", frame: 3, number: 7, sexAge: "牡（名馬）", ranks: [1,1,2,1,1], starts: 5, classLevel: 1.52, timeIdx: 118, agariIdx: 105, distApt: 7, lastDist: 1600, restWeeks: 0, jockey: "吉田豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 84, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["nige"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 76, manualComment: "過去の名馬", legend: true, abilityBoost: 6, specialAbility: { id: "bigEscape", name: "大逃げ", desc: "スタート直後にスタミナを消費し先頭へ出る" } },
-  { name: "レイデオロ", frame: 4, number: 8, sexAge: "牡（名馬）", ranks: [1,1,2,1,3], starts: 5, classLevel: 1.50, timeIdx: 111, agariIdx: 112, distApt: 8, lastDist: 2200, restWeeks: 0, jockey: "戸崎圭太", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 83, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 74, manualComment: "過去の名馬", legend: true, abilityBoost: 4, specialAbility: { id: "oro", name: "黄金の差し", desc: "末脚寄り" } },
-  { name: "ラヴズオンリーユー", frame: 5, number: 9, sexAge: "牝（名馬）", ranks: [1,1,2,1,1], starts: 5, classLevel: 1.50, timeIdx: 111, agariIdx: 112, distApt: 8, lastDist: 2200, restWeeks: 0, jockey: "川田将雅", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 85, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 74, manualComment: "過去の名馬", legend: true, abilityBoost: 4, specialAbility: { id: "loves", name: "愛される末脚", desc: "中距離差し" } },
-  { name: "ダイワメジャー", frame: 6, number: 10, sexAge: "牡（名馬）", ranks: [1,1,2,1,2], starts: 5, classLevel: 1.50, timeIdx: 114, agariIdx: 112, distApt: 7, lastDist: 1600, restWeeks: 0, jockey: "安藤勝己", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 84, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 74, manualComment: "過去の名馬", legend: true, abilityBoost: 4, specialAbility: { id: "major", name: "メジャー", desc: "マイル先行" } },
-  { name: "メジロドーベル", frame: 7, number: 11, sexAge: "牝（名馬）", ranks: [1,1,1,2,2], starts: 5, classLevel: 1.50, timeIdx: 109, agariIdx: 110, distApt: 8, lastDist: 2000, restWeeks: 0, jockey: "吉田豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 83, heavy: 76 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 73, manualComment: "過去の名馬", legend: true, abilityBoost: 3, specialAbility: { id: "consistent", name: "安定感", desc: "安定性アップ" } },
-  { name: "エピファネイア", frame: 8, number: 12, sexAge: "牡（名馬）", ranks: [1,2,1,1,2], starts: 5, classLevel: 1.48, timeIdx: 110, agariIdx: 113, distApt: 8, lastDist: 2200, restWeeks: 0, jockey: "福永祐一", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 84, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 73, manualComment: "過去の名馬", legend: true, abilityBoost: 3, specialAbility: { id: "epiphaneia", name: "閃き", desc: "上がり特化" } },
-  { name: "キズナ", frame: 1, number: 13, sexAge: "牡（名馬）", ranks: [1,1,2,1,2], starts: 5, classLevel: 1.48, timeIdx: 110, agariIdx: 109, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 84, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 73, manualComment: "過去の名馬", legend: true, abilityBoost: 3, specialAbility: { id: "kizuna", name: "絆", desc: "中距離安定" } },
-  { name: "シャフリヤール", frame: 2, number: 14, sexAge: "牡（名馬）", ranks: [1,1,2,1,2], starts: 5, classLevel: 1.48, timeIdx: 110, agariIdx: 112, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "福永祐一", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 84, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 73, manualComment: "過去の名馬", legend: true, abilityBoost: 3, specialAbility: { id: "shahryar", name: "海外遠征", desc: "中長距離差し" } },
-  { name: "スターズオンアース", frame: 3, number: 15, sexAge: "牝（名馬）", ranks: [1,1,2,1,2], starts: 5, classLevel: 1.48, timeIdx: 110, agariIdx: 111, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "川田将雅", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 85, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 73, manualComment: "過去の名馬", legend: true, abilityBoost: 3, specialAbility: { id: "stars", name: "二冠牝馬", desc: "中距離" } },
-  { name: "ソダシ", frame: 4, number: 16, sexAge: "牝（名馬）", ranks: [1,1,2,1,2], starts: 5, classLevel: 1.48, timeIdx: 112, agariIdx: 110, distApt: 7, lastDist: 1600, restWeeks: 0, jockey: "吉田隼人", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 83, heavy: 75 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 73, manualComment: "過去の名馬", legend: true, abilityBoost: 3, specialAbility: { id: "sodashi", name: "白毛の衝撃", desc: "マイル適性" } },
-  { name: "ヴィクトワールピサ", frame: 5, number: 17, sexAge: "牡（名馬）", ranks: [1,1,2,1,2], starts: 5, classLevel: 1.46, timeIdx: 109, agariIdx: 108, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "ミルコ・デムーロ", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 85, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 73, manualComment: "過去の名馬", legend: true, abilityBoost: 3, specialAbility: { id: "pisa", name: "ドバイの記憶", desc: "中距離底力" } },
-  { name: "アグネスデジタル", frame: 6, number: 18, sexAge: "牡（名馬）", ranks: [1,1,2,1,3], starts: 5, classLevel: 1.46, timeIdx: 112, agariIdx: 110, distApt: 7, lastDist: 1600, restWeeks: 0, jockey: "松永幹夫", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 88, soft: 87, heavy: 83 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 73, manualComment: "過去の名馬", legend: true, abilityBoost: 3, specialAbility: { id: "digital", name: "万能マイル", desc: "馬場不問マイル" } },
-  { name: "フジキセキ", frame: 7, number: 1, sexAge: "牡（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.46, timeIdx: 113, agariIdx: 111, distApt: 7, lastDist: 1800, restWeeks: 0, jockey: "角田晃一", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 83, heavy: 75 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 73, manualComment: "過去の名馬", legend: true, abilityBoost: 3, specialAbility: { id: "kiseki", name: "奇跡", desc: "スピードと器用さ" } },
-  { name: "ヒシアマゾン", frame: 8, number: 2, sexAge: "牝（名馬）", ranks: [1,1,2,1,3], starts: 5, classLevel: 1.46, timeIdx: 111, agariIdx: 112, distApt: 7, lastDist: 1800, restWeeks: 0, jockey: "中館英二", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 88, soft: 84, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko","sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 73, manualComment: "過去の名馬", legend: true, abilityBoost: 3, specialAbility: { id: "power", name: "パワフル", desc: "稍重〜重に強い" } },
-  { name: "マヤノトップガン", frame: 1, number: 3, sexAge: "牡（名馬）", ranks: [1,1,2,1,4], starts: 5, classLevel: 1.45, timeIdx: 108, agariIdx: 106, distApt: 9, lastDist: 2500, restWeeks: 0, jockey: "田原成貴", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 88, soft: 86, heavy: 82 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko","sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 72, manualComment: "過去の名馬", legend: true, abilityBoost: 2, specialAbility: { id: "versatile", name: "万能", desc: "馬場を選ばず" } },
-  { name: "ミホノブルボン", frame: 2, number: 4, sexAge: "牡（名馬）", ranks: [1,1,1,2,3], starts: 5, classLevel: 1.45, timeIdx: 111, agariIdx: 108, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "小島貞博", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 88, soft: 82, heavy: 76 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["nige","senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 72, manualComment: "過去の名馬", legend: true, abilityBoost: 2, specialAbility: { id: "front", name: "逃げの美学", desc: "逃げ前半有利" } },
-  { name: "ビワハヤヒデ", frame: 3, number: 5, sexAge: "牡（名馬）", ranks: [1,1,2,1,2], starts: 5, classLevel: 1.44, timeIdx: 109, agariIdx: 109, distApt: 9, lastDist: 2200, restWeeks: 0, jockey: "岡部幸雄", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 83, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 72, manualComment: "過去の名馬", legend: true, abilityBoost: 2, specialAbility: { id: "steady", name: "堅実", desc: "安定性やや向上" } },
-  { name: "ディープスカイ", frame: 4, number: 6, sexAge: "牡（名馬）", ranks: [1,1,2,1,2], starts: 5, classLevel: 1.44, timeIdx: 108, agariIdx: 111, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "四位洋文", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 88, soft: 83, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 72, manualComment: "過去の名馬", legend: true, abilityBoost: 2, specialAbility: { id: "sky", name: "大空の末脚", desc: "上がり指数寄り" } },
-  { name: "リアルスティール", frame: 5, number: 7, sexAge: "牡（名馬）", ranks: [1,2,1,1,2], starts: 5, classLevel: 1.44, timeIdx: 110, agariIdx: 111, distApt: 8, lastDist: 1800, restWeeks: 0, jockey: "福永祐一", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 84, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 72, manualComment: "過去の名馬", legend: true, abilityBoost: 2, specialAbility: { id: "steel", name: "鋼の差し脚", desc: "マイル〜中距離末脚" } },
-  { name: "ナリタタイシン", frame: 6, number: 8, sexAge: "牡（名馬）", ranks: [1,2,1,1,3], starts: 5, classLevel: 1.42, timeIdx: 107, agariIdx: 108, distApt: 8, lastDist: 2000, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 87, soft: 80, heavy: 74 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 72, manualComment: "過去の名馬", legend: true, abilityBoost: 2, specialAbility: { id: "clutch", name: "勝負根性", desc: "僅差で加点" } },
-  { name: "ロジユニヴァース", frame: 7, number: 9, sexAge: "牡（名馬）", ranks: [1,1,2,1,3], starts: 5, classLevel: 1.40, timeIdx: 107, agariIdx: 106, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "横山典弘", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 88, soft: 83, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 71, manualComment: "過去の名馬", legend: true, abilityBoost: 1, specialAbility: { id: "logic", name: "論理的強さ", desc: "バランス型" } },
-  { name: "タスティエーラ", frame: 8, number: 10, sexAge: "牡（名馬）", ranks: [1,1,2,1,3], starts: 5, classLevel: 1.38, timeIdx: 106, agariIdx: 108, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "松山弘平", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 88, soft: 83, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 71, manualComment: "過去の名馬", legend: true, abilityBoost: 1, specialAbility: { id: "tastiera", name: "鍵盤の音色", desc: "標準的中距離" } }
+  { name: "イクイノックス", frame: 1, number: 1, sexAge: "牡（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.92, timeIdx: 128, agariIdx: 124, distApt: 9, lastDist: 2500, restWeeks: 0, jockey: "ルメール", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 96, soft: 90, heavy: 84 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "D", senko: "A", sashi: "S", oikomi: "B" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 88, manualComment: "過去の名馬", legend: true, abilityBoost: 18, specialAbility: { id: "equinox", name: "世界一の馬", desc: "全能力が歴代最高水準" } },
+  { name: "ディープインパクト", frame: 2, number: 2, sexAge: "牡（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.90, timeIdx: 126, agariIdx: 128, distApt: 9, lastDist: 2400, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 95, soft: 88, heavy: 80 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi","oikomi"], styleApt: { nige: "E", senko: "C", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 87, manualComment: "過去の名馬", legend: true, abilityBoost: 17, specialAbility: { id: "impact", name: "衝撃の末脚", desc: "末脚・総合が歴代級" } },
+  { name: "アーモンドアイ", frame: 3, number: 3, sexAge: "牝（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.86, timeIdx: 124, agariIdx: 122, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "ルメール", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 94, soft: 88, heavy: 80 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko","sashi"], styleApt: { nige: "E", senko: "B", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 85, manualComment: "過去の名馬", legend: true, abilityBoost: 15, specialAbility: { id: "almond", name: "絶対女王", desc: "マイル〜中距離で歴代級" } },
+  { name: "シンボリルドルフ", frame: 4, number: 4, sexAge: "牡（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.84, timeIdx: 122, agariIdx: 116, distApt: 9, lastDist: 2400, restWeeks: 0, jockey: "内藤繁春", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 93, soft: 86, heavy: 80 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "C", senko: "S", sashi: "A", oikomi: "C" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 84, manualComment: "過去の名馬", legend: true, abilityBoost: 14, specialAbility: { id: "emperor", name: "皇帝", desc: "クラシック総合力が突出" } },
+  { name: "オルフェーヴル", frame: 5, number: 5, sexAge: "牡（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.82, timeIdx: 120, agariIdx: 126, distApt: 9, lastDist: 2400, restWeeks: 0, jockey: "池添謙一", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 93, soft: 88, heavy: 82 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["oikomi"], styleApt: { nige: "E", senko: "D", sashi: "A", oikomi: "S" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 84, manualComment: "過去の名馬", legend: true, abilityBoost: 14, specialAbility: { id: "wild", name: "荒ぶる天才", desc: "追込末脚が規格外" } },
+  { name: "ナリタブライアン", frame: 6, number: 6, sexAge: "牡（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.80, timeIdx: 121, agariIdx: 118, distApt: 9, lastDist: 2400, restWeeks: 0, jockey: "南井克巳", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 92, soft: 85, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "D", senko: "A", sashi: "S", oikomi: "B" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 83, manualComment: "過去の名馬", legend: true, abilityBoost: 13, specialAbility: { id: "triple", name: "三冠の輝き", desc: "中長距離の完成度" } },
+  { name: "トウカイテイオー", frame: 7, number: 7, sexAge: "牡（名馬）", ranks: [1,1,1,2,1], starts: 5, classLevel: 1.78, timeIdx: 118, agariIdx: 120, distApt: 8, lastDist: 2200, restWeeks: 0, jockey: "清水成駿", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 84, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko","sashi"], styleApt: { nige: "C", senko: "S", sashi: "A", oikomi: "C" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 82, manualComment: "過去の名馬", legend: true, abilityBoost: 12, specialAbility: { id: "phoenix", name: "不死鳥", desc: "不利でも粘る安定性" } },
+  { name: "テイエムオペラオー", frame: 8, number: 8, sexAge: "牡（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.78, timeIdx: 117, agariIdx: 114, distApt: 9, lastDist: 2200, restWeeks: 0, jockey: "和田竜二", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 92, soft: 86, heavy: 80 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "B", senko: "S", sashi: "B", oikomi: "D" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 82, manualComment: "過去の名馬", legend: true, abilityBoost: 12, specialAbility: { id: "eightCrown", name: "八冠", desc: "安定と総合が非常に高い" } },
+  { name: "コントレイル", frame: 1, number: 9, sexAge: "牡（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.76, timeIdx: 119, agariIdx: 118, distApt: 9, lastDist: 2400, restWeeks: 0, jockey: "福永祐一", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 92, soft: 86, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "E", senko: "B", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 82, manualComment: "過去の名馬", legend: true, abilityBoost: 12, specialAbility: { id: "contrail", name: "無敗三冠", desc: "中長距離の完成度" } },
+  { name: "オグリキャップ", frame: 2, number: 10, sexAge: "牡（名馬）", ranks: [1,1,2,1,1], starts: 5, classLevel: 1.75, timeIdx: 116, agariIdx: 122, distApt: 8, lastDist: 2000, restWeeks: 0, jockey: "南井克巳", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 87, heavy: 82 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi","oikomi"], styleApt: { nige: "D", senko: "A", sashi: "S", oikomi: "B" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 81, manualComment: "過去の名馬", legend: true, abilityBoost: 11, specialAbility: { id: "people", name: "民衆の支持", desc: "末脚と勝負根" } },
+  { name: "メジロマックイーン", frame: 3, number: 11, sexAge: "牡（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.74, timeIdx: 114, agariIdx: 108, distApt: 10, lastDist: 3200, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 88, heavy: 84 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "C", senko: "A", sashi: "B", oikomi: "C" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 81, manualComment: "過去の名馬", legend: true, abilityBoost: 11, specialAbility: { id: "staminaKing", name: "スタミナ王", desc: "長距離スタミナが突出" } },
+  { name: "キタサンブラック", frame: 4, number: 12, sexAge: "牡（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.72, timeIdx: 115, agariIdx: 112, distApt: 9, lastDist: 2500, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 87, heavy: 82 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "B", senko: "S", sashi: "A", oikomi: "D" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 80, manualComment: "過去の名馬", legend: true, abilityBoost: 10, specialAbility: { id: "kitasan", name: "国民的号", desc: "中長距離の底力" } },
+  { name: "スペシャルウィーク", frame: 5, number: 13, sexAge: "牡（名馬）", ranks: [1,1,1,2,1], starts: 5, classLevel: 1.72, timeIdx: 116, agariIdx: 114, distApt: 9, lastDist: 2400, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 86, heavy: 80 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko","sashi"], styleApt: { nige: "C", senko: "A", sashi: "S", oikomi: "B" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 80, manualComment: "過去の名馬", legend: true, abilityBoost: 10, specialAbility: { id: "japanCup", name: "ジャパンCの記憶", desc: "中長距離総合" } },
+  { name: "リバティアイランド", frame: 6, number: 14, sexAge: "牝（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.70, timeIdx: 116, agariIdx: 118, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "川田将雅", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 86, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], styleApt: { nige: "E", senko: "B", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 80, manualComment: "過去の名馬", legend: true, abilityBoost: 10, specialAbility: { id: "liberty", name: "自由な末脚", desc: "牝馬中長距離" } },
+  { name: "エルコンドルパサー", frame: 7, number: 15, sexAge: "牡（名馬）", ranks: [1,1,2,1,1], starts: 5, classLevel: 1.70, timeIdx: 118, agariIdx: 114, distApt: 8, lastDist: 2000, restWeeks: 0, jockey: "的場均", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 92, soft: 87, heavy: 82 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "D", senko: "A", sashi: "S", oikomi: "B" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 80, manualComment: "過去の名馬", legend: true, abilityBoost: 10, specialAbility: { id: "world", name: "世界級", desc: "良馬場スピード" } },
+  { name: "サイレンススズカ", frame: 8, number: 16, sexAge: "牡（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.68, timeIdx: 125, agariIdx: 110, distApt: 7, lastDist: 2000, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 94, soft: 82, heavy: 74 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["nige"], styleApt: { nige: "S", senko: "A", sashi: "E", oikomi: "E" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 81, manualComment: "過去の名馬", legend: true, abilityBoost: 11, specialAbility: { id: "bigEscape", name: "大逃げ", desc: "スタート直後にスタミナを消費し先頭へ出る" } },
+  { name: "ウオッカ", frame: 1, number: 17, sexAge: "牝（名馬）", ranks: [1,1,1,2,1], starts: 5, classLevel: 1.68, timeIdx: 117, agariIdx: 116, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "四位洋文", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 85, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko","sashi"], styleApt: { nige: "D", senko: "A", sashi: "S", oikomi: "B" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 79, manualComment: "過去の名馬", legend: true, abilityBoost: 9, specialAbility: { id: "vodka", name: "牝馬の革命", desc: "マイル〜中距離" } },
+  { name: "ジェンティルドンナ", frame: 2, number: 18, sexAge: "牝（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.68, timeIdx: 115, agariIdx: 115, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "岩田康誠", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 85, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko","sashi"], styleApt: { nige: "E", senko: "B", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 79, manualComment: "過去の名馬", legend: true, abilityBoost: 9, specialAbility: { id: "gentildonna", name: "牝馬三冠+", desc: "中長距離総合" } },
+  { name: "ゴールドシップ", frame: 3, number: 1, sexAge: "牡（名馬）", ranks: [1,1,1,2,1], starts: 5, classLevel: 1.66, timeIdx: 113, agariIdx: 114, distApt: 10, lastDist: 2500, restWeeks: 0, jockey: "内田博幸", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 87, heavy: 83 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["oikomi"], styleApt: { nige: "E", senko: "D", sashi: "B", oikomi: "S" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 79, manualComment: "過去の名馬", legend: true, abilityBoost: 9, specialAbility: { id: "gold", name: "金子のスタミナ", desc: "長距離追込" } },
+  { name: "ドウデュース", frame: 4, number: 2, sexAge: "牡（名馬）", ranks: [1,1,2,1,1], starts: 5, classLevel: 1.66, timeIdx: 116, agariIdx: 117, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 85, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi","oikomi"], styleApt: { nige: "E", senko: "B", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 79, manualComment: "過去の名馬", legend: true, abilityBoost: 9, specialAbility: { id: "dodeuce", name: "大舞台の強さ", desc: "末脚と勝負根" } },
+  { name: "グランアレグリア", frame: 5, number: 3, sexAge: "牝（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.66, timeIdx: 122, agariIdx: 121, distApt: 6, lastDist: 1600, restWeeks: 0, jockey: "ルメール", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 93, soft: 86, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "D", senko: "A", sashi: "S", oikomi: "B" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 80, manualComment: "過去の名馬", legend: true, abilityBoost: 10, specialAbility: { id: "alegria", name: "歓喜のマイル", desc: "短〜マイル最高峰" } },
+  { name: "ロードカナロア", frame: 6, number: 4, sexAge: "牡（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.64, timeIdx: 123, agariIdx: 120, distApt: 6, lastDist: 1400, restWeeks: 0, jockey: "岩田康誠", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 93, soft: 87, heavy: 81 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "C", senko: "S", sashi: "A", oikomi: "C" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 79, manualComment: "過去の名馬", legend: true, abilityBoost: 9, specialAbility: { id: "canaloa", name: "スプリント帝王", desc: "短〜マイルで圧倒" } },
+  { name: "デアリングタクト", frame: 7, number: 5, sexAge: "牝（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.64, timeIdx: 114, agariIdx: 115, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "松山弘平", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 85, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], styleApt: { nige: "E", senko: "B", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 78, manualComment: "過去の名馬", legend: true, abilityBoost: 8, specialAbility: { id: "daring", name: "無敗牝馬三冠", desc: "安定と差し脚" } },
+  { name: "ブエナビスタ", frame: 8, number: 6, sexAge: "牝（名馬）", ranks: [1,1,1,2,1], starts: 5, classLevel: 1.62, timeIdx: 114, agariIdx: 117, distApt: 8, lastDist: 2200, restWeeks: 0, jockey: "岩田康誠", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 86, heavy: 80 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], styleApt: { nige: "E", senko: "B", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 78, manualComment: "過去の名馬", legend: true, abilityBoost: 8, specialAbility: { id: "buena", name: "美しい差し脚", desc: "末脚と安定" } },
+  { name: "ダイワスカーレット", frame: 1, number: 7, sexAge: "牝（名馬）", ranks: [1,1,2,1,1], starts: 5, classLevel: 1.62, timeIdx: 116, agariIdx: 114, distApt: 8, lastDist: 2200, restWeeks: 0, jockey: "安藤勝己", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 84, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["nige","senko"], styleApt: { nige: "B", senko: "S", sashi: "C", oikomi: "E" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 78, manualComment: "過去の名馬", legend: true, abilityBoost: 8, specialAbility: { id: "scarlet", name: "真っ赤な逃げ", desc: "先行スピード" } },
+  { name: "リスグラシュー", frame: 2, number: 8, sexAge: "牝（名馬）", ranks: [1,1,1,2,1], starts: 5, classLevel: 1.62, timeIdx: 115, agariIdx: 118, distApt: 8, lastDist: 2200, restWeeks: 0, jockey: "ルメール", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 86, heavy: 80 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], styleApt: { nige: "E", senko: "C", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 78, manualComment: "過去の名馬", legend: true, abilityBoost: 8, specialAbility: { id: "lis", name: "秋の華", desc: "末脚と良馬場" } },
+  { name: "グラスワンダー", frame: 3, number: 9, sexAge: "牡（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.60, timeIdx: 114, agariIdx: 116, distApt: 8, lastDist: 2000, restWeeks: 0, jockey: "的場均", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 87, heavy: 83 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi","oikomi"], styleApt: { nige: "D", senko: "B", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 77, manualComment: "過去の名馬", legend: true, abilityBoost: 7, specialAbility: { id: "lastSpurt", name: "強襲の末脚", desc: "差し追込末脚" } },
+  { name: "シンボリクリスエス", frame: 4, number: 10, sexAge: "牡（名馬）", ranks: [1,1,1,2,1], starts: 5, classLevel: 1.60, timeIdx: 114, agariIdx: 112, distApt: 9, lastDist: 2200, restWeeks: 0, jockey: "オリビエ・ペリエ", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 85, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "C", senko: "A", sashi: "S", oikomi: "B" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 77, manualComment: "過去の名馬", legend: true, abilityBoost: 7, specialAbility: { id: "tenno", name: "天皇賞の馬", desc: "中〜中長距離" } },
+  { name: "ゼンノロブロイ", frame: 5, number: 11, sexAge: "牡（名馬）", ranks: [1,1,2,1,1], starts: 5, classLevel: 1.58, timeIdx: 112, agariIdx: 111, distApt: 9, lastDist: 2500, restWeeks: 0, jockey: "オリビエ・ペリエ", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 86, heavy: 81 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko","sashi"], styleApt: { nige: "D", senko: "B", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 77, manualComment: "過去の名馬", legend: true, abilityBoost: 7, specialAbility: { id: "autumn", name: "秋の王者", desc: "スタミナと安定" } },
+  { name: "クロノジェネシス", frame: 6, number: 12, sexAge: "牝（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.58, timeIdx: 113, agariIdx: 114, distApt: 8, lastDist: 2200, restWeeks: 0, jockey: "北村友一", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 85, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], styleApt: { nige: "E", senko: "C", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 77, manualComment: "過去の名馬", legend: true, abilityBoost: 7, specialAbility: { id: "chrono", name: "時を超える", desc: "中距離差し" } },
+  { name: "タイトルホルダー", frame: 7, number: 13, sexAge: "牡（名馬）", ranks: [1,1,2,1,1], starts: 5, classLevel: 1.58, timeIdx: 112, agariIdx: 106, distApt: 10, lastDist: 3200, restWeeks: 0, jockey: "横山和生", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 86, heavy: 82 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["nige","senko"], styleApt: { nige: "S", senko: "A", sashi: "D", oikomi: "E" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 77, manualComment: "過去の名馬", legend: true, abilityBoost: 7, specialAbility: { id: "title", name: "逃げ切り長距離", desc: "長距離逃げ有利" } },
+  { name: "エフフォーリア", frame: 8, number: 14, sexAge: "牡（名馬）", ranks: [1,1,1,2,2], starts: 5, classLevel: 1.56, timeIdx: 113, agariIdx: 112, distApt: 8, lastDist: 2200, restWeeks: 0, jockey: "横山武史", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 84, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "D", senko: "A", sashi: "S", oikomi: "B" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 76, manualComment: "過去の名馬", legend: true, abilityBoost: 6, specialAbility: { id: "efforia", name: "令和の星", desc: "中距離バランス" } },
+  { name: "ジャスタウェイ", frame: 1, number: 15, sexAge: "牡（名馬）", ranks: [1,1,2,1,1], starts: 5, classLevel: 1.56, timeIdx: 115, agariIdx: 114, distApt: 8, lastDist: 2000, restWeeks: 0, jockey: "福永祐一", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 85, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "E", senko: "B", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 76, manualComment: "過去の名馬", legend: true, abilityBoost: 6, specialAbility: { id: "justaway", name: "世界への挑戦", desc: "マイル〜中距離" } },
+  { name: "モーリス", frame: 2, number: 16, sexAge: "牡（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.56, timeIdx: 117, agariIdx: 115, distApt: 7, lastDist: 1600, restWeeks: 0, jockey: "川田将雅", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 86, heavy: 80 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "C", senko: "S", sashi: "A", oikomi: "C" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 76, manualComment: "過去の名馬", legend: true, abilityBoost: 6, specialAbility: { id: "maurice", name: "マイル王", desc: "マイル戦特化" } },
+  { name: "エアグルーヴ", frame: 3, number: 17, sexAge: "牝（名馬）", ranks: [1,1,2,1,1], starts: 5, classLevel: 1.55, timeIdx: 113, agariIdx: 114, distApt: 8, lastDist: 2200, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 84, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko","sashi"], styleApt: { nige: "D", senko: "A", sashi: "S", oikomi: "B" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 76, manualComment: "過去の名馬", legend: true, abilityBoost: 6, specialAbility: { id: "queen", name: "女王の風格", desc: "牝馬中距離" } },
+  { name: "サクラバクシンオー", frame: 4, number: 18, sexAge: "牡（名馬）", ranks: [1,1,1,1,2], starts: 5, classLevel: 1.54, timeIdx: 124, agariIdx: 118, distApt: 5, lastDist: 1200, restWeeks: 0, jockey: "小島貞博", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 93, soft: 84, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["nige","senko"], styleApt: { nige: "S", senko: "A", sashi: "D", oikomi: "E" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 78, manualComment: "過去の名馬", legend: true, abilityBoost: 8, specialAbility: { id: "sprintKing", name: "スプリント王", desc: "短距離スピード最大級" } },
+  { name: "タイキシャトル", frame: 5, number: 1, sexAge: "牡（名馬）", ranks: [1,1,1,2,1], starts: 5, classLevel: 1.54, timeIdx: 120, agariIdx: 116, distApt: 6, lastDist: 1400, restWeeks: 0, jockey: "横山典弘", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 85, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "B", senko: "S", sashi: "B", oikomi: "D" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 77, manualComment: "過去の名馬", legend: true, abilityBoost: 7, specialAbility: { id: "sprinterMile", name: "マイルの鬼", desc: "短〜マイル" } },
+  { name: "ハーツクライ", frame: 6, number: 2, sexAge: "牡（名馬）", ranks: [1,2,1,1,2], starts: 5, classLevel: 1.54, timeIdx: 112, agariIdx: 113, distApt: 9, lastDist: 2500, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 85, heavy: 80 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], styleApt: { nige: "E", senko: "C", sashi: "A", oikomi: "S" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 75, manualComment: "過去の名馬", legend: true, abilityBoost: 5, specialAbility: { id: "heart", name: "心の強さ", desc: "差しと粘り" } },
+  { name: "ジャングルポケット", frame: 7, number: 3, sexAge: "牡（名馬）", ranks: [1,1,2,1,2], starts: 5, classLevel: 1.54, timeIdx: 112, agariIdx: 110, distApt: 9, lastDist: 2400, restWeeks: 0, jockey: "オリビエ・ペリエ", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 84, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "D", senko: "B", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 75, manualComment: "過去の名馬", legend: true, abilityBoost: 5, specialAbility: { id: "derby", name: "ダービーホース", desc: "2400m底力" } },
+  { name: "アグネスタキオン", frame: 8, number: 4, sexAge: "牡（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.54, timeIdx: 115, agariIdx: 114, distApt: 8, lastDist: 2000, restWeeks: 0, jockey: "河内洋", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 83, heavy: 75 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "C", senko: "S", sashi: "A", oikomi: "C" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 75, manualComment: "過去の名馬", legend: true, abilityBoost: 5, specialAbility: { id: "talent", name: "天才肌", desc: "スピードと上がり" } },
+  { name: "サトノダイヤモンド", frame: 1, number: 5, sexAge: "牡（名馬）", ranks: [1,1,2,1,2], starts: 5, classLevel: 1.52, timeIdx: 110, agariIdx: 109, distApt: 9, lastDist: 2400, restWeeks: 0, jockey: "川田将雅", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 84, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "D", senko: "B", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 74, manualComment: "過去の名馬", legend: true, abilityBoost: 4, specialAbility: { id: "diamond", name: "輝き", desc: "中距離スタミナ" } },
+  { name: "フィエールマン", frame: 2, number: 6, sexAge: "牡（名馬）", ranks: [1,1,1,2,1], starts: 5, classLevel: 1.52, timeIdx: 110, agariIdx: 108, distApt: 9, lastDist: 3200, restWeeks: 0, jockey: "ルメール", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 86, heavy: 82 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "E", senko: "C", sashi: "A", oikomi: "S" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 75, manualComment: "過去の名馬", legend: true, abilityBoost: 5, specialAbility: { id: "fierman", name: "盾の守護者", desc: "長距離適性" } },
+  { name: "パンサラッサ", frame: 3, number: 7, sexAge: "牡（名馬）", ranks: [1,1,2,1,1], starts: 5, classLevel: 1.52, timeIdx: 118, agariIdx: 105, distApt: 7, lastDist: 1600, restWeeks: 0, jockey: "吉田豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 91, soft: 84, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["nige"], styleApt: { nige: "S", senko: "A", sashi: "E", oikomi: "E" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 76, manualComment: "過去の名馬", legend: true, abilityBoost: 6, specialAbility: { id: "bigEscape", name: "大逃げ", desc: "スタート直後にスタミナを消費し先頭へ出る" } },
+  { name: "レイデオロ", frame: 4, number: 8, sexAge: "牡（名馬）", ranks: [1,1,2,1,3], starts: 5, classLevel: 1.50, timeIdx: 111, agariIdx: 112, distApt: 8, lastDist: 2200, restWeeks: 0, jockey: "戸崎圭太", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 83, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], styleApt: { nige: "E", senko: "B", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 74, manualComment: "過去の名馬", legend: true, abilityBoost: 4, specialAbility: { id: "oro", name: "黄金の差し", desc: "末脚寄り" } },
+  { name: "ラヴズオンリーユー", frame: 5, number: 9, sexAge: "牝（名馬）", ranks: [1,1,2,1,1], starts: 5, classLevel: 1.50, timeIdx: 111, agariIdx: 112, distApt: 8, lastDist: 2200, restWeeks: 0, jockey: "川田将雅", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 85, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], styleApt: { nige: "E", senko: "C", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 74, manualComment: "過去の名馬", legend: true, abilityBoost: 4, specialAbility: { id: "loves", name: "愛される末脚", desc: "中距離差し" } },
+  { name: "ダイワメジャー", frame: 6, number: 10, sexAge: "牡（名馬）", ranks: [1,1,2,1,2], starts: 5, classLevel: 1.50, timeIdx: 114, agariIdx: 112, distApt: 7, lastDist: 1600, restWeeks: 0, jockey: "安藤勝己", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 84, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "B", senko: "S", sashi: "B", oikomi: "D" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 74, manualComment: "過去の名馬", legend: true, abilityBoost: 4, specialAbility: { id: "major", name: "メジャー", desc: "マイル先行" } },
+  { name: "メジロドーベル", frame: 7, number: 11, sexAge: "牝（名馬）", ranks: [1,1,1,2,2], starts: 5, classLevel: 1.50, timeIdx: 109, agariIdx: 110, distApt: 8, lastDist: 2000, restWeeks: 0, jockey: "吉田豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 83, heavy: 76 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "D", senko: "A", sashi: "S", oikomi: "B" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 73, manualComment: "過去の名馬", legend: true, abilityBoost: 3, specialAbility: { id: "consistent", name: "安定感", desc: "安定性アップ" } },
+  { name: "エピファネイア", frame: 8, number: 12, sexAge: "牡（名馬）", ranks: [1,2,1,1,2], starts: 5, classLevel: 1.48, timeIdx: 110, agariIdx: 113, distApt: 8, lastDist: 2200, restWeeks: 0, jockey: "福永祐一", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 84, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], styleApt: { nige: "E", senko: "C", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 73, manualComment: "過去の名馬", legend: true, abilityBoost: 3, specialAbility: { id: "epiphaneia", name: "閃き", desc: "上がり特化" } },
+  { name: "キズナ", frame: 1, number: 13, sexAge: "牡（名馬）", ranks: [1,1,2,1,2], starts: 5, classLevel: 1.48, timeIdx: 110, agariIdx: 109, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 84, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "D", senko: "A", sashi: "S", oikomi: "B" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 73, manualComment: "過去の名馬", legend: true, abilityBoost: 3, specialAbility: { id: "kizuna", name: "絆", desc: "中距離安定" } },
+  { name: "シャフリヤール", frame: 2, number: 14, sexAge: "牡（名馬）", ranks: [1,1,2,1,2], starts: 5, classLevel: 1.48, timeIdx: 110, agariIdx: 112, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "福永祐一", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 84, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], styleApt: { nige: "E", senko: "C", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 73, manualComment: "過去の名馬", legend: true, abilityBoost: 3, specialAbility: { id: "shahryar", name: "海外遠征", desc: "中長距離差し" } },
+  { name: "スターズオンアース", frame: 3, number: 15, sexAge: "牝（名馬）", ranks: [1,1,2,1,2], starts: 5, classLevel: 1.48, timeIdx: 110, agariIdx: 111, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "川田将雅", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 85, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], styleApt: { nige: "E", senko: "B", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 73, manualComment: "過去の名馬", legend: true, abilityBoost: 3, specialAbility: { id: "stars", name: "二冠牝馬", desc: "中距離" } },
+  { name: "ソダシ", frame: 4, number: 16, sexAge: "牝（名馬）", ranks: [1,1,2,1,2], starts: 5, classLevel: 1.48, timeIdx: 112, agariIdx: 110, distApt: 7, lastDist: 1600, restWeeks: 0, jockey: "吉田隼人", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 83, heavy: 75 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "C", senko: "S", sashi: "A", oikomi: "C" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 73, manualComment: "過去の名馬", legend: true, abilityBoost: 3, specialAbility: { id: "sodashi", name: "白毛の衝撃", desc: "マイル適性" } },
+  { name: "ヴィクトワールピサ", frame: 5, number: 17, sexAge: "牡（名馬）", ranks: [1,1,2,1,2], starts: 5, classLevel: 1.46, timeIdx: 109, agariIdx: 108, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "ミルコ・デムーロ", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 85, heavy: 79 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "D", senko: "A", sashi: "S", oikomi: "B" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 73, manualComment: "過去の名馬", legend: true, abilityBoost: 3, specialAbility: { id: "pisa", name: "ドバイの記憶", desc: "中距離底力" } },
+  { name: "アグネスデジタル", frame: 6, number: 18, sexAge: "牡（名馬）", ranks: [1,1,2,1,3], starts: 5, classLevel: 1.46, timeIdx: 112, agariIdx: 110, distApt: 7, lastDist: 1600, restWeeks: 0, jockey: "松永幹夫", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 88, soft: 87, heavy: 83 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "B", senko: "S", sashi: "A", oikomi: "C" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 73, manualComment: "過去の名馬", legend: true, abilityBoost: 3, specialAbility: { id: "digital", name: "万能マイル", desc: "馬場不問マイル" } },
+  { name: "フジキセキ", frame: 7, number: 1, sexAge: "牡（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.46, timeIdx: 113, agariIdx: 111, distApt: 7, lastDist: 1800, restWeeks: 0, jockey: "角田晃一", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 90, soft: 83, heavy: 75 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "C", senko: "S", sashi: "A", oikomi: "C" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 73, manualComment: "過去の名馬", legend: true, abilityBoost: 3, specialAbility: { id: "kiseki", name: "奇跡", desc: "スピードと器用さ" } },
+  { name: "ヒシアマゾン", frame: 8, number: 2, sexAge: "牝（名馬）", ranks: [1,1,2,1,3], starts: 5, classLevel: 1.46, timeIdx: 111, agariIdx: 112, distApt: 7, lastDist: 1800, restWeeks: 0, jockey: "中館英二", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 88, soft: 84, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko","sashi"], styleApt: { nige: "B", senko: "S", sashi: "B", oikomi: "D" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 73, manualComment: "過去の名馬", legend: true, abilityBoost: 3, specialAbility: { id: "power", name: "パワフル", desc: "稍重〜重に強い" } },
+  { name: "マヤノトップガン", frame: 1, number: 3, sexAge: "牡（名馬）", ranks: [1,1,2,1,4], starts: 5, classLevel: 1.45, timeIdx: 108, agariIdx: 106, distApt: 9, lastDist: 2500, restWeeks: 0, jockey: "田原成貴", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 88, soft: 86, heavy: 82 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko","sashi"], styleApt: { nige: "C", senko: "A", sashi: "B", oikomi: "C" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 72, manualComment: "過去の名馬", legend: true, abilityBoost: 2, specialAbility: { id: "versatile", name: "万能", desc: "馬場を選ばず" } },
+  { name: "ミホノブルボン", frame: 2, number: 4, sexAge: "牡（名馬）", ranks: [1,1,1,2,3], starts: 5, classLevel: 1.45, timeIdx: 111, agariIdx: 108, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "小島貞博", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 88, soft: 82, heavy: 76 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["nige","senko"], styleApt: { nige: "S", senko: "A", sashi: "D", oikomi: "E" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 72, manualComment: "過去の名馬", legend: true, abilityBoost: 2, specialAbility: { id: "front", name: "逃げの美学", desc: "逃げ前半有利" } },
+  { name: "ビワハヤヒデ", frame: 3, number: 5, sexAge: "牡（名馬）", ranks: [1,1,2,1,2], starts: 5, classLevel: 1.44, timeIdx: 109, agariIdx: 109, distApt: 9, lastDist: 2200, restWeeks: 0, jockey: "岡部幸雄", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 83, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "C", senko: "A", sashi: "S", oikomi: "B" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 72, manualComment: "過去の名馬", legend: true, abilityBoost: 2, specialAbility: { id: "steady", name: "堅実", desc: "安定性やや向上" } },
+  { name: "ディープスカイ", frame: 4, number: 6, sexAge: "牡（名馬）", ranks: [1,1,2,1,2], starts: 5, classLevel: 1.44, timeIdx: 108, agariIdx: 111, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "四位洋文", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 88, soft: 83, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], styleApt: { nige: "E", senko: "C", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 72, manualComment: "過去の名馬", legend: true, abilityBoost: 2, specialAbility: { id: "sky", name: "大空の末脚", desc: "上がり指数寄り" } },
+  { name: "リアルスティール", frame: 5, number: 7, sexAge: "牡（名馬）", ranks: [1,2,1,1,2], starts: 5, classLevel: 1.44, timeIdx: 110, agariIdx: 111, distApt: 8, lastDist: 1800, restWeeks: 0, jockey: "福永祐一", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 89, soft: 84, heavy: 78 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], styleApt: { nige: "E", senko: "C", sashi: "A", oikomi: "S" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 72, manualComment: "過去の名馬", legend: true, abilityBoost: 2, specialAbility: { id: "steel", name: "鋼の差し脚", desc: "マイル〜中距離末脚" } },
+  { name: "ナリタタイシン", frame: 6, number: 8, sexAge: "牡（名馬）", ranks: [1,2,1,1,3], starts: 5, classLevel: 1.42, timeIdx: 107, agariIdx: 108, distApt: 8, lastDist: 2000, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 87, soft: 80, heavy: 74 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], styleApt: { nige: "E", senko: "D", sashi: "B", oikomi: "S" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 72, manualComment: "過去の名馬", legend: true, abilityBoost: 2, specialAbility: { id: "clutch", name: "勝負根性", desc: "僅差で加点" } },
+  { name: "ロジユニヴァース", frame: 7, number: 9, sexAge: "牡（名馬）", ranks: [1,1,2,1,3], starts: 5, classLevel: 1.40, timeIdx: 107, agariIdx: 106, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "横山典弘", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 88, soft: 83, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "D", senko: "A", sashi: "S", oikomi: "B" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 71, manualComment: "過去の名馬", legend: true, abilityBoost: 1, specialAbility: { id: "logic", name: "論理的強さ", desc: "バランス型" } },
+  { name: "タスティエーラ", frame: 8, number: 10, sexAge: "牡（名馬）", ranks: [1,1,2,1,3], starts: 5, classLevel: 1.38, timeIdx: 106, agariIdx: 108, distApt: 8, lastDist: 2400, restWeeks: 0, jockey: "松山弘平", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 88, soft: 83, heavy: 77 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "D", senko: "B", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 71, manualComment: "過去の名馬", legend: true, abilityBoost: 1, specialAbility: { id: "tastiera", name: "鍵盤の音色", desc: "標準的中距離" } }
 ];
 
 const SAMPLE_RACES = [
@@ -2980,6 +3003,36 @@ function scoreToGrade(s) {
   return "E";
 }
 /** 距離適性 S〜E（近走距離・着順・distAptから推定） */
+
+/** 脚質適性（逃げ/先行/差し/追込）S〜E。名馬は styleApt 明示、一般は styles から推定 */
+function calcStyleAptitude(horse) {
+  const order = ["nige", "senko", "sashi", "oikomi"];
+  const labels = { nige: "逃げ", senko: "先行", sashi: "差し", oikomi: "追込" };
+  if (horse && horse.styleApt && typeof horse.styleApt === "object") {
+    const grades = {};
+    order.forEach(k => {
+      const g = String(horse.styleApt[k] || "E").toUpperCase();
+      grades[k] = "SABCD E".replace(" ", "").indexOf(g) >= 0 ? g : "E";
+    });
+    let best = "E", bestK = "senko";
+    const rank = { S: 5, A: 4, B: 3, C: 2, D: 1, E: 0 };
+    order.forEach(k => {
+      if ((rank[grades[k]] || 0) > (rank[best] || 0)) { best = grades[k]; bestK = k; }
+    });
+    return { grades, primary: bestK, primaryLabel: labels[bestK], primaryGrade: best,
+      line: order.map(k => labels[k] + grades[k]).join(" ") };
+  }
+  // 推定: styles 配列の先頭を得意
+  const st = (horse && horse.styles && horse.styles[0]) || "senko";
+  const grades = { nige: "E", senko: "E", sashi: "E", oikomi: "E" };
+  if (st === "nige") { grades.nige = "A"; grades.senko = "B"; }
+  else if (st === "senko") { grades.senko = "A"; grades.nige = "C"; grades.sashi = "C"; }
+  else if (st === "sashi") { grades.sashi = "A"; grades.senko = "C"; grades.oikomi = "B"; }
+  else if (st === "oikomi") { grades.oikomi = "A"; grades.sashi = "B"; }
+  return { grades, primary: st, primaryLabel: labels[st] || "先行", primaryGrade: "A",
+    line: order.map(k => labels[k] + grades[k]).join(" ") };
+}
+
 function calcDistAptitude(horse) {
   const ranks = typeof numericRanks === "function" ? numericRanks(horse.ranks || []) : [];
   const avg = ranks.length ? ranks.reduce((a, b) => a + b, 0) / ranks.length : 8;
@@ -4324,17 +4377,17 @@ const NEWS_ITEMS = [
       "★★ディープインパクト・イクイノックス・アーモンドアイなど約60頭が参戦",
       "★★【ドリームマッチ】で伝説の名馬を選んで出走可能",
       "★能力値は100超も。特殊能力（隠し）で個性を再現",
-      "★【競走馬図鑑】でも一覧・検索できます"
+      "★【競走馬名鑑】でも一覧・検索できます"
     ]
   },
   {
     ver: "2026-09-14a",
     date: "2026/9/14",
-    title: "✨ NEW MODE ドリームマッチ ＆ 競走馬図鑑",
+    title: "✨ NEW MODE ドリームマッチ ＆ 競走馬名鑑",
     showFeatureShowcase: true,
     body: [
       "★★【ドリームマッチ】好きな馬を集めて自由レース！競馬場・距離・天候までお好みで",
-      "★★【競走馬図鑑】登録馬を一覧でチェック。能力・距離適性・血統をすぐ確認",
+      "★★【競走馬名鑑】登録馬を一覧でチェック。能力・距離適性・血統をすぐ確認",
       "★タブ右寄りに新設。レース設定のランダム化・馬番速報・倍速も対応"
     ]
   },
@@ -4758,7 +4811,7 @@ function featureShowcaseHtml() {
       </div>
       <div class="news-feature-card">
         <span class="news-feature-emoji">📖</span>
-        <div class="news-feature-title">競走馬図鑑</div>
+        <div class="news-feature-title">競走馬名鑑</div>
         <div class="news-feature-desc">登録馬を一覧で<br>能力・距離適性をチェック</div>
       </div>
     </div>
@@ -5253,7 +5306,10 @@ function saveRaceVideoHistory(raceMeta, order, pace, leadSplit) {
       odds: r.horse.odds,
       popular: r.horse.popular
     })),
-    finishOrder: order.map((r, i) => ({
+    finishOrder: order.map((r, i) => {
+      const prevT = i > 0 ? order[i - 1].finishTime : null;
+      const dt = i === 0 ? 0 : Math.max(0, (r.finishTime || 0) - (prevT || 0));
+      return {
       number: r.horse.number,
       name: r.horse.name,
       frame: r.horse.frame,
@@ -5262,8 +5318,10 @@ function saveRaceVideoHistory(raceMeta, order, pace, leadSplit) {
       split1000: r.split1000,
       lateStart: !!r.lateStart,
       odds: r.horse.odds,
-      popular: r.horse.popular
-    })),
+      popular: r.horse.popular,
+      margin: i === 0 ? "ー" : marginLabelFromDelta(dt),
+      marginSec: i === 0 ? 0 : Math.round(dt * 100) / 100
+    }; }),
     horses: order.map((r, i) => ({
       number: r.horse.number,
       name: r.horse.name,
@@ -5534,6 +5592,9 @@ function runAbility() {
         </div>
         <div class="horse-meta" style="margin:0 0 6px">
           距離適性: ${(() => { const da = d.distAptitude || calcDistAptitude(h); return da ? (da.primaryLabel + "向き｜" + da.line) : "—"; })()}
+        </div>
+        <div class="horse-meta" style="margin:0 0 6px">
+          脚質適性: ${(() => { try { const sa = calcStyleAptitude(h); return sa ? (sa.primaryLabel + sa.primaryGrade + "｜" + sa.line) : "—"; } catch (e) { return "—"; } })()}
         </div>
         <div class="ability-grid">
           <div class="ability-item"><span class="label">スピード</span><span class="val">${fmtIdx(ab.speed)}</span>
@@ -7673,6 +7734,38 @@ function formatRaceTime(sec) {
   return m + ":" + s.toFixed(1).padStart(4, "0");
 }
 
+/** タイム差(秒) → JRA風の着差表記（前との差） */
+function marginLabelFromDelta(dt) {
+  if (dt == null || isNaN(dt) || dt < 0) dt = 0;
+  // 同着は呼び出し側で判定（ほぼ0かつ写真判定レベル）
+  if (dt < 0.005) return "同着";
+  if (dt < 0.03) return "ハナ";
+  if (dt < 0.06) return "アタマ";
+  if (dt < 0.10) return "クビ";
+  if (dt < 0.15) return "1/2馬身";
+  if (dt < 0.20) return "3/4馬身";
+  if (dt < 0.225) return "1馬身";
+  if (dt < 0.25) return "1 1/4馬身";
+  if (dt < 0.30) return "1 1/2馬身";
+  if (dt < 0.35) return "1 3/4馬身";
+  if (dt < 0.40) return "2馬身";
+  if (dt < 0.50) return "2 1/2馬身";
+  if (dt < 0.60) return "3馬身";
+  if (dt < 0.70) return "3 1/2馬身";
+  if (dt < 0.80) return "4馬身";
+  if (dt < 1.00) return "5馬身";
+  if (dt < 1.10) return "6馬身";
+  if (dt < 1.30) return "7馬身";
+  if (dt < 1.40) return "8馬身";
+  if (dt < 1.60) return "9馬身";
+  if (dt < 1.70) return "10馬身";
+  return "大差";
+}
+function marginBetween(prevTime, curTime) {
+  if (prevTime == null || curTime == null) return "";
+  return marginLabelFromDelta(Math.max(0, curTime - prevTime));
+}
+
 /** カッコいい馬番バッジ（円形・枠色・光彩・先頭ハイライト） */
 
 /** 中継風・馬番速報（位置取りバー） */
@@ -8262,6 +8355,11 @@ function startRace(horses, raceMeta) {
     let styleKey = meta.style;
     if (h.specialAbility && (h.specialAbility.id === "bigEscape" || h.specialAbility.id === "solo" || h.specialAbility.id === "panthalassa")) {
       styleKey = "nige";
+    } else if (h.styleApt) {
+      try {
+        const sa = calcStyleAptitude(h);
+        if (sa && sa.primary) styleKey = sa.primary;
+      } catch (e) {}
     }
     // 着差: 実力(ord)＋脚質×ペースの相性＋ブレ（逃げ切り固定を防ぐ）
     let finishSpread = meta.ord * 0.16 + (Math.random() - 0.5) * 0.35;
@@ -8308,6 +8406,8 @@ function startRace(horses, raceMeta) {
       lane: ((h.frame || 1) - 4.5) * 0.55,
       targetLane: ((h.frame || 1) - 4.5) * 0.55,
       isBigEscape: !!(h.specialAbility && (h.specialAbility.id === "bigEscape" || h.specialAbility.id === "solo" || h.specialAbility.id === "panthalassa")),
+      specialId: (h.specialAbility && h.specialAbility.id) || null,
+      specialName: (h.specialAbility && h.specialAbility.name) || null,
       finished: false,
       finishTime: 0,
       split1000: null,
@@ -8536,6 +8636,78 @@ function startRace(horses, raceMeta) {
           r.displayPos += (r.pos - r.displayPos) * Math.min(1, 0.3 + dtWall * 2.5);
         }
       }
+      // 特殊能力: レース中の動きに反映
+      if (r.specialId && !r.finished && !r.isBigEscape) {
+        const distM = (raceMeta && raceMeta.distance) || 2000;
+        const remain300 = Math.max(0.72, 1 - 300 / distM); // 残り約300m
+        const remain200 = Math.max(0.78, 1 - 200 / distM);
+        const remain400 = Math.max(0.65, 1 - 400 / distM);
+        const sid = r.specialId;
+        const dtK = Math.min(2.2, dt * 2.0);
+        // 衝撃の末脚系統: 残り300m手前から脅威の加速
+        const finishIds = {
+          impact: 1.55, lastSpurt: 1.35, wild: 1.45, sky: 1.30, steel: 1.28,
+          oro: 1.25, heart: 1.20, loves: 1.22, liberty: 1.20, people: 1.25,
+          dodeuce: 1.28, epiphaneia: 1.32, buena: 1.18, lis: 1.15, chrono: 1.20,
+          shahryar: 1.18, clutch: 1.35
+        };
+        if (finishIds[sid] && r.pos >= remain300) {
+          const along = Math.min(1, (r.pos - remain300) / Math.max(0.08, 1 - remain300));
+          const power = finishIds[sid];
+          // ディープ級は特に強い立ち上がり
+          const curve = sid === "impact" ? Math.pow(along, 0.65) : Math.pow(along, 0.85);
+          r.pos = Math.min(0.998, r.pos + (0.0075 * power * curve + 0.003 * along) * dtK);
+          r._specialKick = true;
+        }
+        // 逃げの美学・真っ赤な逃げ・長距離逃げ: 序盤〜中盤前目（大逃げほどではない）
+        if ((sid === "front" || sid === "scarlet" || sid === "title") && r.pos < 0.55) {
+          r.pos = Math.min(0.998, r.pos + 0.0045 * dtK);
+        }
+        // スタミナ王系統: 中盤以降の失速を抑え、後半押し上げ
+        const stamIds = { staminaKing: 1.4, gold: 1.25, fierman: 1.2, autumn: 1.15, derby: 1.3, diamond: 1.15, kitasan: 1.2, tenno: 1.15 };
+        if (stamIds[sid] && r.pos >= 0.55) {
+          r.pos = Math.min(0.998, r.pos + 0.004 * stamIds[sid] * dtK * (0.5 + (r.pos - 0.55)));
+        }
+        // 世界一・皇帝・八冠など総合型: 全区間わずかに上積み
+        const overallIds = { equinox: 1.5, emperor: 1.35, eightCrown: 1.4, almond: 1.3, contrail: 1.25, triple: 1.25, gentildonna: 1.2, world: 1.15 };
+        if (overallIds[sid]) {
+          r.pos = Math.min(0.998, r.pos + 0.0028 * overallIds[sid] * dtK);
+        }
+        // スプリント・マイル特化: 短距離ほど強く、長距離は控えめ
+        const sprintIds = { canaloa: 1.5, sprintKing: 1.45, sprinterMile: 1.3, alegria: 1.2, maurice: 1.25, vodka: 1.15, sodashi: 1.1, digital: 1.1, major: 1.1 };
+        if (sprintIds[sid]) {
+          const shortBoost = distM <= 1600 ? 1.2 : (distM <= 2000 ? 0.85 : 0.45);
+          if (r.pos >= remain400) {
+            r.pos = Math.min(0.998, r.pos + 0.005 * sprintIds[sid] * shortBoost * dtK);
+          }
+        }
+        // 不死鳥: 後方にいるほど粘って戻す
+        if (sid === "phoenix") {
+          let rankEst = 0;
+          for (let j = 0; j < runners.length; j++) {
+            if (runners[j] !== r && !runners[j].finished && runners[j].pos > r.pos) rankEst++;
+          }
+          if (rankEst >= 3 && r.pos >= 0.5) {
+            r.pos = Math.min(0.998, r.pos + 0.006 * dtK * Math.min(1.5, rankEst / 4));
+          }
+        }
+        // パワフル: 稍重・重で加速
+        if (sid === "power" || sid === "versatile") {
+          const cond = (raceMeta && raceMeta.condition) || "良";
+          if (cond === "稍重" || cond === "重") {
+            r.pos = Math.min(0.998, r.pos + 0.0045 * dtK);
+          }
+        }
+        // 安定・堅実: ブレを抑えるため極端な遅れを戻す
+        if ((sid === "consistent" || sid === "steady" || sid === "logic") && r.pos >= 0.4) {
+          const avg = runners.reduce((s, x) => s + (x.finished ? 1 : x.pos), 0) / Math.max(1, runners.length);
+          if (r.pos < avg - 0.03) r.pos = Math.min(avg - 0.01, r.pos + 0.005 * dtK);
+        }
+        if (r._specialKick) {
+          r.displayPos = r.displayPos + (r.pos - r.displayPos) * Math.min(1, 0.35 + dt * 2.2);
+        }
+      }
+
       // 他馬: 最終直線以降に末脚で差を詰める
       if (!r.isBigEscape && !r.finished) {
         const hasBig = runners.some(x => x.isBigEscape);
@@ -8847,24 +9019,31 @@ function showHorseFinishModal(order, raceMeta) {
   const sub = document.getElementById("horseFinishSub");
   if (!modal || !list || !order || !order.length) return;
   const title = raceMeta ? (raceMeta.name || raceMeta.raceName || "") : "";
-  if (sub) sub.textContent = (title ? title + " ｜ " : "") + "順位・馬名・タイム";
+  if (sub) sub.textContent = (title ? title + " ｜ " : "") + "順位・馬名・タイム・着差";
   if (podium) podium.innerHTML = "";
 
   list.innerHTML =
-    `<div class="hf-list-head" style="grid-template-columns:56px 1fr 80px"><span>順位</span><span>馬名</span><span style="text-align:right">タイム</span></div>` +
+    `<div class="hf-list-head" style="grid-template-columns:48px 1fr 72px 72px"><span>順位</span><span>馬名</span><span style="text-align:right">タイム</span><span style="text-align:right">着差</span></div>` +
     order.map((r, i) => {
       const tm = formatRaceTime(r.finishTime);
       const fi = Math.min(7, Math.max(0, (r.horse.frame || 1) - 1));
       const bg = FRAME_COLORS[fi];
       const fg = FRAME_TEXT[fi];
       const border = (bg === "#000" || bg === "#000000") ? "1px solid #fff" : (bg === "#fff" || bg === "#ffffff") ? "1px solid #333" : "none";
-      return `<div class="hf-list-row${i < 3 ? " top" : ""}" style="grid-template-columns:56px 1fr 80px">
+      let margin = "ー";
+      if (i > 0) {
+        const prevT = order[i - 1].finishTime;
+        const dt = Math.max(0, (r.finishTime || 0) - (prevT || 0));
+        margin = marginLabelFromDelta(dt);
+      }
+      return `<div class="hf-list-row${i < 3 ? " top" : ""}" style="grid-template-columns:48px 1fr 72px 72px">
         <span class="hf-place">${i + 1}着</span>
         <span style="font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:8px">
           <span class="hf-num" style="background:${bg};color:${fg};border:${border}">${r.horse.number}</span>
           <span style="overflow:hidden;text-overflow:ellipsis">${r.horse.name}</span>
         </span>
         <span class="hf-time">${tm}</span>
+        <span class="hf-margin" style="text-align:right;font-size:0.78rem;font-weight:800;color:#fde68a">${margin}</span>
       </div>`;
     }).join("");
 
@@ -8883,12 +9062,22 @@ function showFinish(order, raceMeta, pace, leadSplit) {
     const split = r.split1000 != null ? "／1000m " + formatRaceTime(r.split1000) : "";
     const jk = r.horse.jockey ? "・" + r.horse.jockey : "";
     const odds = r.horse.odds != null ? "・単勝" + r.horse.odds + "倍" : "";
+    let margin = "";
+    if (i === 0) {
+      margin = `<span class="margin-label margin-win">ー</span>`;
+    } else {
+      const prev = order[i - 1];
+      const dt = (r.finishTime || 0) - (prev.finishTime || 0);
+      const lab = marginLabelFromDelta(dt);
+      margin = `<span class="margin-label" title="前とのタイム差 ${dt.toFixed(2)}秒">${lab}</span>`;
+    }
     return `<div class="horse-row">
       <div class="rank-badge ${badge}">${i+1}</div>
-      <div>
+      <div style="flex:1;min-width:0">
         <div class="horse-name">${r.horse.number} ${r.horse.name}</div>
         <div class="horse-meta">${formatRaceTime(r.finishTime)}${split}${jk}${odds}${r.lateStart ? "・出遅れ" : ""}</div>
       </div>
+      <div class="margin-cell">${margin}</div>
     </div>`;
   }).join("");
   if (raceMeta) saveRaceVideoHistory(raceMeta, order, pace, leadSplit);
@@ -8988,7 +9177,7 @@ function runCustomRace() {
 
 
 
-// ========== 競走馬図鑑 ==========
+// ========== 競走馬名鑑 ==========
 function getZukanHorses() {
   if (typeof getAllRegisteredHorses === "function") return getAllRegisteredHorses();
   const map = new Map();
@@ -9036,6 +9225,8 @@ function renderZukan() {
       : (h.ranks || []).join(",");
     const blood = h.blood ? ((h.blood.sire || "") + (h.blood.damsire ? " × " + h.blood.damsire : "")) : "";
     const distLine = da ? (da.primaryLabel + "向き｜" + da.line) : "—";
+    let styleLine = "—";
+    try { const sa = calcStyleAptitude(h); if (sa) styleLine = sa.primaryLabel + sa.primaryGrade + "｜" + sa.line; } catch (e) {}
     return `<div style="padding:12px 0;border-bottom:1px solid var(--border)">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
         <div style="min-width:0">
@@ -9046,6 +9237,7 @@ function renderZukan() {
       </div>
       <div class="horse-meta" style="margin-top:4px">近走: ${ranks}</div>
       <div class="horse-meta">距離適性: ${distLine}</div>
+      <div class="horse-meta">脚質適性: ${styleLine}</div>
       ${blood ? `<div class="horse-meta">血統: ${blood}</div>` : ""}
       ${h.specialAbility ? `<div class="horse-meta" style="opacity:0.85">✦ 特殊: ${h.specialAbility.name}（${h.specialAbility.desc}）</div>` : ""}
       <div class="horse-meta">スピード ${typeof fmtIdx === "function" ? fmtIdx(ab.speed) : (ab.speed || "-")}
@@ -9233,11 +9425,18 @@ function renderDreamSelected() {
   el.innerHTML = dreamSelected.map(h => {
     let total = "-";
     let distLine = "—";
+    let styleLine = "—";
     try { total = calcAbility(h, "良").total; } catch (e) {}
     try {
       if (typeof calcDistAptitude === "function") {
         const da = calcDistAptitude(h);
         if (da) distLine = da.primaryLabel + "向き｜" + da.line;
+      }
+    } catch (e) {}
+    try {
+      if (typeof calcStyleAptitude === "function") {
+        const sa = calcStyleAptitude(h);
+        if (sa) styleLine = sa.primaryLabel + sa.primaryGrade + "｜" + sa.line;
       }
     } catch (e) {}
     return `<div class="horse-row">
@@ -9246,6 +9445,7 @@ function renderDreamSelected() {
         <div class="horse-name">${h.frame}枠${h.number}番 ${h.name}</div>
         <div class="horse-meta">能力 ${total}</div>
         <div class="horse-meta">距離適性: ${distLine}</div>
+        <div class="horse-meta">脚質適性: ${styleLine}</div>
       </div>
       <button type="button" class="btn btn-secondary dream-remove-btn" style="width:auto;padding:4px 8px;font-size:0.7rem" data-name="${String(h.name).replace(/"/g, "&quot;")}">外す</button>
     </div>`;
