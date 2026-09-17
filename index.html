@@ -2214,7 +2214,7 @@
   <div class="card mt-10">
     <h2>出走馬選択 <span class="horse-meta" id="dreamPickCount">0 / 12頭</span></h2>
     <p class="horse-meta" style="margin:0 0 8px">チェックで選択／解除。枠番は選択順に自動割当します。</p>
-    <input type="search" id="dreamHorseSearch" class="race-select" placeholder="馬名で検索..." style="margin-bottom:8px">
+    <input type="search" id="dreamHorseSearch" class="race-select" placeholder="馬名で検索（ひらがな可）..." style="margin-bottom:8px">
     <div id="dreamHorsePool" style="max-height:320px;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:6px;position:relative;z-index:5"></div>
     <div class="flex-gap" style="margin-top:10px">
       <button type="button" class="btn btn-secondary" id="btnDreamClear">選択クリア</button>
@@ -2628,6 +2628,14 @@ function pedigreeBonus(horse, race) {
 // ※近走着順・タイム指数はデモ用の想定値。公式結果そのものではありません。
 
 /** 過去の名馬（名鑑・ドリームマッチ用）※能力値は100超可 */
+
+/** 取消などで出走を外したが名鑑・ドリームマッチ用に残す馬 */
+const ZUKAN_KEEP_HORSES = [
+  { name: "ナリタエスペランサ", frame: 5, number: 9, sexAge: "牡3", ranks: [1, 1, 7, 1, 3], starts: 5, classLevel: 1.12, timeIdx: 80, agariIdx: 82, distApt: 8, lastDist: 2600, restWeeks: 2, jockey: "—", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 82, soft: 78, heavy: 74 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "帆柱山特別1着・3歳上1勝1着", recent: ["帆柱山特別1着","3歳上1勝1着","すみれS7着","3歳未勝利1着","2歳未勝利3着"] }, manualRank: 9, manualScore: 82, manualComment: "神戸新聞杯取消・名鑑登録" },
+  { name: "メイショウナルカミ", frame: 7, number: 13, sexAge: "牡3", ranks: [12, 1, 7, 1, 2], starts: 5, classLevel: 1.00, timeIdx: 74, agariIdx: 75, distApt: 8, lastDist: 2200, restWeeks: 2, jockey: "幸英明", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 78, soft: 74, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "熊野特別12着・3歳上1勝1着", recent: ["熊野特別12着","3歳上1勝1着","大寒桜賞7着","3歳未勝利1着","3歳未勝利2着"] }, manualRank: 13, manualScore: 76, manualComment: "神戸新聞杯取消・名鑑登録" },
+  { name: "ベルウッドバイオ", frame: 8, number: 14, sexAge: "牡3", ranks: [7, 1, 3, 7, 7], starts: 5, classLevel: 1.02, timeIdx: 75, agariIdx: 76, distApt: 8, lastDist: 2400, restWeeks: 2, jockey: "—", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 78, soft: 74, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], past: { note: "3歳上1勝7着・3歳未勝利1着", recent: ["3歳上1勝7着","3歳未勝利1着","3歳未勝利3着","3歳未勝利7着","3歳未勝利7着"] }, manualRank: 14, manualScore: 77, manualComment: "神戸新聞杯取消・名鑑登録" }
+];
+
 const LEGENDARY_HORSES = [
   { name: "イクイノックス", frame: 1, number: 1, sexAge: "牡（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.92, timeIdx: 128, agariIdx: 124, distApt: 9, lastDist: 2500, restWeeks: 0, jockey: "ルメール", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 96, soft: 90, heavy: 84 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], styleApt: { nige: "D", senko: "A", sashi: "S", oikomi: "B" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 88, manualComment: "過去の名馬", legend: true, abilityBoost: 18, specialAbility: { id: "equinox", name: "世界一の馬", desc: "全能力が歴代最高水準" } },
   { name: "ディープインパクト", frame: 2, number: 2, sexAge: "牡（名馬）", ranks: [1,1,1,1,1], starts: 5, classLevel: 1.90, timeIdx: 126, agariIdx: 128, distApt: 9, lastDist: 2400, restWeeks: 0, jockey: "武豊", weight: 57, trainer: "—", odds: 0, popular: 0, going: { firm: 95, soft: 88, heavy: 80 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi","oikomi"], styleApt: { nige: "E", senko: "C", sashi: "S", oikomi: "A" }, past: { note: "殿堂・名馬（参考データ）", recent: [] }, manualRank: 1, manualScore: 87, manualComment: "過去の名馬", legend: true, abilityBoost: 17, specialAbility: { id: "impact", name: "衝撃の末脚", desc: "末脚・総合が歴代級" } },
@@ -2912,7 +2920,7 @@ const SAMPLE_RACES = [
     id: "kobe_shimbun_20260921",
     name: "【2026/9/21 神戸新聞杯】",
     course: "阪神", surface: "芝", distance: 2400, condition: "良",
-    note: "阪神芝2400m外回り｜1角まで325m｜直線473.6m｜ゆったりコーナー｜枠順未定(登録14頭)",
+    note: "阪神芝2400m外回り｜1角まで325m｜直線473.6m｜ゆったりコーナー｜取消3頭・出走11頭",
     date: "2026-09-21", grade: "G2", yearSrc: "2026",
     raceName: "神戸新聞杯",
     horses: [
@@ -2924,12 +2932,9 @@ const SAMPLE_RACES = [
       { name: "カフジエメンタール", frame: 6, number: 6, sexAge: "牡3", ranks: [1, 1, 9, 3, 1], starts: 5, classLevel: 1.26, timeIdx: 84, agariIdx: 85, distApt: 8, lastDist: 2000, restWeeks: 4, jockey: "坂井瑠星", weight: 57, trainer: "矢作芳人", odds: 17.7, popular: 6, going: { firm: 81, soft: 78, heavy: 74 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "熊野特別1着・城崎特別1着・京都新聞杯9着", recent: ["熊野特別1着", "城崎特別1着", "京都新聞杯9着", "毎日杯3着", "アルメリア賞1着"] }, manualRank: 5, manualScore: 86, manualComment: "上昇中" },
       { name: "エムズビギン", frame: 7, number: 7, sexAge: "牡3", ranks: [14, 7, 2, 1, 2], starts: 5, classLevel: 1.18, timeIdx: 81, agariIdx: 80, distApt: 8, lastDist: 2400, restWeeks: 14, jockey: "武豊", weight: 57, trainer: "友道康夫", odds: 18.4, popular: 7, going: { firm: 82, soft: 79, heavy: 75 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "きさらぎ賞2着・東京優駿14着", recent: ["東京優駿14着", "京都新聞杯7着", "きさらぎ賞2着", "2歳未勝利1着", "2歳新馬2着"] }, manualRank: 8, manualScore: 83, manualComment: "素質" },
       { name: "ショウナンハヤナミ", frame: 8, number: 8, sexAge: "牡3", ranks: [1, 1], starts: 5, classLevel: 1.08, timeIdx: 78, agariIdx: 79, distApt: 8, lastDist: 2000, restWeeks: 20, jockey: "池添謙一", weight: 57, trainer: "渡辺薫彦", odds: 31, popular: 8, going: { firm: 80, soft: 77, heavy: 73 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "若駒S1着・2歳新馬1着", recent: ["若駒S1着", "2歳新馬1着"] }, manualRank: 11, manualScore: 80, manualComment: "休み明け" },
-      { name: "ナリタエスペランサ", frame: 1, number: 9, sexAge: "牡3", ranks: [1, 1, 7, 1, 3], starts: 5, classLevel: 1.12, timeIdx: 80, agariIdx: 82, distApt: 8, lastDist: 2000, restWeeks: 5, jockey: "—", weight: 57, trainer: "—", odds: 37, popular: 9, going: { firm: 78, soft: 76, heavy: 72 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "帆柱山特別1着・3歳上1勝1着", recent: ["帆柱山特別1着", "3歳上1勝1着", "すみれS7着", "3歳未勝利1着", "2歳未勝利3着"] }, manualRank: 9, manualScore: 82, manualComment: "一発" },
       { name: "カムアップローゼス", frame: 2, number: 10, sexAge: "牡3", ranks: [1, 4, 6, 3, 6], starts: 5, classLevel: 1.1, timeIdx: 79, agariIdx: 80, distApt: 8, lastDist: 2000, restWeeks: 4, jockey: "北村友一", weight: 57, trainer: "—", odds: 68, popular: 10, going: { firm: 77, soft: 75, heavy: 71 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi", "senko"], past: { note: "臥牛山特別1着・京都新聞杯6着", recent: ["臥牛山特別1着", "奥尻特別4着", "京都新聞杯6着", "フリージア賞3着", "3歳1勝6着"] }, manualRank: 10, manualScore: 81, manualComment: "地力" },
       { name: "エイシンインアウト", frame: 3, number: 11, sexAge: "牡3", ranks: [1, 1, 4, 5, 4], starts: 5, classLevel: 1.05, timeIdx: 77, agariIdx: 78, distApt: 7, lastDist: 1800, restWeeks: 5, jockey: "横山琉人", weight: 57, trainer: "—", odds: 72, popular: 11, going: { firm: 76, soft: 74, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "ルスツ特別1着・3歳未勝利1着", recent: ["ルスツ特別1着", "3歳未勝利1着", "3歳未勝利4着", "3歳未勝利5着", "3歳未勝利4着"] }, manualRank: 12, manualScore: 79, manualComment: "距離不安" },
-      { name: "シートゥサミット", frame: 4, number: 12, sexAge: "牡3", ranks: [2, 1, 2, 7, 7], starts: 5, classLevel: 1.08, timeIdx: 78, agariIdx: 77, distApt: 8, lastDist: 2000, restWeeks: 4, jockey: "酒井学", weight: 57, trainer: "—", odds: 77, popular: 12, going: { firm: 75, soft: 73, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "3歳上1勝2着・3歳未勝利1着", recent: ["3歳上1勝2着", "3歳未勝利1着", "3歳未勝利2着", "3歳未勝利7着", "3歳未勝利7着"] }, manualRank: 11, manualScore: 80, manualComment: "厳しい" },
-      { name: "メイショウナルカミ", frame: 5, number: 13, sexAge: "牡3", ranks: [12, 1, 7, 1, 2], starts: 5, classLevel: 1.0, timeIdx: 74, agariIdx: 75, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "—", weight: 57, trainer: "—", odds: 170, popular: 13, going: { firm: 74, soft: 72, heavy: 69 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "熊野特別12着・3歳上1勝1着", recent: ["熊野特別12着", "3歳上1勝1着", "大寒桜賞7着", "3歳未勝利1着", "3歳未勝利2着"] }, manualRank: 13, manualScore: 76, manualComment: "大穴" },
-      { name: "ベルウッドバイオ", frame: 6, number: 14, sexAge: "牡3", ranks: [7, 1, 3, 7, 7], starts: 5, classLevel: 1.02, timeIdx: 75, agariIdx: 76, distApt: 7, lastDist: 1800, restWeeks: 5, jockey: "—", weight: 57, trainer: "—", odds: 340, popular: 14, going: { firm: 73, soft: 71, heavy: 68 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], past: { note: "3歳上1勝7着・3歳未勝利1着", recent: ["3歳上1勝7着", "3歳未勝利1着", "3歳未勝利3着", "3歳未勝利7着", "3歳未勝利7着"] }, manualRank: 14, manualScore: 77, manualComment: "厳しい" }
+      { name: "シートゥサミット", frame: 4, number: 12, sexAge: "牡3", ranks: [2, 1, 2, 7, 7], starts: 5, classLevel: 1.08, timeIdx: 78, agariIdx: 77, distApt: 8, lastDist: 2000, restWeeks: 4, jockey: "酒井学", weight: 57, trainer: "—", odds: 77, popular: 12, going: { firm: 75, soft: 73, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "3歳上1勝2着・3歳未勝利1着", recent: ["3歳上1勝2着", "3歳未勝利1着", "3歳未勝利2着", "3歳未勝利7着", "3歳未勝利7着"] }, manualRank: 11, manualScore: 80, manualComment: "厳しい" }
     ]
   }
 
@@ -9194,13 +9199,37 @@ function getZukanHorses() {
   return Array.from(map.values());
 }
 
+
+/** カタカナ→ひらがな等の正規化（名鑑検索用） */
+function toHiraganaSearch(s) {
+  return String(s || "")
+    .normalize("NFKC")
+    .replace(/[\u30A1-\u30F6]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60))
+    .replace(/[\u30F7-\u30FA]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60))
+    .replace(/\u30FC/g, "ー")
+    .replace(/\s+/g, "")
+    .toLowerCase();
+}
+function horseNameMatchesQuery(name, query) {
+  if (!query) return true;
+  const n = String(name || "");
+  const q = String(query || "").trim();
+  if (!q) return true;
+  if (n.indexOf(q) !== -1) return true;
+  const nh = toHiraganaSearch(n);
+  const qh = toHiraganaSearch(q);
+  if (nh.indexOf(qh) !== -1) return true;
+  // 部分一致のゆるい比較
+  return nh.indexOf(qh) !== -1;
+}
+
 function renderZukan() {
   const listEl = document.getElementById("zukanList");
   const cntEl = document.getElementById("zukanCount");
   if (!listEl) return;
   let horses = getZukanHorses();
   const q = ((document.getElementById("zukanSearch") || {}).value || "").trim();
-  if (q) horses = horses.filter(h => (h.name || "").indexOf(q) !== -1);
+  if (q) horses = horses.filter(h => horseNameMatchesQuery(h.name, q));
   const sort = ((document.getElementById("zukanSort") || {}).value) || "ability";
   const withAb = horses.map(h => {
     let ab = null, da = null;
@@ -9275,6 +9304,12 @@ function getAllRegisteredHorses() {
   } catch (e) {}
   try {
     (LEGENDARY_HORSES || []).forEach(h => {
+      if (!h || !h.name) return;
+      if (!map.has(h.name)) map.set(h.name, h);
+    });
+  } catch (e) {}
+  try {
+    (ZUKAN_KEEP_HORSES || []).forEach(h => {
       if (!h || !h.name) return;
       if (!map.has(h.name)) map.set(h.name, h);
     });
