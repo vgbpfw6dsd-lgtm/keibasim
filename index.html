@@ -2065,35 +2065,24 @@
 <div id="panel-dream" class="panel">
   <div class="info-box">
     開催に関係なく、好きな馬を集めてオリジナルレースができます。<br>
-    出走頭数は9〜18頭。競馬場・馬場・ペース・天候は【レース映像】と同じ操作感です。
+    出走頭数は9〜18頭。年間G1から開催レースを選択（汎用楕円＋左右回り）。馬場・ペース・天候は【レース映像】と同じ操作感です。
   </div>
   <div class="card">
     <h2>レース設定</h2>
-    <label class="horse-meta" style="display:block;margin-bottom:4px">競馬場</label>
-    <select id="dreamCourseSelect" class="race-select">
-      <option value="東京">東京</option>
-      <option value="中山">中山</option>
-      <option value="阪神">阪神</option>
-      <option value="京都">京都</option>
-      <option value="中京">中京</option>
-      <option value="新潟">新潟</option>
-      <option value="札幌">札幌</option>
-      <option value="小倉">小倉</option>
-    </select>
-    <label class="horse-meta" style="display:block;margin:8px 0 4px">距離区分</label>
-    <select id="dreamDistBandSelect" class="race-select">
+    <label class="horse-meta" style="display:block;margin-bottom:4px">開催レース（年間G1）</label>
+    <select id="dreamG1Select" class="race-select"></select>
+    <p class="horse-meta" id="dreamG1Hint" style="margin:6px 0 0">G1を選ぶと競馬場・距離・左右回りが自動設定されます。映像は汎用楕円コースです。</p>
+    <select id="dreamDistBandSelect" class="race-select" style="display:none" aria-hidden="true">
       <option value="free" selected>自由（すべて）</option>
-      <option value="short">短距離（1000〜1400m未満）</option>
-      <option value="mile">マイル（1400〜1800m未満）</option>
-      <option value="middle">中距離（1800〜2200m未満）</option>
-      <option value="midLong">中長距離（2200〜2800m未満）</option>
-      <option value="long">長距離（2800m以上）</option>
+      <option value="short">短距離</option>
+      <option value="mile">マイル</option>
+      <option value="middle">中距離</option>
+      <option value="midLong">中長距離</option>
+      <option value="long">長距離</option>
     </select>
-    <label class="horse-meta" style="display:block;margin:8px 0 4px">距離</label>
-    <select id="dreamDistSelect" class="race-select">
-      <option value="1200">1200m</option>
-      <option value="1400">1400m</option>
+    <select id="dreamDistSelect" class="race-select" style="display:none" aria-hidden="true">
       <option value="1600" selected>1600m</option>
+      <option value="1200">1200m</option>
       <option value="1800">1800m</option>
       <option value="2000">2000m</option>
       <option value="2200">2200m</option>
@@ -2102,7 +2091,17 @@
       <option value="3000">3000m</option>
       <option value="3200">3200m</option>
     </select>
-    <p class="horse-meta" id="dreamDistBandHint" style="margin:6px 0 0">距離区分を選ぶと、その区分の距離だけ選べます。「適性が合う馬のみ表示」ON時は、その区分で距離適性SまたはAの馬だけが出ます。</p>
+    <select id="dreamCourseSelect" class="race-select" style="display:none" aria-hidden="true">
+      <option value="東京" selected>東京</option>
+      <option value="中山">中山</option>
+      <option value="阪神">阪神</option>
+      <option value="京都">京都</option>
+      <option value="中京">中京</option>
+      <option value="新潟">新潟</option>
+      <option value="札幌">札幌</option>
+      <option value="小倉">小倉</option>
+    </select>
+    <p class="horse-meta" id="dreamDistBandHint" style="margin:6px 0 0">「適性が合う馬のみ表示」ON時は、選択中のG1距離で適性S/Aの馬だけが出ます。</p>
     <label class="horse-meta" style="display:flex;align-items:center;gap:8px;margin-top:8px;cursor:pointer">
       <input type="checkbox" id="dreamAptFilter" style="width:18px;height:18px">
       <span>距離適性が合う馬のみ表示</span>
@@ -2522,12 +2521,12 @@ const COURSES = {
     noteLong: "内回り。向正面やや左スタート→3角まで約243m。スタート後ゆる下り。3〜4角で勾配。直線356.5m、残り200〜80mに急坂1.8m。"
   },
   "京都": {
-    name: "京都競馬場", direction: "right", surfaceNote: "直線平坦・ペース速くなりやすい",
+    name: "京都競馬場", direction: "left", surfaceNote: "左回り・直線平坦・ペース速くなりやすい",
     turfStraight: 328.4, dirtStraight: 329.1,
     frameTurf: [7, 8, 9, 9, 8, 8, 7, 6],
     frameDirt: [8, 9, 9, 8, 7, 7, 6, 5],
     mapRx: 0.38, mapRy: 0.33,
-    clockwise: true
+    clockwise: false
   },
   "中京": {
     name: "中京競馬場", direction: "left", surfaceNote: "坂あり・タフな決め手勝負",
@@ -6398,7 +6397,7 @@ function trackPoint(t, cx, cy, rx, ry, laneOffset, clockwise, pathType, w, h, co
   if (pathType === "hanshin_2400_outer") {
     return hanshin2400OuterPoint(t, cx, cy, rx, ry, laneOffset, w, h);
   }
-  if (pathType === "hanshin_1200" || (courseName === "阪神" && pathType !== "hanshin_2000_inner" && pathType !== "hanshin_1800_outer")) {
+  if (pathType === "hanshin_1200") {
     return hanshin1200Point(t, cx, cy, rx * 1.02, ry * 0.9, laneOffset);
   }
   if (courseName === "東京") {
@@ -6878,7 +6877,7 @@ function drawMinimapTrack(ctx, w, h, cx, cy, rx, ry, courseName, surface, clockw
   const isHanshin2400 = pathType === "hanshin_2400_outer";
   const isNakayama2200 = pathType === "nakayama_2200_outer";
   const isNakayama = pathType === "nakayama_2000" || (courseName === "中山" && !isNakayamaOuter && !isNakayama2200);
-  const isHanshin = pathType === "hanshin_1200" || (courseName === "阪神" && !isHanshin2000 && !isHanshin1800 && !isHanshin2400);
+  const isHanshin = pathType === "hanshin_1200"; // 1200のみ写真コース。2200/2500等は汎用楕円
   if (isNiigata) {
     drawRx = rx * 1.05; drawRy = ry * 0.95; drawCW = false;
   } else if (isNakayama) {
@@ -7526,8 +7525,10 @@ function drawMinimapTrack(ctx, w, h, cx, cy, rx, ry, courseName, surface, clockw
     ctx.font = "7px sans-serif";
     ctx.fillText("（ゴール手前）", hx0, hy0 - 11);
   }
-  // 場名バッジ（写真コースでは出さない）
-  if (!isNakayamaOuter && !isSapporo1800 && !isHanshin2000 && !isHanshin1800 && !isNakayama2200) {
+  // 場名バッジ（写真コース・汎用楕円では中央ラベルを出さない）
+  // ※阪神2200/2500など汎用楕円で「阪神・内回り1200」が誤表示されるのを防止
+  const isGenericOval = !pathType || (pathType !== "hanshin_1200" && pathType !== "nakayama_2000" && pathType !== "niigata_outer_2000");
+  if (!isNakayamaOuter && !isSapporo1800 && !isHanshin2000 && !isHanshin1800 && !isHanshin2400 && !isNakayama2200 && !isGenericOval) {
     const badge = theme.label || courseName || "COURSE";
     ctx.fillStyle = "rgba(0,0,0,0.45)";
     const bw = Math.max(72, badge.length * 11);
@@ -8287,8 +8288,12 @@ function startRace(horses, raceMeta) {
   let pathType = null;
   const _dist = Number(raceMeta.distance) || 0;
   const _surface = raceMeta.surface || "芝";
+  // ドリームマッチ等: 汎用楕円を強制（会場の左右回りのみ反映）
+  if (raceMeta.forceGenericOval) {
+    pathType = null;
+  }
   // 写真付き（レース映像で追加済み）
-  if (raceMeta.course === "中山" && _dist === 1600 && _surface === "芝") {
+  else if (raceMeta.course === "中山" && _dist === 1600 && _surface === "芝") {
     pathType = "nakayama_1600_outer";
   } else if (raceMeta.course === "中山" && _dist === 2200) {
     pathType = "nakayama_2200_outer";
@@ -9304,8 +9309,12 @@ function renderDreamHorsePool() {
 
   let filtered = !q ? all.slice() : all.filter(h => (h.name || "").indexOf(q) !== -1);
   const aptOn = document.getElementById("dreamAptFilter") && document.getElementById("dreamAptFilter").checked;
-  const band = getDreamDistBand();
-  // 距離適性が合う馬のみ表示 → 選択中の距離区分で評価が S または A の馬だけ
+  let band = getDreamDistBand();
+  try {
+    const g1 = typeof getDreamG1 === "function" ? getDreamG1() : null;
+    if (g1 && g1.distance && typeof distBandOf === "function") band = distBandOf(g1.distance) || band;
+  } catch (e) {}
+  // 距離適性が合う馬のみ表示 → 選択G1距離の区分で S または A
   if (aptOn && typeof calcDistAptitude === "function") {
     const targetBand = (band && band !== "free") ? band : null;
     filtered = filtered.filter(h => {
@@ -9527,19 +9536,26 @@ function dreamRandomPick() {
 }
 
 function buildDreamRaceMeta() {
-  const course = (document.getElementById("dreamCourseSelect") || {}).value || "東京";
-  const distance = parseInt((document.getElementById("dreamDistSelect") || {}).value, 10) || 1600;
+  try { syncDreamFromG1(); } catch (e) {}
+  const g1 = typeof getDreamG1 === "function" ? getDreamG1() : null;
+  const course = (g1 && g1.course) || (document.getElementById("dreamCourseSelect") || {}).value || "東京";
+  const distance = (g1 && g1.distance) || parseInt((document.getElementById("dreamDistSelect") || {}).value, 10) || 1600;
+  const surface = (g1 && g1.surface) || "芝";
   const condition = (document.getElementById("dreamGoingSelect") || {}).value || "良";
   const weather = (document.getElementById("dreamWeatherSelect") || {}).value || "晴れ";
+  const dir = (typeof dreamCourseIsClockwise === "function" && dreamCourseIsClockwise(course)) ? "右回り" : "左回り";
+  const g1Name = (g1 && g1.name) || "G1";
   return {
     id: "dream_match",
-    name: "ドリームマッチ",
+    name: "ドリームマッチ｜" + g1Name,
     course,
-    surface: "芝",
+    surface,
     distance,
     condition,
     weather,
-    note: "ドリームマッチ｜" + (DREAM_DIST_BAND_LABEL[getDreamDistBand()] || "自由") + "｜自由編成",
+    forceGenericOval: true,
+    g1Id: g1 && g1.id,
+    note: "ドリームマッチ｜" + g1Name + "｜" + course + surface + distance + "m｜" + dir + "｜自由編成",
     horses: dreamSelected.slice()
   };
 }
@@ -9584,6 +9600,98 @@ const DREAM_DIST_BAND_LABEL = {
   midLong: "中長距離",
   long: "長距離"
 };
+
+
+/** 年間JRA G1（ドリームマッチ用）映像は汎用楕円＋会場の左右回り */
+const DREAM_G1_RACES = [
+  { id: "feb_s", name: "フェブラリーS", course: "東京", surface: "ダ", distance: 1600, month: 2 },
+  { id: "takamatsunomiya", name: "高松宮記念", course: "中京", surface: "芝", distance: 1200, month: 3 },
+  { id: "osaka_hai", name: "大阪杯", course: "阪神", surface: "芝", distance: 2000, month: 3 },
+  { id: "oka_sho", name: "桜花賞", course: "阪神", surface: "芝", distance: 1600, month: 4 },
+  { id: "satsuki_sho", name: "皐月賞", course: "中山", surface: "芝", distance: 2000, month: 4 },
+  { id: "tenno_haru", name: "天皇賞（春）", course: "京都", surface: "芝", distance: 3200, month: 4 },
+  { id: "nhk_mile", name: "NHKマイルC", course: "東京", surface: "芝", distance: 1600, month: 5 },
+  { id: "victoria_mile", name: "ヴィクトリアマイル", course: "東京", surface: "芝", distance: 1600, month: 5 },
+  { id: "oaks", name: "オークス", course: "東京", surface: "芝", distance: 2400, month: 5 },
+  { id: "derby", name: "日本ダービー", course: "東京", surface: "芝", distance: 2400, month: 5 },
+  { id: "yasuda_kinen", name: "安田記念", course: "東京", surface: "芝", distance: 1600, month: 6 },
+  { id: "takarazuka", name: "宝塚記念", course: "阪神", surface: "芝", distance: 2200, month: 6 },
+  { id: "sprinters", name: "スプリンターズS", course: "中山", surface: "芝", distance: 1200, month: 9 },
+  { id: "shuka_sho", name: "秋華賞", course: "京都", surface: "芝", distance: 2000, month: 10 },
+  { id: "kikka_sho", name: "菊花賞", course: "京都", surface: "芝", distance: 3000, month: 10 },
+  { id: "tenno_aki", name: "天皇賞（秋）", course: "東京", surface: "芝", distance: 2000, month: 10 },
+  { id: "queen_elizabeth", name: "エリザベス女王杯", course: "京都", surface: "芝", distance: 2200, month: 11 },
+  { id: "mile_cs", name: "マイルCS", course: "京都", surface: "芝", distance: 1600, month: 11 },
+  { id: "japan_cup", name: "ジャパンC", course: "東京", surface: "芝", distance: 2400, month: 11 },
+  { id: "champions_cup", name: "チャンピオンズC", course: "中京", surface: "ダ", distance: 1800, month: 12 },
+  { id: "hanshin_jf", name: "阪神JF", course: "阪神", surface: "芝", distance: 1600, month: 12 },
+  { id: "asahi_hai", name: "朝日杯FS", course: "阪神", surface: "芝", distance: 1600, month: 12 },
+  { id: "arima", name: "有馬記念", course: "中山", surface: "芝", distance: 2500, month: 12 },
+  { id: "hopeful", name: "ホープフルS", course: "中山", surface: "芝", distance: 2000, month: 12 }
+];
+
+function dreamCourseIsClockwise(course) {
+  if (typeof COURSE_INFO !== "undefined" && COURSE_INFO[course]) {
+    const ci = COURSE_INFO[course];
+    if (ci.clockwise === true || ci.direction === "right") return true;
+    if (ci.clockwise === false || ci.direction === "left") return false;
+  }
+  // フォールバック（JRA標準）
+  return course === "中山" || course === "阪神" || course === "札幌" || course === "小倉";
+}
+
+function getDreamG1() {
+  const el = document.getElementById("dreamG1Select");
+  const id = el && el.value;
+  return (typeof DREAM_G1_RACES !== "undefined" && DREAM_G1_RACES.find(r => r.id === id)) || (DREAM_G1_RACES && DREAM_G1_RACES[9]) || null;
+}
+
+function fillDreamG1Select() {
+  const el = document.getElementById("dreamG1Select");
+  if (!el || typeof DREAM_G1_RACES === "undefined") return;
+  const prev = el.value;
+  el.innerHTML = DREAM_G1_RACES.map(r => {
+    const dir = dreamCourseIsClockwise(r.course) ? "右" : "左";
+    const label = r.name + "（" + r.course + "・" + r.surface + r.distance + "m・" + dir + "回り）";
+    return '<option value="' + r.id + '">' + label + "</option>";
+  }).join("");
+  if (prev && DREAM_G1_RACES.some(r => r.id === prev)) el.value = prev;
+  else if (DREAM_G1_RACES.some(r => r.id === "derby")) el.value = "derby";
+  else el.selectedIndex = 0;
+  syncDreamFromG1();
+}
+
+function syncDreamFromG1() {
+  const g1 = getDreamG1();
+  if (!g1) return;
+  const courseEl = document.getElementById("dreamCourseSelect");
+  const distEl = document.getElementById("dreamDistSelect");
+  if (courseEl) {
+    if (![...courseEl.options].some(o => o.value === g1.course)) {
+      const opt = document.createElement("option");
+      opt.value = g1.course;
+      opt.textContent = g1.course;
+      courseEl.appendChild(opt);
+    }
+    courseEl.value = g1.course;
+  }
+  if (distEl) {
+    const v = String(g1.distance);
+    if (![...distEl.options].some(o => o.value === v)) {
+      const opt = document.createElement("option");
+      opt.value = v;
+      opt.textContent = v + "m";
+      distEl.appendChild(opt);
+    }
+    distEl.value = v;
+  }
+  const hint = document.getElementById("dreamG1Hint");
+  if (hint) {
+    const dir = dreamCourseIsClockwise(g1.course) ? "右回り" : "左回り";
+    hint.textContent = g1.name + "｜" + g1.course + " " + g1.surface + g1.distance + "m｜" + dir + "｜映像は汎用楕円";
+  }
+}
+
 
 function getDreamDistBand() {
   const el = document.getElementById("dreamDistBandSelect");
@@ -9674,8 +9782,15 @@ function randomizeDreamSettings() {
   const weights = ["balance", "speed", "last", "going", "frame", "blood"];
   const speeds = ["1", "2", "3", "4", "5", "6", "8", "10", "20", "40"];
 
-  setSelectValue("dreamCourseSelect", pickRandom(courses));
-  setSelectValue("dreamDistSelect", pickRandom(dists));
+  // G1ランダム選択
+  if (typeof DREAM_G1_RACES !== "undefined" && DREAM_G1_RACES.length) {
+    const g1 = pickRandom(DREAM_G1_RACES);
+    setSelectValue("dreamG1Select", g1.id);
+    try { syncDreamFromG1(); } catch (e) {}
+  } else {
+    setSelectValue("dreamCourseSelect", pickRandom(courses));
+    setSelectValue("dreamDistSelect", pickRandom(dists));
+  }
   setSelectValue("dreamFieldSelect", pickRandom(fields));
   setChoiceValue("dreamGoingSelect", pickRandom(goings));
   setChoiceValue("dreamPaceSelect", pickRandom(paces));
@@ -9726,6 +9841,15 @@ function bindDreamMatch() {
     };
   }
   try { applyDreamDistBand(true); } catch (e) {}
+  try { fillDreamG1Select(); } catch (e) { console.warn(e); }
+  const g1Sel = document.getElementById("dreamG1Select");
+  if (g1Sel) {
+    g1Sel.onchange = function () {
+      syncDreamFromG1();
+      try { renderDreamHorsePool(); } catch (e) {}
+      try { if (typeof applyDreamDistBand === "function") applyDreamDistBand(true); } catch (e) {}
+    };
+  }
   const courseSel = document.getElementById("dreamCourseSelect");
   if (courseSel) {
     courseSel.onchange = function () { onDreamCourseChange(); };
