@@ -1981,6 +1981,37 @@
     <label class="horse-meta" style="display:block;margin:8px 0 4px">開催レース</label>
     <select id="aiRaceSelect" class="race-select"></select>
     <div id="aiRaceInfo" class="horse-meta" style="margin-top:6px"></div>
+    <label class="horse-meta" style="display:block;margin:12px 0 6px">馬場状態（AI予想の中心条件）</label>
+    <div class="choice-group" data-for="goingSelectAi" id="goingGroupAi">
+      <button type="button" class="choice-btn active" data-value="良">良</button>
+      <button type="button" class="choice-btn" data-value="稍重">稍重</button>
+      <button type="button" class="choice-btn" data-value="重">重</button>
+    </div>
+    <select id="goingSelectAi" class="hidden" aria-hidden="true">
+      <option value="良" selected>良</option>
+      <option value="稍重">稍重</option>
+      <option value="重">重</option>
+    </select>
+    <label class="horse-meta" style="display:block;margin:12px 0 6px">天候（初期値は競馬場付近の天気を自動取得）</label>
+    <div class="choice-group" data-for="weatherSelectAi" id="weatherGroupAi">
+      <button type="button" class="choice-btn compact active" data-value="晴れ">晴れ</button>
+      <button type="button" class="choice-btn compact" data-value="曇り">曇り</button>
+      <button type="button" class="choice-btn compact" data-value="小雨">小雨</button>
+      <button type="button" class="choice-btn compact" data-value="雨">雨</button>
+      <button type="button" class="choice-btn compact" data-value="大雨">大雨</button>
+      <button type="button" class="choice-btn compact" data-value="雪">雪</button>
+      <button type="button" class="choice-btn compact" data-value="大雪">大雪</button>
+    </div>
+    <select id="weatherSelectAi" class="hidden" aria-hidden="true">
+      <option value="晴れ" selected>晴れ</option>
+      <option value="曇り">曇り</option>
+      <option value="小雨">小雨</option>
+      <option value="雨">雨</option>
+      <option value="大雨">大雨</option>
+      <option value="雪">雪</option>
+      <option value="大雪">大雪</option>
+    </select>
+    <p class="horse-meta" style="margin-top:8px;line-height:1.45">※各馬の馬場適性・天候適性を反映し、枠番／馬番・能力値・距離適性も合わせて予測します。</p>
     <button type="button" class="btn btn-primary" id="btnAiPredict" style="margin-top:12px">AI予想を出す</button>
   </div>
   <div class="card hidden" id="aiPredictResult">
@@ -4007,8 +4038,18 @@ function setWeatherSelectValue(selId, value) {
   const el = document.getElementById(selId);
   if (!el) return;
   const has = Array.from(el.options).some(o => o.value === value);
-  el.value = has ? value : "晴れ";
+  const v = has ? value : "晴れ";
+  el.value = v;
   try { syncChoiceGroup(selId); } catch (e) {}
+  // ボタン表示を確実に同期（タブ非表示時でも）
+  try {
+    const group = document.querySelector('.choice-group[data-for="' + selId + '"]');
+    if (group) {
+      group.querySelectorAll('.choice-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-value') === v);
+      });
+    }
+  } catch (e2) {}
 }
 
 /**
@@ -4042,13 +4083,24 @@ async function fetchCourseWeather(courseName) {
 
 async function applyWeatherDefaultsForRace(race) {
   if (!race) return;
+  let label = null;
   try {
     const course = race.course || (race.track) || "";
-    const label = await fetchCourseWeather(course);
-    if (!label) return;
+    label = await fetchCourseWeather(course);
+  } catch (e) { label = null; }
+  // 取得失敗時は既に入っている他タブの天候を流用
+  if (!label) {
+    try {
+      const r = document.getElementById("weatherSelectRace");
+      if (r && r.value) label = r.value;
+    } catch (e2) {}
+  }
+  if (!label) label = "晴れ";
+  try {
     setWeatherSelectValue("weatherSelectRace", label);
     setWeatherSelectValue("weatherSelectPredict", label);
-  } catch (e) {}
+    setWeatherSelectValue("weatherSelectAi", label);
+  } catch (e3) {}
 }
 
 
@@ -10316,6 +10368,13 @@ function horseNameByNum(race, num) {
 }
 
 function updateAiRaceInfo() {
+  try {
+    const r = getCurrentRace("aiRaceSelect");
+    if (r && typeof applyWeatherDefaultsForRace === "function") applyWeatherDefaultsForRace(r);
+  } catch (e) {}
+  return updateAiRaceInfo_body();
+}
+function updateAiRaceInfo_body() {
   const race = getCurrentRace("aiRaceSelect");
   const el = document.getElementById("aiRaceInfo");
   if (!el) return;
@@ -10324,6 +10383,162 @@ function updateAiRaceInfo() {
   else el.textContent = "";
 }
 
+
+/** AI予想用スコア：馬場適性・馬番/枠を中心に能力値・適性を合成 */
+
+/** 天候適性（馬データ or 馬場適性から推定） */
+function calcWeatherApt(horse, weatherLabel) {
+  const w = weatherLabel || "晴れ";
+  // 明示データ
+  if (horse.weather && typeof horse.weather === "object") {
+    const map = {
+      "晴れ": horse.weather.sunny != null ? horse.weather.sunny : horse.weather.clear,
+      "曇り": horse.weather.cloudy,
+      "小雨": horse.weather.lightRain != null ? horse.weather.lightRain : horse.weather.rain,
+      "雨": horse.weather.rain,
+      "大雨": horse.weather.heavyRain != null ? horse.weather.heavyRain : horse.weather.rain,
+      "雪": horse.weather.snow,
+      "大雪": horse.weather.heavySnow != null ? horse.weather.heavySnow : horse.weather.snow
+    };
+    if (map[w] != null && !isNaN(Number(map[w]))) {
+      return clamp(Number(map[w]), 35, 100);
+    }
+  }
+  // 馬場適性から天候適性を推定
+  const g = (horse.going) || {};
+  const firm = Number(g.firm) || 72;
+  const soft = Number(g.soft) || 70;
+  const heavy = Number(g.heavy) || 66;
+  // 血統のパワー・欧州寄りは道悪天候で底上げ（簡易）
+  let bloodWet = 0;
+  try {
+    const sire = ((horse.blood && horse.blood.sire) || "") + "";
+    if (/ステイゴールド|ハーツクライ|ナダル|キングカメハメハ|ルーラーシップ/.test(sire)) bloodWet += 3;
+    if (/ディープインパクト|サンデー/.test(sire)) bloodWet -= 1;
+  } catch (e) {}
+  // 脚質：先行逃げは良馬場晴れ向き、差し追込は稍重〜でも食いやすい傾向を弱く反映
+  let styleWet = 0;
+  const styles = horse.styles || (horse.style ? [horse.style] : []);
+  if (styles.indexOf("sashi") >= 0 || styles.indexOf("oikomi") >= 0) styleWet += 1.5;
+  if (styles.indexOf("nige") >= 0) styleWet -= 1;
+
+  if (w === "晴れ") return clamp(firm * 0.85 + 12 + styleWet * 0.3, 40, 100);
+  if (w === "曇り") return clamp((firm + soft) * 0.45 + 8, 42, 98);
+  if (w === "小雨") return clamp(soft * 0.7 + firm * 0.2 + 8 + bloodWet + styleWet, 40, 98);
+  if (w === "雨") return clamp(soft * 0.45 + heavy * 0.45 + 6 + bloodWet + styleWet, 38, 98);
+  if (w === "大雨") return clamp(heavy * 0.75 + soft * 0.2 + 4 + bloodWet * 1.2 + styleWet, 36, 98);
+  if (w === "雪") return clamp(heavy * 0.65 + soft * 0.25 + 5 + bloodWet, 35, 96);
+  if (w === "大雪") return clamp(heavy * 0.8 + 3 + bloodWet * 1.3, 34, 95);
+  return clamp((firm + soft) * 0.45 + 8, 40, 95);
+}
+
+/** 指定馬場の馬場適性値を取得 */
+function getGoingAptValue(horse, goingLabel) {
+  const cond = goingLabel || "良";
+  if (horse.going) {
+    if (cond === "重") return clamp(Number(horse.going.heavy) || 65, 35, 100);
+    if (cond === "稍重") return clamp(Number(horse.going.soft) || 70, 35, 100);
+    return clamp(Number(horse.going.firm) || 72, 35, 100);
+  }
+  const ab = calcAbility(horse, cond);
+  if (ab && ab.goingToday != null) return clamp(ab.goingToday, 35, 100);
+  if (ab && ab.going) {
+    if (cond === "重") return clamp(ab.going.heavy || 65, 35, 100);
+    if (cond === "稍重") return clamp(ab.going.soft || 70, 35, 100);
+    return clamp(ab.going.firm || 72, 35, 100);
+  }
+  return 70;
+}
+
+/** AI予想用スコア：馬場適性・天候適性・馬番/枠を中心に能力値・適性を合成 */
+function computeAiScore(horse, race, going) {
+  const cond = going || (race && race.condition) || "良";
+  const weather = (race && race.weather) || "晴れ";
+  const ab = calcAbility(horse, cond);
+  const course = race ? race.course : "東京";
+  const surface = race ? race.surface : "芝";
+  const dist = race ? race.distance : 2000;
+  const frame = horse.frame || 4;
+  const number = horse.number || frame;
+
+  // --- 馬場適性（データ優先） ---
+  const goingScore = getGoingAptValue(horse, cond);
+
+  // --- 天候適性 ---
+  const weatherScore = calcWeatherApt(horse, weather);
+  // 雨系天候で重馬場適性が高い馬は相乗、逆も同様
+  let weatherGoingSynergy = 0;
+  if (weather === "雨" || weather === "大雨" || weather === "小雨") {
+    weatherGoingSynergy = (goingScore - 70) * 0.12 + (weatherScore - 70) * 0.08;
+  } else if (weather === "雪" || weather === "大雪") {
+    weatherGoingSynergy = (goingScore - 70) * 0.15 + (weatherScore - 70) * 0.1;
+  } else if (weather === "晴れ") {
+    weatherGoingSynergy = (goingScore - 70) * 0.06;
+  }
+
+  // --- 枠・馬番バイアス ---
+  const frameBase = frameBias(frame, course, surface, dist) * 10;
+  let numBias = 0;
+  const n = number;
+  if (course === "中山" || course === "小倉") numBias = (10 - Math.min(18, n)) * 1.1;
+  else if (course === "阪神" && dist && dist <= 1600) numBias = (10 - Math.min(18, n)) * 0.7;
+  else if (course === "新潟" && dist && dist >= 1400) numBias = (10 - Math.min(18, n)) * 0.25;
+  else numBias = (10 - Math.min(18, n)) * 0.45;
+  // 道悪・雨は外枠不利がやや強まる
+  if (cond === "重" || weather === "雨" || weather === "大雨") numBias *= 1.15;
+  const gateScore = clamp(frameBase * 0.55 + (50 + numBias) * 0.45, 35, 105);
+
+  // --- 能力 ---
+  const total = ab.total || 70;
+  const speed = ab.speed || 70;
+  const accel = ab.accel || ab.last || 70;
+  const stamina = ab.stamina || 70;
+  const stable = ab.stable || ab.consistency || 70;
+  let abMix;
+  if (dist <= 1400) abMix = speed * 0.4 + accel * 0.3 + total * 0.2 + stamina * 0.1;
+  else if (dist <= 1800) abMix = speed * 0.3 + accel * 0.25 + total * 0.25 + stamina * 0.2;
+  else if (dist <= 2200) abMix = stamina * 0.3 + total * 0.3 + speed * 0.2 + accel * 0.2;
+  else abMix = stamina * 0.35 + total * 0.3 + speed * 0.15 + accel * 0.2;
+  abMix = abMix * (0.92 + (stable - 70) * 0.003);
+
+  // 距離適性
+  let distApt = 70;
+  try {
+    if (horse.distApt != null) distApt = 50 + (horse.distApt || 5) * 8;
+    if (horse.distanceApt) {
+      const band = dist <= 1400 ? "short" : dist < 1800 ? "mile" : dist < 2200 ? "middle" : dist < 2800 ? "longMiddle" : "long";
+      const map = { S: 98, A: 88, B: 76, C: 64, D: 52, E: 40 };
+      const key = horse.distanceApt[band] || horse.distanceApt.middle;
+      if (key && map[key] != null) distApt = map[key];
+    }
+  } catch (e) {}
+
+  let courseB = 0;
+  try { courseB = (typeof courseAptBonus === "function") ? courseAptBonus(horse, race) : 0; } catch (e) {}
+
+  // 重み：馬場28% + 天候18% + 枠馬番22% + 能力22% + 距離7% + コース3% + 相乗
+  const score =
+    goingScore * 0.28 +
+    weatherScore * 0.18 +
+    gateScore * 0.22 +
+    abMix * 0.22 +
+    distApt * 0.07 +
+    (70 + courseB) * 0.03 +
+    weatherGoingSynergy;
+
+  return {
+    score: score,
+    goingScore: goingScore,
+    weatherScore: weatherScore,
+    gateScore: gateScore,
+    abMix: abMix,
+    distApt: distApt,
+    synergy: weatherGoingSynergy,
+    ab: ab
+  };
+}
+
+
 function runAiPredict() {
   let race = null;
   try { race = getCurrentRace("aiRaceSelect"); } catch (e) { race = null; }
@@ -10331,13 +10546,65 @@ function runAiPredict() {
     alert("レースを選択してください");
     return;
   }
+  // 馬場状態をAI予想の中心条件として反映
+  let goingAi = "良";
+  try {
+    const gEl = document.getElementById("goingSelectAi");
+    if (gEl && gEl.value) goingAi = gEl.value;
+  } catch (e) {}
+  let weatherAi = "晴れ";
+  try {
+    const wEl = document.getElementById("weatherSelectAi");
+    if (wEl && wEl.value) weatherAi = wEl.value;
+  } catch (e) {}
+  race = Object.assign({}, race, { condition: goingAi, weather: weatherAi });
+
+  // 能力×馬場×枠馬番で基礎スコア
+  const aiScores = race.horses.map((h, i) => {
+    const r = computeAiScore(h, race, goingAi);
+    return { h: h, i: i, score: r.score, detail: r };
+  }).sort((a, b) => b.score - a.score);
+
+  // スコアを疑似勝率に変換してシミュレーションとブレンド
+  const maxS = aiScores[0] ? aiScores[0].score : 80;
+  const minS = aiScores.length ? aiScores[aiScores.length - 1].score : 60;
+  const span = Math.max(1, maxS - minS);
+  const aiWinP = new Array(race.horses.length).fill(0);
+  let expSum = 0;
+  const temps = race.horses.map((h, i) => {
+    const row = aiScores.find(x => x.i === i);
+    const sc = row ? row.score : 60;
+    // softmax風
+    const e = Math.exp(((sc - minS) / span) * 2.8);
+    expSum += e;
+    return e;
+  });
+  for (let i = 0; i < temps.length; i++) aiWinP[i] = temps[i] / expSum;
+
   const paceOpt = "auto";
   const nSim = 400;
+  // シミュレーション側にも同じ馬場を渡す
   const sim = simulateRaceOutcomes(race, nSim, paceOpt);
   if (!sim || !sim.winP) {
     alert("シミュレーション結果を取得できませんでした");
     return;
   }
+  // 馬場・馬番重視：AIスコア勝率 65% + 従来シミュ 35%
+  const blendP = sim.winP.map((p, i) => (aiWinP[i] || 0) * 0.65 + (p || 0) * 0.35);
+  const blendSum = blendP.reduce((a, b) => a + b, 0) || 1;
+  for (let i = 0; i < blendP.length; i++) blendP[i] /= blendSum;
+  sim.winP = blendP;
+  // top2 も軽く補正（勝率順で再配分）
+  const orderIdx = blendP.map((p, i) => i).sort((a, b) => blendP[b] - blendP[a]);
+  if (sim.top2P) {
+    const t2 = new Array(blendP.length).fill(0);
+    orderIdx.forEach((idx, rank) => {
+      t2[idx] = Math.min(0.95, blendP[idx] * (2.1 - rank * 0.08));
+    });
+    const t2s = t2.reduce((a, b) => a + b, 0) || 1;
+    sim.top2P = t2.map(v => v / t2s * Math.min(2, t2s));
+  }
+
   const conf = calcAiConfidence(sim, race);
 
   const confEl = document.getElementById("aiConfidence");
@@ -10345,17 +10612,23 @@ function runAiPredict() {
     confEl.innerHTML =
       '<div class="ai-conf-label">この予想に対する自信度</div>' +
       '<div class="ai-conf-stars">' + confidenceStars(conf) + '</div>' +
-      '<div class="ai-conf-note">星' + conf + '／5　（シミュレーション ' + nSim + ' 回）</div>';
+      '<div class="ai-conf-note">星' + conf + '／5　（馬場:' + goingAi + ' ／ 天候:' + weatherAi + ' ／ 馬番・適性重視 ／ シミュ' + nSim + '回）</div>';
   }
 
   // 単勝: winP top 2
   const winOrder = race.horses.map((h, i) => ({ h, i, p: sim.winP[i] || 0 }))
     .sort((a, b) => b.p - a.p);
-  const tansho = winOrder.slice(0, 2).map(x => ({
-    numsHtml: aiNumChip(x.h.number, race),
-    namesHtml: x.h.name || "",
-    meta: "勝率 " + Math.round(x.p * 1000) / 10 + "%"
-  }));
+  const tansho = winOrder.slice(0, 2).map(x => {
+    const det = (aiScores.find(s => s.i === x.i) || {}).detail || {};
+    const gLab = det.goingScore != null ? ("馬場適性" + Math.round(det.goingScore)) : "";
+    const wLab = det.weatherScore != null ? ("天候適性" + Math.round(det.weatherScore)) : "";
+    const fLab = det.gateScore != null ? ("枠番" + Math.round(det.gateScore)) : "";
+    return {
+      numsHtml: aiNumChip(x.h.number, race),
+      namesHtml: x.h.name || "",
+      meta: "勝率 " + Math.round(x.p * 1000) / 10 + "%" + (gLab || wLab || fLab ? " ／ " + [gLab, wLab, fLab].filter(Boolean).join(" ") : "")
+    };
+  });
 
   const combos = sim.combos || {};
   // combos structure from sim
@@ -10568,6 +10841,17 @@ document.querySelectorAll(".tab").forEach(tab => {
     if (tab.dataset.tab === "zukan") {
       setTimeout(function () { try { bindZukan(); renderZukan(); } catch (e) {} }, 40);
     }
+    if (tab.dataset.tab === "aipredict") {
+      setTimeout(function () {
+        try {
+          const r = getCurrentRace("aiRaceSelect");
+          if (r && typeof applyWeatherDefaultsForRace === "function") applyWeatherDefaultsForRace(r);
+          try { bindChoiceGroups(); } catch (e0) {}
+          try { syncChoiceGroup("weatherSelectAi"); } catch (e1) {}
+          try { syncChoiceGroup("goingSelectAi"); } catch (e2) {}
+        } catch (e) {}
+      }, 50);
+    }
     if (tab.dataset.tab === "dream") {
       setTimeout(function () {
         try { bindDreamMatch(); } catch (e) {}
@@ -10749,7 +11033,7 @@ function bindChoiceGroups() {
   });
 }
 // select.value を書き換えたあとの見た目同期用
-const _choiceIds = ['paceSelectPredict','weatherSelectPredict','weightSelectPredict','goingSelectRace','paceSelectRace','weatherSelectRace','weightSelectRace','dreamGoingSelect','dreamPaceSelect','dreamWeatherSelect','dreamWeightSelect'];
+const _choiceIds = ['goingSelectAi','weatherSelectAi','paceSelectPredict','weatherSelectPredict','weightSelectPredict','goingSelectRace','paceSelectRace','weatherSelectRace','weightSelectRace','dreamGoingSelect','dreamPaceSelect','dreamWeatherSelect','dreamWeightSelect'];
 function syncAllChoiceGroups() { _choiceIds.forEach(syncChoiceGroup); }
 
 
@@ -10788,12 +11072,28 @@ try {
     _rAi.addEventListener("change", function () {
       try { syncRaceAcrossTabs("aiRaceSelect"); } catch (e) {}
       if (typeof updateAiRaceInfo === "function") updateAiRaceInfo();
+      try {
+        const r = getCurrentRace("aiRaceSelect");
+        if (r && typeof applyWeatherDefaultsForRace === "function") applyWeatherDefaultsForRace(r);
+      } catch (e) {}
     });
   }
   if (typeof fillOneRaceSelect === "function") {
     fillOneRaceSelect("aiRaceSelect", "gradeSelectAi");
   }
   if (typeof updateAiRaceInfo === "function") updateAiRaceInfo();
+  setTimeout(function () {
+    try {
+      const r = typeof getCurrentRace === "function" ? getCurrentRace("aiRaceSelect") : null;
+      if (r && typeof applyWeatherDefaultsForRace === "function") applyWeatherDefaultsForRace(r);
+    } catch (e2) {}
+  }, 600);
+  setTimeout(function () {
+    try {
+      const r = typeof getCurrentRace === "function" ? getCurrentRace("aiRaceSelect") : null;
+      if (r && typeof applyWeatherDefaultsForRace === "function") applyWeatherDefaultsForRace(r);
+    } catch (e3) {}
+  }, 2000);
 } catch (e) { console.warn("ai bind", e); }
 
 // Canvas polyfill for roundRect
