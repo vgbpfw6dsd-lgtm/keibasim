@@ -1924,6 +1924,8 @@
         <button type="button" class="choice-btn going-btn active" data-going="良">良</button>
         <button type="button" class="choice-btn going-btn" data-going="稍重">稍重</button>
         <button type="button" class="choice-btn going-btn" data-going="重">重</button>
+        <button type="button" class="choice-btn going-btn" data-going="道悪">道悪</button>
+        <button type="button" class="choice-btn going-btn" data-going="不良">不良</button>
       </div>
     </div>
     <div style="margin-top:10px">
@@ -1986,11 +1988,15 @@
       <button type="button" class="choice-btn active" data-value="良">良</button>
       <button type="button" class="choice-btn" data-value="稍重">稍重</button>
       <button type="button" class="choice-btn" data-value="重">重</button>
+      <button type="button" class="choice-btn" data-value="道悪">道悪</button>
+      <button type="button" class="choice-btn" data-value="不良">不良</button>
     </div>
     <select id="goingSelectAi" class="hidden" aria-hidden="true">
       <option value="良" selected>良</option>
       <option value="稍重">稍重</option>
       <option value="重">重</option>
+      <option value="道悪">道悪</option>
+      <option value="不良">不良</option>
     </select>
     <label class="horse-meta" style="display:block;margin:12px 0 6px">天候（初期値は競馬場付近の天気を自動取得）</label>
     <div class="choice-group" data-for="weatherSelectAi" id="weatherGroupAi">
@@ -2099,8 +2105,8 @@
     <div id="viewRaceInfo" class="horse-meta" style="margin-top:6px"></div>
     <div style="margin-top:10px">
       <label class="horse-meta" style="display:block;margin-bottom:6px">馬場状態</label>
-<div class="choice-group" data-for="goingSelectRace"><button type="button" class="choice-btn active" data-value="良">良</button><button type="button" class="choice-btn" data-value="稍重">稍重</button><button type="button" class="choice-btn" data-value="重">重</button></div>
-      <select id="goingSelectRace" class="choice-source" aria-hidden="true"><option value="良" selected>良</option><option value="稍重">稍重</option><option value="重">重</option></select>
+<div class="choice-group" data-for="goingSelectRace"><button type="button" class="choice-btn active" data-value="良">良</button><button type="button" class="choice-btn" data-value="稍重">稍重</button><button type="button" class="choice-btn" data-value="重">重</button><button type="button" class="choice-btn" data-value="道悪">道悪</button><button type="button" class="choice-btn" data-value="不良">不良</button></div>
+      <select id="goingSelectRace" class="choice-source" aria-hidden="true"><option value="良" selected>良</option><option value="稍重">稍重</option><option value="重">重</option><option value="道悪">道悪</option><option value="不良">不良</option></select>
     </div>
     <div style="margin-top:10px">
       <label class="horse-meta" style="display:block;margin-bottom:6px">想定ペース</label>
@@ -2292,11 +2298,15 @@
         <button type="button" class="choice-btn active" data-value="良">良</button>
         <button type="button" class="choice-btn" data-value="稍重">稍重</button>
         <button type="button" class="choice-btn" data-value="重">重</button>
+        <button type="button" class="choice-btn" data-value="道悪">道悪</button>
+        <button type="button" class="choice-btn" data-value="不良">不良</button>
       </div>
       <select id="dreamGoingSelect" class="choice-source" aria-hidden="true">
         <option value="良" selected>良</option>
         <option value="稍重">稍重</option>
         <option value="重">重</option>
+        <option value="道悪">道悪</option>
+        <option value="不良">不良</option>
       </select>
     </div>
     <div style="margin-top:10px">
@@ -3412,7 +3422,13 @@ function calcAbility(horse, raceCondition) {
   })();
 
   const cond = raceCondition || "良";
-  const goingToday = cond === "重" ? going.heavy : cond === "稍重" ? going.soft : going.firm;
+  const goingToday = cond === "不良"
+    ? Math.max(32, (going.heavy != null ? going.heavy : 65) - 12)
+    : cond === "道悪"
+    ? Math.max(35, (going.heavy != null ? going.heavy : 65) - 6)
+    : cond === "重" ? going.heavy
+    : cond === "稍重" ? going.soft
+    : going.firm;
   const condBoost = (condition - 3) * 3; // 調子を総合に微反映
   const gradedPart = (typeof gradedBonus === "number" ? gradedBonus : 0);
 
@@ -3748,7 +3764,11 @@ function placeProbs(winProbs) {
 }
 
 
-/** 【レース映像】【まとめて予想】共通の1回分スコア */
+/**
+ * 全レース共通の1回分スコア（レース映像・まとめて予想・AI予想シミュ共通）
+ * - 能力 / 馬場適性 / 天候適性 / 血統 / 距離適性 / 枠馬番 / ペース相性
+ * - SAMPLE_RACES・ドリームマッチ含む全開催で同一ロジック
+ */
 function scoreHorseRaceOnce(h, race, opts) {
   opts = opts || {};
   const pace = opts.pace || "mid";
@@ -10494,6 +10514,8 @@ function calcWeatherApt(horse, weatherLabel) {
 function getGoingAptValue(horse, goingLabel) {
   const cond = goingLabel || "良";
   if (horse.going) {
+    if (cond === "不良") return clamp((Number(horse.going.heavy) || 65) - 12, 32, 100);
+    if (cond === "道悪") return clamp((Number(horse.going.heavy) || 65) - 6, 35, 100);
     if (cond === "重") return clamp(Number(horse.going.heavy) || 65, 35, 100);
     if (cond === "稍重") return clamp(Number(horse.going.soft) || 70, 35, 100);
     return clamp(Number(horse.going.firm) || 72, 35, 100);
@@ -10501,6 +10523,8 @@ function getGoingAptValue(horse, goingLabel) {
   const ab = calcAbility(horse, cond);
   if (ab && ab.goingToday != null) return clamp(ab.goingToday, 35, 100);
   if (ab && ab.going) {
+    if (cond === "不良") return clamp((ab.going.heavy || 65) - 12, 32, 100);
+    if (cond === "道悪") return clamp((ab.going.heavy || 65) - 6, 35, 100);
     if (cond === "重") return clamp(ab.going.heavy || 65, 35, 100);
     if (cond === "稍重") return clamp(ab.going.soft || 70, 35, 100);
     return clamp(ab.going.firm || 72, 35, 100);
@@ -10526,8 +10550,8 @@ function computeAiScore(horse, race, going) {
   const weatherScore = calcWeatherApt(horse, weather);
   // 雨系天候で重馬場適性が高い馬は相乗、逆も同様
   let weatherGoingSynergy = 0;
-  if (weather === "雨" || weather === "大雨" || weather === "小雨") {
-    weatherGoingSynergy = (goingScore - 70) * 0.12 + (weatherScore - 70) * 0.08;
+  if (weather === "雨" || weather === "大雨" || weather === "小雨" || cond === "道悪" || cond === "不良") {
+    weatherGoingSynergy = (goingScore - 70) * 0.16 + (weatherScore - 70) * 0.1;
   } else if (weather === "雪" || weather === "大雪") {
     weatherGoingSynergy = (goingScore - 70) * 0.15 + (weatherScore - 70) * 0.1;
   } else if (weather === "晴れ") {
@@ -10543,7 +10567,7 @@ function computeAiScore(horse, race, going) {
   else if (course === "新潟" && dist && dist >= 1400) numBias = (10 - Math.min(18, n)) * 0.25;
   else numBias = (10 - Math.min(18, n)) * 0.45;
   // 道悪・雨は外枠不利がやや強まる
-  if (cond === "重" || weather === "雨" || weather === "大雨") numBias *= 1.15;
+  if (cond === "重" || cond === "道悪" || cond === "不良" || weather === "雨" || weather === "大雨") numBias *= 1.2;
   const gateScore = clamp(frameBase * 0.55 + (50 + numBias) * 0.45, 35, 105);
 
   // --- 能力 ---
@@ -10647,8 +10671,8 @@ function runAiPredict() {
     alert("シミュレーション結果を取得できませんでした");
     return;
   }
-  // 馬場・馬番重視：AIスコア勝率 65% + 従来シミュ 35%
-  const blendP = sim.winP.map((p, i) => (aiWinP[i] || 0) * 0.65 + (p || 0) * 0.35);
+  // 共通算出(simulate=scoreHorseRaceOnce)を主軸。AI内訳は補助ブレンド
+  const blendP = sim.winP.map((p, i) => (aiWinP[i] || 0) * 0.25 + (p || 0) * 0.75);
   const blendSum = blendP.reduce((a, b) => a + b, 0) || 1;
   for (let i = 0; i < blendP.length; i++) blendP[i] /= blendSum;
   sim.winP = blendP;
