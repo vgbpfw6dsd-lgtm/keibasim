@@ -2524,8 +2524,8 @@
   <div class="bet-modal level-up-modal" style="max-width:560px">
     <div class="level-up-header">
       <div class="level-up-badge">CHANGE</div>
-      <h2 style="font-size:1.15rem;margin:8px 0 4px">週末レース入着で能力値変動</h2>
-      <p class="bet-sub" style="font-size:0.78rem;margin:0">9/12-13 週末3重賞 1〜3着馬の能力値変動（初回のみ表示）</p>
+      <h2 style="font-size:1.15rem;margin:8px 0 4px">週末G2入着で能力値変動</h2>
+      <p class="bet-sub" style="font-size:0.78rem;margin:0">9/20 オールカマー・9/21 神戸新聞杯 1〜3着馬（初回のみ表示）</p>
     </div>
     <div id="levelUpBody" class="level-up-body"></div>
     <button type="button" class="btn btn-primary btn-close-modal" id="btnCloseLevelUp">確認した</button>
@@ -3077,19 +3077,19 @@ const SAMPLE_RACES = [
     date: "2026-09-20", grade: "G2", yearSrc: "2026",
     raceName: "産経賞オールカマー",
     horses: [
-      { name: "キャントウェイト", frame: 1, number: 1, sexAge: "牡5", ranks: [1, 9, 5, 3, 8], starts: 5, classLevel: 1.22, timeIdx: 83, agariIdx: 82, distApt: 7, lastDist: 2000, restWeeks: 6, jockey: "横山典弘", weight: 57, trainer: "萱野浩二", odds: 15, popular: 6, going: { firm: 81, soft: 78, heavy: 74 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["oikomi", "sashi"], past: { note: "WASJ2・1着", recent: ["WASJ2 1着", "STV賞9着", "垂水S5着", "府中S3着", "魚沼S8着"] }, manualRank: 6, manualScore: 85, manualComment: "勢い" },
-      { name: "ワイドエンペラー", frame: 2, number: 2, sexAge: "牡8", ranks: [11, 15, 4, 7, 10], starts: 5, classLevel: 1.05, timeIdx: 75, agariIdx: 74, distApt: 8, lastDist: 2400, restWeeks: 8, jockey: "C.ルメール", weight: 57, trainer: "—", odds: 45, popular: 11, going: { firm: 75, soft: 73, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi", "oikomi"], past: { note: "メトロポリタン11着・高齢", recent: ["メトロポリタン11着", "アルゼンチン15着", "オクトーバー4着", "オールカマー7着", "メトロポリタン10着"] }, manualRank: 12, manualScore: 78, manualComment: "高齢" },
-      { name: "リビアングラス", frame: 3, number: 3, sexAge: "牡6", ranks: [5, 11, 6, 3, 6], starts: 5, classLevel: 1.18, timeIdx: 81, agariIdx: 80, distApt: 8, lastDist: 2000, restWeeks: 6, jockey: "西村淳也", weight: 57, trainer: "—", odds: 22, popular: 8, going: { firm: 79, soft: 76, heavy: 72 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["nige", "senko"], past: { note: "日経新春杯3着・京都記念6着", recent: ["福島民報杯5着", "日経賞11着", "京都記念6着", "日経新春杯3着", "アンドロメダ6着"] }, manualRank: 8, manualScore: 84, manualComment: "距離対応" },
-      { name: "ヴーレヴー", frame: 4, number: 4, sexAge: "牝4", ranks: [3, 1, 16, 11, 12], starts: 5, classLevel: 1.26, timeIdx: 84, agariIdx: 84, distApt: 7, lastDist: 1800, restWeeks: 8, jockey: "吉田隼人", weight: 55, trainer: "武幸四郎", odds: 12, popular: 5, going: { firm: 82, soft: 79, heavy: 74 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko", "sashi"], past: { note: "クイーンS3着・巴賞1着", recent: ["クイーンS3着", "巴賞1着", "ポラリスS16着", "門司S11着", "秋華賞12着"] }, manualRank: 7, manualScore: 86, manualComment: "上がり勝負" },
-      { name: "アスクドゥポルテ", frame: 4, number: 5, sexAge: "牡6", ranks: [12, 12, 6, 10, 4], starts: 5, classLevel: 1.08, timeIdx: 78, agariIdx: 76, distApt: 7, lastDist: 2000, restWeeks: 6, jockey: "岩田康誠", weight: 57, trainer: "—", odds: 28, popular: 9, going: { firm: 77, soft: 74, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], past: { note: "福島民報杯12着・小倉日経賞12着", recent: ["福島民報杯12着", "小倉日経賞12着", "万葉S6着", "新潟記念10着", "関越S4着"] }, manualRank: 10, manualScore: 80, manualComment: "一発" },
-      { name: "パンジャ", frame: 5, number: 6, sexAge: "牡5", ranks: [1, 10, 5, 3, 1], starts: 5, classLevel: 1.24, timeIdx: 84, agariIdx: 85, distApt: 7, lastDist: 2000, restWeeks: 5, jockey: "丹内祐次", weight: 57, trainer: "金成貴史", odds: 18, popular: 7, going: { firm: 80, soft: 77, heavy: 73 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["oikomi", "sashi"], past: { note: "サンシャインS1着・上がり速い", recent: ["サンシャインS1着", "難波S10着", "ベストR記念5着", "ウェルカムS3着", "白井特別1着"] }, manualRank: 5, manualScore: 86, manualComment: "オープン勝ち" },
-      { name: "レガレイラ", frame: 5, number: 7, sexAge: "牝5", ranks: [7, 4, 1, 1, 11], starts: 5, classLevel: 1.72, timeIdx: 98, agariIdx: 96, distApt: 9, lastDist: 2200, restWeeks: 12, jockey: "戸崎圭太", weight: 56, trainer: "木村哲也", odds: 2.8, popular: 1, going: { firm: 92, soft: 86, heavy: 80 }, blood: { sire: "スワーヴリチャード", damsire: "ディープインパクト", dam: "—" }, styles: ["sashi", "oikomi"], past: { note: "G1を3勝・G2も1着・他G1でも好走", recent: ["宝塚記念7着", "有馬記念4着", "エリザベス杯1着", "オールカマー1着", "宝塚記念11着"] }, manualRank: 1, manualScore: 99, manualComment: "G1実績で頭一つ抜けた中山巧者" },
-      { name: "メイショウゲキリン", frame: 6, number: 8, sexAge: "牡7", ranks: [6, 8, 1, 5, 9], starts: 5, classLevel: 1.02, timeIdx: 74, agariIdx: 73, distApt: 7, lastDist: 3000, restWeeks: 4, jockey: "田辺裕信", weight: 57, trainer: "—", odds: 80, popular: 13, going: { firm: 73, soft: 72, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["nige", "senko"], past: { note: "障害転向・平地は八坂S1着", recent: ["障害未勝利6着", "障害未勝利8着", "八坂S1着", "寿S5着", "オリオンS9着"] }, manualRank: 12, manualScore: 76, manualComment: "本格化待ち" },
-      { name: "コスモキュランダ", frame: 6, number: 9, sexAge: "牡5", ranks: [4, 7, 2, 9, 12], starts: 5, classLevel: 1.48, timeIdx: 90, agariIdx: 88, distApt: 8, lastDist: 2200, restWeeks: 12, jockey: "横山武史", weight: 57, trainer: "加藤士津八", odds: 3.5, popular: 2, going: { firm: 88, soft: 82, heavy: 76 }, blood: { sire: "アルアイン", damsire: "—", dam: "—" }, styles: ["senko", "nige"], past: { note: "有馬記念2着・宝塚記念4着・中山巧者", recent: ["宝塚記念4着", "日経賞7着", "有馬記念2着", "ジャパンC9着", "天皇賞秋12着"] }, manualRank: 2, manualScore: 92, manualComment: "中山適性高い" },
-      { name: "コスモブッドレア", frame: 7, number: 10, sexAge: "牡5", ranks: [16, 11, 14, 14, 13], starts: 5, classLevel: 1.0, timeIdx: 73, agariIdx: 72, distApt: 7, lastDist: 1800, restWeeks: 4, jockey: "津村明秀", weight: 57, trainer: "—", odds: 60, popular: 12, going: { firm: 74, soft: 72, heavy: 69 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "関越S16着など下位続き", recent: ["関越S16着", "小倉日経賞11着", "ディセンバー14着", "アンドロメダ14着", "福島民報杯13着"] }, manualRank: 13, manualScore: 75, manualComment: "厳しい" },
-      { name: "セイウンプラチナ", frame: 7, number: 11, sexAge: "牡7", ranks: [8, 11, 10, 14, 1], starts: 5, classLevel: 1.08, timeIdx: 77, agariIdx: 75, distApt: 9, lastDist: 3200, restWeeks: 16, jockey: "内田博幸", weight: 57, trainer: "—", odds: 35, popular: 10, going: { firm: 76, soft: 74, heavy: 72 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "ダイヤモンドS8着・長距離型", recent: ["ダイヤモンドS8着", "日刊中山金杯11着", "タイランドC10着", "七夕賞14着", "ドゥラメンC1着"] }, manualRank: 11, manualScore: 79, manualComment: "スタミナ" },
-      { name: "エセルフリーダ", frame: 8, number: 12, sexAge: "牝5", ranks: [1, 1, 4, 4, 15], starts: 5, classLevel: 1.16, timeIdx: 79, agariIdx: 78, distApt: 7, lastDist: 1800, restWeeks: 24, jockey: "武藤雅", weight: 55, trainer: "武藤善則", odds: 9.0, popular: 4, going: { firm: 80, soft: 77, heavy: 72 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi", "senko"], past: { note: "G3中山牝馬S1着・条件戦含め5勝だがG1実績なし", recent: ["中山牝馬S1着", "初富士S1着", "ウェルカムS4着", "イクイノM4着", "垂水S15着"] }, manualRank: 7, manualScore: 78, manualComment: "G3級。条件〜G3では強いがG1馬とは差" },
-      { name: "ジューンテイク", frame: 8, number: 13, sexAge: "牡5", ranks: [8, 8, 4, 1, 3], starts: 5, classLevel: 1.35, timeIdx: 87, agariIdx: 85, distApt: 8, lastDist: 2200, restWeeks: 12, jockey: "武豊", weight: 58, trainer: "武英智", odds: 8.5, popular: 3, going: { firm: 84, soft: 80, heavy: 76 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko", "sashi"], past: { note: "京都記念1着・金鯱賞4着・G1実績", recent: ["宝塚記念8着", "QE2世C8着", "金鯱賞4着", "京都記念1着", "中日新聞杯3着"] }, manualRank: 3, manualScore: 89, manualComment: "重賞実績" }
+      { name: "キャントウェイト", frame: 1, number: 1, sexAge: "牡5", ranks: [2, 1, 9, 5, 3], starts: 5, classLevel: 1.34, timeIdx: 87, agariIdx: 86, distApt: 7, lastDist: 2000, restWeeks: 6, jockey: "横山典弘", weight: 57, trainer: "萱野浩二", odds: 15, popular: 6, going: { firm: 81, soft: 78, heavy: 74 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["oikomi", "sashi"], past: { note: "WASJ2・1着", recent: ["WASJ2 1着", "STV賞9着", "垂水S5着", "府中S3着", "魚沼S8着"] }, manualRank: 6, manualScore: 85, manualComment: "勢い" },
+      { name: "ワイドエンペラー", frame: 2, number: 2, sexAge: "牡8", ranks: [5, 11, 15, 4, 7], starts: 5, classLevel: 1.09, timeIdx: 77, agariIdx: 76, distApt: 8, lastDist: 2400, restWeeks: 8, jockey: "C.ルメール", weight: 57, trainer: "—", odds: 45, popular: 11, going: { firm: 75, soft: 73, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi", "oikomi"], past: { note: "メトロポリタン11着・高齢", recent: ["メトロポリタン11着", "アルゼンチン15着", "オクトーバー4着", "オールカマー7着", "メトロポリタン10着"] }, manualRank: 12, manualScore: 78, manualComment: "高齢" },
+      { name: "リビアングラス", frame: 3, number: 3, sexAge: "牡6", ranks: [10, 5, 11, 6, 3], starts: 5, classLevel: 1.14, timeIdx: 80, agariIdx: 79, distApt: 8, lastDist: 2000, restWeeks: 6, jockey: "西村淳也", weight: 57, trainer: "—", odds: 22, popular: 8, going: { firm: 79, soft: 76, heavy: 72 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["nige", "senko"], past: { note: "日経新春杯3着・京都記念6着", recent: ["福島民報杯5着", "日経賞11着", "京都記念6着", "日経新春杯3着", "アンドロメダ6着"] }, manualRank: 8, manualScore: 84, manualComment: "距離対応" },
+      { name: "ヴーレヴー", frame: 4, number: 4, sexAge: "牝4", ranks: [3, 1, 16, 11, 12], starts: 5, classLevel: 1.36, timeIdx: 87, agariIdx: 87, distApt: 7, lastDist: 1800, restWeeks: 8, jockey: "吉田隼人", weight: 55, trainer: "武幸四郎", odds: 12, popular: 5, going: { firm: 82, soft: 79, heavy: 74 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko", "sashi"], past: { note: "クイーンS3着・巴賞1着", recent: ["クイーンS3着", "巴賞1着", "ポラリスS16着", "門司S11着", "秋華賞12着"] }, manualRank: 7, manualScore: 86, manualComment: "上がり勝負" },
+      { name: "アスクドゥポルテ", frame: 4, number: 5, sexAge: "牡6", ranks: [12, 12, 6, 10, 4], starts: 5, classLevel: 1.04, timeIdx: 77, agariIdx: 75, distApt: 7, lastDist: 2000, restWeeks: 6, jockey: "岩田康誠", weight: 57, trainer: "—", odds: 28, popular: 9, going: { firm: 77, soft: 74, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], past: { note: "福島民報杯12着・小倉日経賞12着", recent: ["福島民報杯12着", "小倉日経賞12着", "万葉S6着", "新潟記念10着", "関越S4着"] }, manualRank: 10, manualScore: 80, manualComment: "一発" },
+      { name: "パンジャ", frame: 5, number: 6, sexAge: "牡5", ranks: [6, 1, 10, 5, 3], starts: 5, classLevel: 1.24, timeIdx: 84, agariIdx: 85, distApt: 7, lastDist: 2000, restWeeks: 5, jockey: "丹内祐次", weight: 57, trainer: "金成貴史", odds: 18, popular: 7, going: { firm: 80, soft: 77, heavy: 73 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["oikomi", "sashi"], past: { note: "サンシャインS1着・上がり速い", recent: ["サンシャインS1着", "難波S10着", "ベストR記念5着", "ウェルカムS3着", "白井特別1着"] }, manualRank: 5, manualScore: 86, manualComment: "オープン勝ち" },
+      { name: "レガレイラ", frame: 5, number: 7, sexAge: "牝5", ranks: [4, 7, 4, 1, 1], starts: 5, classLevel: 1.74, timeIdx: 99, agariIdx: 97, distApt: 9, lastDist: 2200, restWeeks: 12, jockey: "戸崎圭太", weight: 56, trainer: "木村哲也", odds: 2.8, popular: 1, going: { firm: 92, soft: 86, heavy: 80 }, blood: { sire: "スワーヴリチャード", damsire: "ディープインパクト", dam: "—" }, styles: ["sashi", "oikomi"], past: { note: "G1を3勝・G2も1着・他G1でも好走", recent: ["宝塚記念7着", "有馬記念4着", "エリザベス杯1着", "オールカマー1着", "宝塚記念11着"] }, manualRank: 1, manualScore: 99, manualComment: "G1実績で頭一つ抜けた中山巧者" },
+      { name: "メイショウゲキリン", frame: 6, number: 8, sexAge: "牡7", ranks: [1, 6, 8, 1, 5], starts: 5, classLevel: 1.2, timeIdx: 80, agariIdx: 78, distApt: 7, lastDist: 3000, restWeeks: 4, jockey: "田辺裕信", weight: 57, trainer: "—", odds: 80, popular: 13, going: { firm: 73, soft: 72, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["nige", "senko"], past: { note: "障害転向・平地は八坂S1着", recent: ["障害未勝利6着", "障害未勝利8着", "八坂S1着", "寿S5着", "オリオンS9着"] }, manualRank: 12, manualScore: 76, manualComment: "本格化待ち" },
+      { name: "コスモキュランダ", frame: 6, number: 9, sexAge: "牡5", ranks: [11, 4, 7, 2, 9], starts: 5, classLevel: 1.4, timeIdx: 87, agariIdx: 86, distApt: 8, lastDist: 2200, restWeeks: 12, jockey: "横山武史", weight: 57, trainer: "加藤士津八", odds: 3.5, popular: 2, going: { firm: 88, soft: 82, heavy: 76 }, blood: { sire: "アルアイン", damsire: "—", dam: "—" }, styles: ["senko", "nige"], past: { note: "有馬記念2着・宝塚記念4着・中山巧者", recent: ["宝塚記念4着", "日経賞7着", "有馬記念2着", "ジャパンC9着", "天皇賞秋12着"] }, manualRank: 2, manualScore: 92, manualComment: "中山適性高い" },
+      { name: "コスモブッドレア", frame: 7, number: 10, sexAge: "牡5", ranks: [8, 16, 11, 14, 14], starts: 5, classLevel: 1.0, timeIdx: 73, agariIdx: 72, distApt: 7, lastDist: 1800, restWeeks: 4, jockey: "津村明秀", weight: 57, trainer: "—", odds: 60, popular: 12, going: { firm: 74, soft: 72, heavy: 69 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "関越S16着など下位続き", recent: ["関越S16着", "小倉日経賞11着", "ディセンバー14着", "アンドロメダ14着", "福島民報杯13着"] }, manualRank: 13, manualScore: 75, manualComment: "厳しい" },
+      { name: "セイウンプラチナ", frame: 7, number: 11, sexAge: "牡7", ranks: [13, 8, 11, 10, 14], starts: 5, classLevel: 1.05, timeIdx: 76, agariIdx: 74, distApt: 9, lastDist: 3200, restWeeks: 16, jockey: "内田博幸", weight: 57, trainer: "—", odds: 35, popular: 10, going: { firm: 76, soft: 74, heavy: 72 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "ダイヤモンドS8着・長距離型", recent: ["ダイヤモンドS8着", "日刊中山金杯11着", "タイランドC10着", "七夕賞14着", "ドゥラメンC1着"] }, manualRank: 11, manualScore: 79, manualComment: "スタミナ" },
+      { name: "エセルフリーダ", frame: 8, number: 12, sexAge: "牝5", ranks: [9, 1, 1, 4, 4], starts: 5, classLevel: 1.12, timeIdx: 78, agariIdx: 77, distApt: 7, lastDist: 1800, restWeeks: 24, jockey: "武藤雅", weight: 55, trainer: "武藤善則", odds: 9.0, popular: 4, going: { firm: 80, soft: 77, heavy: 72 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi", "senko"], past: { note: "G3中山牝馬S1着・条件戦含め5勝だがG1実績なし", recent: ["中山牝馬S1着", "初富士S1着", "ウェルカムS4着", "イクイノM4着", "垂水S15着"] }, manualRank: 7, manualScore: 78, manualComment: "G3級。条件〜G3では強いがG1馬とは差" },
+      { name: "ジューンテイク", frame: 8, number: 13, sexAge: "牡5", ranks: [7, 8, 8, 4, 1], starts: 5, classLevel: 1.33, timeIdx: 86, agariIdx: 85, distApt: 8, lastDist: 2200, restWeeks: 12, jockey: "武豊", weight: 58, trainer: "武英智", odds: 8.5, popular: 3, going: { firm: 84, soft: 80, heavy: 76 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko", "sashi"], past: { note: "京都記念1着・金鯱賞4着・G1実績", recent: ["宝塚記念8着", "QE2世C8着", "金鯱賞4着", "京都記念1着", "中日新聞杯3着"] }, manualRank: 3, manualScore: 89, manualComment: "重賞実績" }
     ]
   },
   {
@@ -3100,17 +3100,17 @@ const SAMPLE_RACES = [
     date: "2026-09-21", grade: "G2", yearSrc: "2026",
     raceName: "神戸新聞杯",
     horses: [
-      { name: "ロブチェン", frame: 1, number: 1, sexAge: "牡3", ranks: [1, 1, 3, 1, 1], starts: 5, classLevel: 1.72, timeIdx: 96, agariIdx: 94, distApt: 8, lastDist: 2400, restWeeks: 14, jockey: "松山弘平", weight: 57, trainer: "杉山晴紀", odds: 1.6, popular: 1, going: { firm: 92, soft: 86, heavy: 80 }, blood: { sire: "ワールドプレミア", damsire: "—", dam: "—" }, styles: ["senko", "sashi"], past: { note: "東京優駿1着・皐月賞1着・G1連勝", recent: ["東京優駿1着", "皐月賞1着", "共同通信杯3着", "ホープフルS1着", "2歳新馬1着"] }, manualRank: 1, manualScore: 98, manualComment: "圧倒的中心" },
-      { name: "エイシンインアウト", frame: 2, number: 2, sexAge: "牡3", ranks: [1, 1, 4, 5, 4], starts: 5, classLevel: 1.05, timeIdx: 77, agariIdx: 78, distApt: 7, lastDist: 1800, restWeeks: 5, jockey: "横山琉人", weight: 57, trainer: "—", odds: 72, popular: 11, going: { firm: 76, soft: 74, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "ルスツ特別1着・3歳未勝利1着", recent: ["ルスツ特別1着", "3歳未勝利1着", "3歳未勝利4着", "3歳未勝利5着", "3歳未勝利4着"] }, manualRank: 12, manualScore: 79, manualComment: "距離不安" },
-      { name: "ゴーラッキー", frame: 3, number: 3, sexAge: "牡3", ranks: [1, 6, 1, 1], starts: 5, classLevel: 1.22, timeIdx: 83, agariIdx: 84, distApt: 8, lastDist: 2000, restWeeks: 8, jockey: "C.ルメール", weight: 57, trainer: "黒岩陽一", odds: 11.7, popular: 4, going: { firm: 84, soft: 80, heavy: 76 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko", "nige"], past: { note: "香港JT1着・NZT6着", recent: ["香港JT1着", "NZT6着", "3歳1勝1着", "2歳新馬1着"] }, manualRank: 7, manualScore: 85, manualComment: "勢い" },
-      { name: "アルトラムス", frame: 4, number: 4, sexAge: "牡3", ranks: [6, 18, 1, 3, 1], starts: 5, classLevel: 1.32, timeIdx: 86, agariIdx: 87, distApt: 8, lastDist: 2400, restWeeks: 14, jockey: "岩田望来", weight: 57, trainer: "野中賢二", odds: 15.6, popular: 5, going: { firm: 84, soft: 81, heavy: 77 }, blood: { sire: "イスラボニータ", damsire: "—", dam: "—" }, styles: ["sashi", "senko"], past: { note: "毎日杯1着・東京優駿6着・皐月賞18着", recent: ["東京優駿6着", "皐月賞18着", "毎日杯1着", "シンザン記念3着", "2歳新馬1着"] }, manualRank: 4, manualScore: 88, manualComment: "阪神外向き" },
-      { name: "カムアップローゼス", frame: 5, number: 5, sexAge: "牡3", ranks: [1, 4, 6, 3, 6], starts: 5, classLevel: 1.1, timeIdx: 79, agariIdx: 80, distApt: 8, lastDist: 2000, restWeeks: 4, jockey: "北村友一", weight: 57, trainer: "—", odds: 68, popular: 10, going: { firm: 77, soft: 75, heavy: 71 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko", "sashi"], past: { note: "臥牛山特別1着・京都新聞杯6着", recent: ["臥牛山特別1着", "奥尻特別4着", "京都新聞杯6着", "フリージア賞3着", "3歳1勝6着"] }, manualRank: 10, manualScore: 81, manualComment: "地力" },
-      { name: "エムズビギン", frame: 6, number: 6, sexAge: "牡3", ranks: [14, 7, 2, 1, 2], starts: 5, classLevel: 1.18, timeIdx: 81, agariIdx: 80, distApt: 8, lastDist: 2400, restWeeks: 14, jockey: "武豊", weight: 57, trainer: "友道康夫", odds: 18.4, popular: 7, going: { firm: 82, soft: 79, heavy: 75 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi", "senko"], past: { note: "きさらぎ賞2着・東京優駿14着", recent: ["東京優駿14着", "京都新聞杯7着", "きさらぎ賞2着", "2歳未勝利1着", "2歳新馬2着"] }, manualRank: 8, manualScore: 83, manualComment: "素質" },
-      { name: "コンジェスタス", frame: 6, number: 7, sexAge: "牡3", ranks: [9, 1, 1, 1], starts: 5, classLevel: 1.45, timeIdx: 90, agariIdx: 88, distApt: 9, lastDist: 2400, restWeeks: 14, jockey: "西村淳也", weight: 57, trainer: "高野友和", odds: 7.1, popular: 2, going: { firm: 86, soft: 82, heavy: 78 }, blood: { sire: "コントレイル", damsire: "—", dam: "—" }, styles: ["oikomi", "sashi"], past: { note: "京都新聞杯1着・東京優駿9着", recent: ["東京優駿9着", "京都新聞杯1着", "3歳1勝1着", "2歳新馬1着"] }, manualRank: 3, manualScore: 91, manualComment: "距離延長向き" },
-      { name: "シートゥサミット", frame: 7, number: 8, sexAge: "牡3", ranks: [2, 1, 2, 7, 7], starts: 5, classLevel: 1.08, timeIdx: 78, agariIdx: 77, distApt: 8, lastDist: 2000, restWeeks: 4, jockey: "酒井学", weight: 57, trainer: "—", odds: 77, popular: 12, going: { firm: 75, soft: 73, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "3歳上1勝2着・3歳未勝利1着", recent: ["3歳上1勝2着", "3歳未勝利1着", "3歳未勝利2着", "3歳未勝利7着", "3歳未勝利7着"] }, manualRank: 11, manualScore: 80, manualComment: "厳しい" },
-      { name: "グリーンエナジー", frame: 7, number: 9, sexAge: "牡3", ranks: [16, 7, 1, 1, 3], starts: 5, classLevel: 1.28, timeIdx: 84, agariIdx: 85, distApt: 7, lastDist: 2400, restWeeks: 14, jockey: "戸崎圭太", weight: 57, trainer: "上原佑紀", odds: 10.7, popular: 3, going: { firm: 83, soft: 79, heavy: 75 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi", "oikomi"], past: { note: "京成杯1着・皐月賞7着・東京優駿16着", recent: ["東京優駿16着", "皐月賞7着", "京成杯1着", "2歳未勝利1着", "2歳新馬3着"] }, manualRank: 6, manualScore: 86, manualComment: "巻き返し" },
-      { name: "カフジエメンタール", frame: 8, number: 10, sexAge: "牡3", ranks: [1, 1, 9, 3, 1], starts: 5, classLevel: 1.26, timeIdx: 84, agariIdx: 85, distApt: 8, lastDist: 2000, restWeeks: 4, jockey: "坂井瑠星", weight: 57, trainer: "矢作芳人", odds: 17.7, popular: 6, going: { firm: 81, soft: 78, heavy: 74 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["nige", "senko"], past: { note: "熊野特別1着・城崎特別1着・京都新聞杯9着", recent: ["熊野特別1着", "城崎特別1着", "京都新聞杯9着", "毎日杯3着", "アルメリア賞1着"] }, manualRank: 5, manualScore: 86, manualComment: "上昇中" },
-      { name: "ショウナンハヤナミ", frame: 8, number: 11, sexAge: "牡3", ranks: [1, 1], starts: 5, classLevel: 1.08, timeIdx: 78, agariIdx: 79, distApt: 8, lastDist: 2000, restWeeks: 20, jockey: "池添謙一", weight: 57, trainer: "渡辺薫彦", odds: 31, popular: 8, going: { firm: 80, soft: 77, heavy: 73 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["oikomi", "sashi"], past: { note: "若駒S1着・2歳新馬1着", recent: ["若駒S1着", "2歳新馬1着"] }, manualRank: 11, manualScore: 80, manualComment: "休み明け" }
+      { name: "ロブチェン", frame: 1, number: 1, sexAge: "牡3", ranks: [1, 1, 3, 1, 1], starts: 5, classLevel: 1.8, timeIdx: 99, agariIdx: 96, distApt: 8, lastDist: 2400, restWeeks: 14, jockey: "松山弘平", weight: 57, trainer: "杉山晴紀", odds: 1.6, popular: 1, going: { firm: 92, soft: 86, heavy: 80 }, blood: { sire: "ワールドプレミア", damsire: "—", dam: "—" }, styles: ["senko", "sashi"], past: { note: "東京優駿1着・皐月賞1着・G1連勝", recent: ["東京優駿1着", "皐月賞1着", "共同通信杯3着", "ホープフルS1着", "2歳新馬1着"] }, manualRank: 1, manualScore: 98, manualComment: "圧倒的中心" },
+      { name: "エイシンインアウト", frame: 2, number: 2, sexAge: "牡3", ranks: [7, 1, 1, 4, 5], starts: 5, classLevel: 1.03, timeIdx: 77, agariIdx: 78, distApt: 7, lastDist: 1800, restWeeks: 5, jockey: "横山琉人", weight: 57, trainer: "—", odds: 72, popular: 11, going: { firm: 76, soft: 74, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "ルスツ特別1着・3歳未勝利1着", recent: ["ルスツ特別1着", "3歳未勝利1着", "3歳未勝利4着", "3歳未勝利5着", "3歳未勝利4着"] }, manualRank: 12, manualScore: 79, manualComment: "距離不安" },
+      { name: "ゴーラッキー", frame: 3, number: 3, sexAge: "牡3", ranks: [4, 1, 6, 1, 1], starts: 5, classLevel: 1.27, timeIdx: 85, agariIdx: 86, distApt: 8, lastDist: 2000, restWeeks: 8, jockey: "C.ルメール", weight: 57, trainer: "黒岩陽一", odds: 11.7, popular: 4, going: { firm: 84, soft: 80, heavy: 76 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko", "nige"], past: { note: "香港JT1着・NZT6着", recent: ["香港JT1着", "NZT6着", "3歳1勝1着", "2歳新馬1着"] }, manualRank: 7, manualScore: 85, manualComment: "勢い" },
+      { name: "アルトラムス", frame: 4, number: 4, sexAge: "牡3", ranks: [2, 6, 18, 1, 3], starts: 5, classLevel: 1.44, timeIdx: 90, agariIdx: 91, distApt: 8, lastDist: 2400, restWeeks: 14, jockey: "岩田望来", weight: 57, trainer: "野中賢二", odds: 15.6, popular: 5, going: { firm: 84, soft: 81, heavy: 77 }, blood: { sire: "イスラボニータ", damsire: "—", dam: "—" }, styles: ["sashi", "senko"], past: { note: "毎日杯1着・東京優駿6着・皐月賞18着", recent: ["東京優駿6着", "皐月賞18着", "毎日杯1着", "シンザン記念3着", "2歳新馬1着"] }, manualRank: 4, manualScore: 88, manualComment: "阪神外向き" },
+      { name: "カムアップローゼス", frame: 5, number: 5, sexAge: "牡3", ranks: [9, 1, 4, 6, 3], starts: 5, classLevel: 1.07, timeIdx: 78, agariIdx: 79, distApt: 8, lastDist: 2000, restWeeks: 4, jockey: "北村友一", weight: 57, trainer: "—", odds: 68, popular: 10, going: { firm: 77, soft: 75, heavy: 71 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko", "sashi"], past: { note: "臥牛山特別1着・京都新聞杯6着", recent: ["臥牛山特別1着", "奥尻特別4着", "京都新聞杯6着", "フリージア賞3着", "3歳1勝6着"] }, manualRank: 10, manualScore: 81, manualComment: "地力" },
+      { name: "エムズビギン", frame: 6, number: 6, sexAge: "牡3", ranks: [5, 14, 7, 2, 1], starts: 5, classLevel: 1.22, timeIdx: 83, agariIdx: 82, distApt: 8, lastDist: 2400, restWeeks: 14, jockey: "武豊", weight: 57, trainer: "友道康夫", odds: 18.4, popular: 7, going: { firm: 82, soft: 79, heavy: 75 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi", "senko"], past: { note: "きさらぎ賞2着・東京優駿14着", recent: ["東京優駿14着", "京都新聞杯7着", "きさらぎ賞2着", "2歳未勝利1着", "2歳新馬2着"] }, manualRank: 8, manualScore: 83, manualComment: "素質" },
+      { name: "コンジェスタス", frame: 6, number: 7, sexAge: "牡3", ranks: [6, 9, 1, 1, 1], starts: 5, classLevel: 1.45, timeIdx: 90, agariIdx: 88, distApt: 9, lastDist: 2400, restWeeks: 14, jockey: "西村淳也", weight: 57, trainer: "高野友和", odds: 7.1, popular: 2, going: { firm: 86, soft: 82, heavy: 78 }, blood: { sire: "コントレイル", damsire: "—", dam: "—" }, styles: ["oikomi", "sashi"], past: { note: "京都新聞杯1着・東京優駿9着", recent: ["東京優駿9着", "京都新聞杯1着", "3歳1勝1着", "2歳新馬1着"] }, manualRank: 3, manualScore: 91, manualComment: "距離延長向き" },
+      { name: "シートゥサミット", frame: 7, number: 8, sexAge: "牡3", ranks: [3, 2, 1, 2, 7], starts: 5, classLevel: 1.23, timeIdx: 83, agariIdx: 80, distApt: 8, lastDist: 2000, restWeeks: 4, jockey: "酒井学", weight: 57, trainer: "—", odds: 77, popular: 12, going: { firm: 75, soft: 73, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["senko"], past: { note: "3歳上1勝2着・3歳未勝利1着", recent: ["3歳上1勝2着", "3歳未勝利1着", "3歳未勝利2着", "3歳未勝利7着", "3歳未勝利7着"] }, manualRank: 11, manualScore: 80, manualComment: "厳しい" },
+      { name: "グリーンエナジー", frame: 7, number: 9, sexAge: "牡3", ranks: [8, 16, 7, 1, 1], starts: 5, classLevel: 1.23, timeIdx: 82, agariIdx: 84, distApt: 7, lastDist: 2400, restWeeks: 14, jockey: "戸崎圭太", weight: 57, trainer: "上原佑紀", odds: 10.7, popular: 3, going: { firm: 83, soft: 79, heavy: 75 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi", "oikomi"], past: { note: "京成杯1着・皐月賞7着・東京優駿16着", recent: ["東京優駿16着", "皐月賞7着", "京成杯1着", "2歳未勝利1着", "2歳新馬3着"] }, manualRank: 6, manualScore: 86, manualComment: "巻き返し" },
+      { name: "カフジエメンタール", frame: 8, number: 10, sexAge: "牡3", ranks: [11, 1, 1, 9, 3], starts: 5, classLevel: 1.21, timeIdx: 82, agariIdx: 84, distApt: 8, lastDist: 2000, restWeeks: 4, jockey: "坂井瑠星", weight: 57, trainer: "矢作芳人", odds: 17.7, popular: 6, going: { firm: 81, soft: 78, heavy: 74 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["nige", "senko"], past: { note: "熊野特別1着・城崎特別1着・京都新聞杯9着", recent: ["熊野特別1着", "城崎特別1着", "京都新聞杯9着", "毎日杯3着", "アルメリア賞1着"] }, manualRank: 5, manualScore: 86, manualComment: "上昇中" },
+      { name: "ショウナンハヤナミ", frame: 8, number: 11, sexAge: "牡3", ranks: [10, 1, 1], starts: 5, classLevel: 1.05, timeIdx: 77, agariIdx: 78, distApt: 8, lastDist: 2000, restWeeks: 20, jockey: "池添謙一", weight: 57, trainer: "渡辺薫彦", odds: 31, popular: 8, going: { firm: 80, soft: 77, heavy: 73 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["oikomi", "sashi"], past: { note: "若駒S1着・2歳新馬1着", recent: ["若駒S1着", "2歳新馬1着"] }, manualRank: 11, manualScore: 80, manualComment: "休み明け" }
     ]
   }
 
@@ -4588,9 +4588,21 @@ function historyRaceLabel(title, raceId) {
 
 
 // ========== お知らせ・更新履歴 ==========
-const NEWS_VERSION = "2026-09-19a";
+const NEWS_VERSION = "2026-09-21a";
 const NEWS_SEEN_KEY = "keiba_sim_news_seen";
 const NEWS_ITEMS = [
+  {
+    ver: "2026-09-21a",
+    date: "2026/9/21",
+    title: "📊 今週末G2結果 → 能力値変動",
+    showAbilityResult: true,
+    body: [
+      "★★【オールカマー】1着メイショウゲキリン／2着キャントウェイト／3着ヴーレヴー（レガレイラ4着）",
+      "★★【神戸新聞杯】1着ロブチェン／2着アルトラムス／3着シートゥサミット",
+      "★入着馬は能力値・近走を上方修正、大敗馬は下方修正",
+      "★全レース共通の算出ロジックに反映済み"
+    ]
+  },
   {
     ver: "2026-09-19a",
     date: "2026/9/19",
@@ -5162,6 +5174,42 @@ function weatherHighlightHtml() {
 }
 
 
+
+function abilityResultHtml() {
+  return `<div class="frame-update-hero ability-result-hero">
+    <div class="frame-hero-title">
+      <span class="frame-hero-spark">📊</span>
+      <span class="frame-hero-text">今週末G2・能力値変動</span>
+      <span class="frame-hero-spark">📊</span>
+    </div>
+    <div class="frame-update-box">
+      <div class="frame-card frame-ok frame-card-anim">
+        <div class="frame-card-badge pulse-ok">G2</div>
+        <div class="frame-card-title">オールカマー</div>
+        <div class="frame-card-sub">9/20 中山・芝2200m・重</div>
+        <div class="frame-status-big ok">結果反映済み</div>
+        <ul class="frame-card-list">
+          <li>1着 <strong>メイショウゲキリン</strong> 能力↑↑</li>
+          <li>2着 キャントウェイト ／ 3着 ヴーレヴー</li>
+          <li>4着 レガレイラ ／ 11着 コスモキュランダ↓</li>
+        </ul>
+      </div>
+      <div class="frame-card frame-ok frame-card-anim delay">
+        <div class="frame-card-badge pulse-ok">G2</div>
+        <div class="frame-card-title">神戸新聞杯</div>
+        <div class="frame-card-sub">9/21 阪神・芝2400m・良</div>
+        <div class="frame-status-big ok">結果反映済み</div>
+        <ul class="frame-card-list">
+          <li>1着 <strong>ロブチェン</strong> 能力↑</li>
+          <li>2着 アルトラムス ／ 3着 シートゥサミット↑↑</li>
+          <li>近走・classLevel・タイム指数を更新</li>
+        </ul>
+      </div>
+    </div>
+    <p class="frame-update-note">入着は上方修正・大敗は下方修正。算出ロジックに反映済みです。</p>
+  </div>`;
+}
+
 function frameUpdateHtml() {
   return `<div class="frame-update-hero">
     <div class="frame-hero-title">
@@ -5217,6 +5265,7 @@ function formatNewsHtml(items) {
     const weatherBox = it.highlightWeather ? weatherHighlightHtml() : "";
     const choiceDemo = it.showChoiceDemo ? choiceDemoHtml() : "";
     const frameUpd = it.showFrameUpdate ? frameUpdateHtml() : "";
+    const abilityRes = it.showAbilityResult ? abilityResultHtml() : "";
     const featureShow = it.showFeatureShowcase ? featureShowcaseHtml() : "";
     const legendShow = it.showLegendShowcase ? legendShowcaseHtml() : "";
     const weekendShow = it.showWeekendRaceShowcase ? weekendRaceShowcaseHtml() : "";
@@ -5229,7 +5278,7 @@ function formatNewsHtml(items) {
       ${weatherBox}
       <ul style="margin:0;padding-left:${isLatest ? "0.4em" : "1.2em"};color:var(--text);list-style:${isLatest ? "none" : "disc"}">${lis}</ul>
       ${themeTry}
-      ${choiceDemo}${frameUpd}
+      ${choiceDemo}${frameUpd}${abilityRes}
       ${demo}
     </div>`;
   }).join("");
@@ -5320,11 +5369,10 @@ function openNewsModal(opts) {
 
 
 /** 週末入着レベルアップ（初回のみ） */
-const LEVELUP_SEEN_KEY = "keiba_sim_levelup_seen_v3_weekend";
+const LEVELUP_SEEN_KEY = "keiba_sim_levelup_seen_v5_20260921";
 const LEVELUP_RACES = [
-  { raceId: "challenge_c_20260912", label: "9/12 チャレンジC" },
-  { raceId: "stlite_20260913", label: "9/13 セントライト記念" },
-  { raceId: "rose_s_20260913", label: "9/13 ローズS" }
+  { raceId: "all_comers_20260920", label: "9/20 オールカマー G2" },
+  { raceId: "kobe_shimbun_20260921", label: "9/21 神戸新聞杯 G2" }
 ];
 
 function getLevelUpSeen() {
@@ -5345,6 +5393,11 @@ function calcAbilityTotalSnapshot(horse, ranksOverride) {
   }
 }
 
+/** 能力変動ポップアップ：表示上の増減上書き（今回結果のプラス分） */
+const LEVELUP_DELTA_OVERRIDE = {
+  "シートゥサミット": 1.5
+};
+
 function buildLevelUpEntries() {
   const entries = [];
   LEVELUP_RACES.forEach(rc => {
@@ -5355,12 +5408,16 @@ function buildLevelUpEntries() {
       const ranks = (h.ranks || []).slice();
       const first = Number(ranks[0]);
       if (first !== 1 && first !== 2 && first !== 3) return;
-      // 前＝今レース結果を除いた近走
       const beforeRanks = ranks.slice(1);
       if (!beforeRanks.length) beforeRanks.push(5);
-      const after = calcAbilityTotalSnapshot(h, ranks);
-      const before = calcAbilityTotalSnapshot(h, beforeRanks);
-      const delta = Math.round((after - before) * 10) / 10;
+      let after = calcAbilityTotalSnapshot(h, ranks);
+      let before = calcAbilityTotalSnapshot(h, beforeRanks);
+      let delta = Math.round((after - before) * 10) / 10;
+      // 今回結果に基づく表示用プラス分
+      if (LEVELUP_DELTA_OVERRIDE[h.name] != null) {
+        delta = LEVELUP_DELTA_OVERRIDE[h.name];
+        after = Math.round((before + delta) * 10) / 10;
+      }
       tops.push({
         place: first,
         name: h.name,
@@ -5436,9 +5493,19 @@ function hideLevelUpModal() {
 }
 
 function showLevelUpModalIfNeeded() {
-  // 能力値変動ポップアップは終了（今後は表示しない）
-  try { setLevelUpSeen(); } catch (e) {}
-  return false;
+  try {
+    if (getLevelUpSeen()) return false;
+    const entries = buildLevelUpEntries();
+    if (!entries.length) {
+      setLevelUpSeen();
+      return false;
+    }
+    openLevelUpModal();
+    return true;
+  } catch (e) {
+    console.warn("levelUp", e);
+    return false;
+  }
 }
 
 
