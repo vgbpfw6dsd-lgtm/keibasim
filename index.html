@@ -1278,6 +1278,40 @@
   100% { text-shadow: 0 0 16px rgba(250,204,21,0.85); }
 }
 
+  /* AI見解 */
+  .pace-ai-box {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: linear-gradient(145deg, rgba(34,197,94,0.12), rgba(59,130,246,0.10));
+    border: 1px solid rgba(34,197,94,0.35);
+  }
+  .pace-ai-box h3 {
+    margin: 0 0 10px;
+    font-size: 0.95rem;
+    color: var(--accent);
+    font-weight: 800;
+  }
+  .pace-ai-text {
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 12px;
+    white-space: pre-wrap;
+  }
+  .pace-ai-picks {
+    margin: 0;
+    padding-left: 1.2em;
+    font-size: 0.9rem;
+    line-height: 1.75;
+  }
+  .pace-ai-picks li { margin: 4px 0; }
+  .pace-ai-picks .pick-num {
+    display: inline-block;
+    min-width: 1.6em;
+    font-weight: 800;
+    margin-right: 4px;
+  }
   /* 展開予想 見やすいレイアウト v2 */
   .pace-flow { display: flex; flex-direction: column; gap: 14px; }
   .pace-summary-bar {
@@ -2231,6 +2265,7 @@
     <div id="paceSummary" class="horse-meta" style="margin-bottom:10px"></div>
     <div id="paceBoard"></div>
     <div id="paceStyles" class="mt-10"></div>
+    <div id="paceAiInsight" class="mt-10"></div>
   </div>
 </div>
 
@@ -4611,18 +4646,66 @@ function oneRaceDraw(race, pace) {
 }
 
 /**
- * ペース別の通過・ゴール目安（芝2000m基準・中央競馬の感覚に合わせて調整）
- * ハイ: 前半速め 1000m ≈ 57.5秒 / スロー: 抑えめ ≈ 63.5秒
+ * ペース別の通過・ゴール目安（距離帯ごとに実戦タイムに合わせる）
+ * 1200m: 平均1:07.57（67.57秒）基準
+ * 1600/1800/2000等は距離帯別の目安
  */
 function paceTimePlan(dist, pace) {
-  const scale = dist / 2000;
-  // ハイ: 57秒台 / スロー: 62秒台 / ミドル: 約60秒
-  const half = pace === "high" ? 57.3 : pace === "slow" ? 62.2 : 60.1;
-  // ゴールは着差を詰める前提の基準タイム（1着想定）
-  const finish = pace === "high" ? 118.8 : pace === "slow" ? 121.5 : 120.2;
+  dist = Number(dist) || 2000;
+  const p = pace === "high" ? "high" : pace === "slow" ? "slow" : "mid";
+
+  // 距離帯ごとの1着想定ゴールタイム（秒）と1000m通過目安
+  // finish: mid基準 / highは少し速い / slowは少し遅い
+  let finishMid, halfMid;
+  if (dist <= 1000) {
+    finishMid = 54.8 * (dist / 1000);
+    halfMid = finishMid * 0.92;
+  } else if (dist <= 1200) {
+    // スプリンターズS等: ハイペース平均 1:07.57 を基準
+    // ハイ=67.57 / ミドルはやや抑え / スローはさらに遅い
+    finishMid = 68.35 * (dist / 1200); // mid基準（high時に -0.78 → 約67.57）
+    halfMid = 56.5; // 1000m地点（ハイペース帯）
+  } else if (dist <= 1400) {
+    finishMid = 80.5 * (dist / 1400);
+    halfMid = 57.5;
+  } else if (dist <= 1600) {
+    finishMid = 93.2 * (dist / 1600);
+    halfMid = 58.2;
+  } else if (dist <= 1800) {
+    finishMid = 106.5 * (dist / 1800);
+    halfMid = 59.0;
+  } else if (dist <= 2000) {
+    finishMid = 120.2 * (dist / 2000);
+    halfMid = 60.1;
+  } else if (dist <= 2200) {
+    finishMid = 133.5 * (dist / 2200);
+    halfMid = 61.0;
+  } else if (dist <= 2400) {
+    finishMid = 146.8 * (dist / 2400);
+    halfMid = 61.8;
+  } else {
+    finishMid = 120.2 * (dist / 2000);
+    halfMid = 60.1 * Math.min(1.05, dist / 2000);
+  }
+
+  let finish = finishMid;
+  let half = halfMid;
+  if (p === "high") {
+    // 1200mハイ: 平均 1:07.57
+    finish = finishMid - (dist <= 1200 ? 0.78 : dist <= 1600 ? 1.1 : 1.4);
+    half = halfMid - (dist <= 1200 ? 0.9 : 1.4);
+  } else if (p === "slow") {
+    finish = finishMid + (dist <= 1200 ? 1.05 : dist <= 1600 ? 1.2 : 1.5);
+    half = halfMid + (dist <= 1200 ? 1.3 : 1.6);
+  }
+
+  // 1000m通過はレース距離より長くならないよう制限
+  if (dist <= 1000) half = finish * 0.88;
+  else half = Math.min(half, finish - 8);
+
   return {
-    halfSec: half * scale,
-    finishSec: finish * scale
+    halfSec: half,
+    finishSec: finish
   };
 }
 
@@ -6157,7 +6240,7 @@ function predictStyle(horse, ab) {
 
 /** コースに応じた通過地点 */
 function getPaceStages(race) {
-  if (race && (race.id === "all_comers_20260920" || race.id === "kobe_shimbun_20260921")) {
+  if (race && (race.id === "all_comers_20260920" || race.id === "kobe_shimbun_20260921" || race.id === "sprinters_s_20260927")) {
     return [
       { id: "start", name: "スタート後" },
       { id: "c3", name: "3コーナー" },
@@ -6211,6 +6294,16 @@ const RACE_PACE_SCRIPTS = {
     // 4コーナー：カフジ・カムア・アルト・ゴーラ・エムズが前目、ロブチ中団、コンジ後方
     c4: [10, 5, 4, 3, 6, 2, 8, 11, 9, 1, 7],
     note: "スタート後はカフジエメンタールが逃げ。3〜4角もカフジ先頭でカムアップローゼス・アルトラムス・ゴーラッキーが押し上げ。ロブチェンは中団、ショウナンハヤナミは後方から。"
+  },
+  // スプリンターズS 2026（netkeiba系AI展開画像準拠）先頭→後方
+  "sprinters_s_20260927": {
+    // スタート後：①レッドが単騎逃げ、⑦ペアポが2番手、③④⑤が先団、⑬⑭⑫中団、⑮⑩後方
+    start: [1, 7, 3, 4, 5, 13, 2, 14, 12, 16, 8, 6, 9, 11, 15, 10],
+    // 3コーナー：①⑦持続、⑬②が押し上げ、⑮⑯が外から進出開始、③⑧⑩は中団〜後方
+    c3: [1, 7, 13, 2, 9, 3, 16, 15, 5, 11, 8, 10, 12, 14, 4, 6],
+    // 4コーナー：①⑦先頭圏、⑬⑮⑯が強襲、②⑤中団前、③⑧⑩は後方から
+    c4: [1, 7, 13, 15, 16, 2, 5, 11, 12, 9, 4, 6, 14, 3, 8, 10],
+    note: "スタート後は①レッドモンレーヴが単騎逃げ、⑦ペアポルックスが2番手。3〜4角も①⑦が前をキープしつつ、⑬パンジャタワー・⑮フリッカージャブ・⑯ピューロマジックが外から押し上げ。③ママコチャ・⑧エーティーマクフィ・⑩レイピアは後方待機。"
   }
 };
 
@@ -6290,6 +6383,115 @@ function buildPaceOrder(horses, stageId, race) {
   });
   scored.sort((a, b) => a.pos - b.pos || (a.h.number || 0) - (b.h.number || 0));
   return scored;
+}
+
+
+/** AIによるレース見解・推奨馬（展開予想用） */
+function generateAiRaceInsight(race, styles, paceLabel) {
+  const horses = (race.horses || []).slice();
+  if (!horses.length) return { text: "", picks: [] };
+
+  // 簡易評価スコア（格・近走・タイム・上がり）
+  const scored = horses.map(h => {
+    let sc = 0;
+    const cl = Number(h.classLevel) || 1;
+    sc += cl * 40;
+    const ranks = (typeof numericRanks === "function" ? numericRanks(h.ranks) : (h.ranks || []).filter(r => typeof r === "number"));
+    if (ranks.length) {
+      ranks.forEach((rk, i) => {
+        const w = ranks.length - i;
+        sc += (rk <= 1 ? 18 : rk === 2 ? 14 : rk === 3 ? 11 : rk === 4 ? 7 : rk === 5 ? 4 : Math.max(0, 6 - rk)) * w * 0.35;
+      });
+    }
+    sc += (Number(h.timeIdx) || 70) * 0.22;
+    sc += (Number(h.agariIdx) || 70) * 0.18;
+    // 脚質と想定ペースの相性
+    const st = (styles.find(s => s.h === h || (s.h && s.h.name === h.name)) || {}).style || "senko";
+    if (paceLabel && paceLabel.indexOf("ハイ") >= 0) {
+      if (st === "sashi" || st === "oikomi") sc += 6;
+      if (st === "nige") sc -= 2;
+    } else if (paceLabel && paceLabel.indexOf("スロー") >= 0) {
+      if (st === "nige" || st === "senko") sc += 6;
+      if (st === "oikomi") sc -= 2;
+    } else {
+      if (st === "senko" || st === "sashi") sc += 3;
+    }
+    return { h, sc, st };
+  }).sort((a, b) => b.sc - a.sc);
+
+  const top = scored.slice(0, 6);
+  const nige = styles.filter(s => s.style === "nige").map(s => s.h.number);
+  const senko = styles.filter(s => s.style === "senko").map(s => s.h.number);
+  const sashi = styles.filter(s => s.style === "sashi").map(s => s.h.number);
+  const oikomi = styles.filter(s => s.style === "oikomi").map(s => s.h.number);
+
+  const dist = race.distance || 0;
+  const course = race.course || "";
+  const surface = race.surface || "芝";
+  const grade = race.grade || "";
+  const name = race.raceName || race.name || "本レース";
+
+  const leadNames = scored.filter(x => x.st === "nige" || x.st === "senko").slice(0, 3).map(x => `${x.h.number}番${x.h.name}`);
+  const closerNames = scored.filter(x => x.st === "sashi" || x.st === "oikomi").slice(0, 3).map(x => `${x.h.number}番${x.h.name}`);
+
+  let paceView = "ミドルペース前後で各勢がバランスよく押し上げる展開を想定。";
+  if (paceLabel && paceLabel.indexOf("ハイ") >= 0) {
+    paceView = "前半から流れが速くなりやすく、後方待機の差し・追込勢にチャンスが回る展開を警戒したい。";
+  } else if (paceLabel && paceLabel.indexOf("スロー") >= 0) {
+    paceView = "ペースが落ち着きやすく、前々で競馬できる逃げ・先行勢が残る可能性が高い。";
+  }
+
+  const top1 = top[0];
+  const topCl = Number(top1.h.classLevel) || 1;
+  let classNote = "メンバー平均的な層の中で、近走の内容と適性が噛み合う馬を上位評価した。";
+  if (topCl >= 1.50) {
+    classNote = `本命候補の${top1.h.name}はG1級の実績を持ち、格の面で他馬を一歩リード。近走に凹凸があってもクラスの差が最後に効きやすい。`;
+  } else if (topCl >= 1.35) {
+    classNote = `上位は重賞実績のある馬が中心。${top1.h.name}を軸に、同格の相手との力比べになりそうだ。`;
+  }
+
+  const surfaceNote = surface.indexOf("ダ") >= 0
+    ? "ダート戦らしく、パワーとスタミナ、前半の位置取りが鍵になる。"
+    : "芝戦では機敏な加速と直線の末脚が決め手になりやすい。";
+
+  const text = `【${name}】${course}${surface}${dist}m（${grade || "重賞"}）の一戦。`
+    + paceView
+    + `逃げ想定は${nige.length ? nige.map(n => n + "番").join("・") : "手薄"}、先行は${senko.length ? senko.slice(0, 5).map(n => n + "番").join("・") : "少なめ"}、差し・追込は${(sashi.length + oikomi.length)}頭前後と見る。`
+    + surfaceNote
+    + classNote
+    + (leadNames.length ? `前残しなら${leadNames.join("、")}が中心。` : "")
+    + (closerNames.length ? `流れが速くなった場合は${closerNames.join("、")}の末脚に注目。` : "")
+    + `総合的には能力・実績・展開適性のバランスから、以下の6頭を推奨とする。`;
+
+  return { text, picks: top };
+}
+
+function renderAiRaceInsight(race, styles, paceLabel) {
+  const el = document.getElementById("paceAiInsight");
+  if (!el) return;
+  const { text, picks } = generateAiRaceInsight(race, styles, paceLabel);
+  if (!picks.length) {
+    el.innerHTML = "";
+    return;
+  }
+  const lis = picks.map((p, i) => {
+    const fi = Math.min(7, Math.max(0, (p.h.frame || 1) - 1));
+    const col = (typeof FRAME_COLORS !== "undefined" ? FRAME_COLORS[fi] : "#666");
+    const tc = (typeof FRAME_TEXT !== "undefined" ? FRAME_TEXT[fi] : "#fff");
+    const stLabel = STYLE_LABELS[p.st] || p.st || "";
+    return `<li>
+      <span class="pick-num" style="background:${col};color:${tc};border-radius:4px;padding:1px 6px;font-size:0.82rem">${p.h.number}</span>
+      <strong>${p.h.name}</strong>
+      <span class="horse-meta">（${stLabel}／評価${(p.sc).toFixed(0)}）</span>
+    </li>`;
+  }).join("");
+  el.innerHTML = `
+    <div class="pace-ai-box">
+      <h3>🤖 AIによるレースの見解・推奨馬</h3>
+      <div class="pace-ai-text">${text}</div>
+      <div class="horse-meta" style="font-weight:700;margin-bottom:4px">推奨馬（6頭）</div>
+      <ol class="pace-ai-picks">${lis}</ol>
+    </div>`;
 }
 
 function runPacePredict() {
@@ -6381,6 +6583,13 @@ function runPacePredict() {
         ${hist ? `<div class="pace-style-hist">過去 ${hist}</div>` : ""}
       </div>`;
     }).join("") + `</div>`;
+
+  // AI見解・推奨馬
+  try {
+    renderAiRaceInsight(race, styles, paceLabel);
+  } catch (e) {
+    console.warn("renderAiRaceInsight", e);
+  }
 }
 
 // ========== レース映像（俯瞰ミニマップ：馬番のみ） ==========
@@ -9218,15 +9427,21 @@ function startRace(horses, raceMeta) {
     // 追加ノイズは控えめ（実力差を優先）
     finishSpread += (Math.random() - 0.5) * 0.12;
     const targetSec = plan.finishSec + finishSpread;
-    // 1000mはペース基準に固定（先頭付近が目安ちょうどになる）
-    // ハイ: 57.0〜57.8 / ミドル: 59.8〜60.6 / スロー: 62.0〜62.8
-    let halfSec;
-    if (pace === "high") halfSec = 57.2 + meta.ord * 0.05 + (styleKey === "nige" || styleKey === "senko" ? -0.15 : 0.1);
-    else if (pace === "slow") halfSec = 62.15 + meta.ord * 0.05 + (styleKey === "nige" || styleKey === "senko" ? -0.1 : 0.12);
-    else halfSec = 60.1 + meta.ord * 0.05 + (styleKey === "nige" || styleKey === "senko" ? -0.12 : 0.1);
-    if (pace === "high") halfSec = Math.min(57.85, Math.max(57.05, halfSec));
-    else if (pace === "slow") halfSec = Math.min(62.85, Math.max(62.0, halfSec));
-    else halfSec = Math.min(60.7, Math.max(59.85, halfSec));
+    // 1000m通過: 距離が短いレースは plan 基準。長距離は従来のペース帯にクランプ
+    let halfSec = (plan.halfSec || 60) + meta.ord * 0.04;
+    if (dist >= 1600) {
+      // ハイ: 57.0〜57.8 / ミドル: 59.8〜60.6 / スロー: 62.0〜62.8
+      if (pace === "high") halfSec = 57.2 + meta.ord * 0.05 + (styleKey === "nige" || styleKey === "senko" ? -0.15 : 0.1);
+      else if (pace === "slow") halfSec = 62.15 + meta.ord * 0.05 + (styleKey === "nige" || styleKey === "senko" ? -0.1 : 0.12);
+      else halfSec = 60.1 + meta.ord * 0.05 + (styleKey === "nige" || styleKey === "senko" ? -0.12 : 0.1);
+      if (pace === "high") halfSec = Math.min(57.85, Math.max(57.05, halfSec));
+      else if (pace === "slow") halfSec = Math.min(62.85, Math.max(62.0, halfSec));
+      else halfSec = Math.min(60.7, Math.max(59.85, halfSec));
+    } else {
+      // 短距離: 1000m地点はゴールより十分手前に
+      halfSec = Math.min(halfSec, targetSec - 9);
+      halfSec = Math.max(halfSec, targetSec * 0.78);
+    }
     // 出遅れ（チェックONのときのみ。デフォルトOFF）
     const lateStartOn = (typeof isLateStartEnabled === "function") ? isLateStartEnabled() : false;
     const lateStart = lateStartOn && Math.random() < 0.12;
@@ -9344,7 +9559,8 @@ function startRace(horses, raceMeta) {
       if (r.finished) return;
       const tEff = Math.max(0, raceTime - r.startDelay);
       const half = r.halfSec;
-      const fin = Math.max(half + 55, r.targetSec);
+      // ゴールタイムは targetSec を正とする（旧: half+55 が短距離で1分50秒台になっていた）
+      const fin = Math.max(r.targetSec || 67, half + 8);
 
       // 展開イメージ:
       //  スタート直後はほぼ横並び → 徐々に脚質で前後が付く
