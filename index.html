@@ -3538,28 +3538,37 @@ function calcAbility(horse, raceCondition) {
   if (rankNums.length <= 1) formScore *= 0.70;
   else if (rankNums.length === 2) formScore *= 0.80;
   else if (rankNums.length === 3) formScore *= 0.90;
-  // レース格: G1 >>>> G2 >>> G3 >> OP > 条件戦
-  // classLevel: G1勝利級1.65+ / G1好走1.55 / G1出走・G2上位1.40-1.50 / G2-G3 1.25-1.35 / 条件0.95-1.12
+  // レース格: G1 >>>> G2 >>> G3 >> OP > 条件戦（格を強く絶対視）
+  // classLevel: G1勝利級1.65+ / G1好走1.50-1.59 / G1出走・G2上位1.40-1.49 / G2-G3 1.25-1.35 / 条件0.95-1.12
   const classLv = Number(horse.classLevel);
   let gradedBonus = 0;
   if (isFinite(classLv) && classLv > 0) {
-    const classMul = classLv >= 1.60 ? 1.58
-      : classLv >= 1.50 ? 1.45
-      : classLv >= 1.40 ? 1.32
-      : classLv >= 1.30 ? 1.18
+    // フォーム倍率を大幅強化：G1馬は近走微妙でも格で押し上げ
+    const classMul = classLv >= 1.60 ? 1.85
+      : classLv >= 1.50 ? 1.68
+      : classLv >= 1.40 ? 1.45
+      : classLv >= 1.30 ? 1.22
       : classLv >= 1.20 ? 1.08
-      : classLv >= 1.10 ? 0.96
-      : classLv >= 1.00 ? 0.88
-      : 0.75;
+      : classLv >= 1.10 ? 0.94
+      : classLv >= 1.00 ? 0.82
+      : 0.68;
     formScore = formScore * classMul;
-    // 重賞実績ボーナス（掲示板・勝利 × 格）
+    // 重賞実績ボーナス強化（掲示板・勝利 × 格）
     const top3 = rankNums.filter(r => r <= 3).length;
     const wins = rankNums.filter(r => r === 1).length;
-    if (classLv >= 1.55) gradedBonus = 14 + top3 * 3.5 + wins * 5;
-    else if (classLv >= 1.40) gradedBonus = 8 + top3 * 2.5 + wins * 3.5;
-    else if (classLv >= 1.25) gradedBonus = 4 + top3 * 1.5 + wins * 2;
+    if (classLv >= 1.55) gradedBonus = 22 + top3 * 5 + wins * 7;
+    else if (classLv >= 1.50) gradedBonus = 18 + top3 * 4.5 + wins * 6;
+    else if (classLv >= 1.40) gradedBonus = 11 + top3 * 3 + wins * 4;
+    else if (classLv >= 1.25) gradedBonus = 5 + top3 * 1.8 + wins * 2.5;
     else if (classLv >= 1.10) gradedBonus = 1 + wins * 1.2;
-    else gradedBonus = -6; // 条件戦中心は抑制
+    else gradedBonus = -8; // 条件戦中心は抑制
+    // G1級は直近大敗のペナルティをさらに緩和（格の絶対視）
+    if (classLv >= 1.50 && rankNums.length && rankNums[0] >= 6) {
+      formScore += 8;
+      gradedBonus += 4;
+    } else if (classLv >= 1.40 && rankNums.length && rankNums[0] >= 8) {
+      formScore += 4;
+    }
   }
 
   // タイム・上がり（レース格でベースを上下・差を拡大）
@@ -3570,13 +3579,13 @@ function calcAbility(horse, raceCondition) {
   {
     const cl0 = Number(horse.classLevel);
     if (isFinite(cl0) && cl0 > 0) {
-      const idxMul = cl0 >= 1.60 ? 1.24
-        : cl0 >= 1.50 ? 1.16
-        : cl0 >= 1.40 ? 1.10
-        : cl0 >= 1.30 ? 1.04
+      const idxMul = cl0 >= 1.60 ? 1.32
+        : cl0 >= 1.50 ? 1.24
+        : cl0 >= 1.40 ? 1.14
+        : cl0 >= 1.30 ? 1.06
         : cl0 >= 1.15 ? 1.0
-        : cl0 >= 1.05 ? 0.95
-        : 0.86;
+        : cl0 >= 1.05 ? 0.93
+        : 0.82;
       timeN = clamp(timeN * idxMul, 30, 100);
       agariN = clamp(agariN * idxMul, 30, 100);
     }
@@ -3935,7 +3944,7 @@ function computeScore(horse, race, opts) {
   const frameExtra = wFrame >= 40 ? (f - 70) * 0.45 : (wFrame >= 20 ? (f - 70) * 0.2 : 0);
   const baseAmp = 50 + (base - 50) * 2.4 + goingPart + frameExtra;
   const paceB = paceFitBonus(horse, race, opts) * 0.7;
-  const abilityAssist = ab.total * 0.02;
+  const abilityAssist = ab.total * 0.045;
   const distCh = distChangePenalty(horse, race) * 0.8;
   const rest = restPenalty(horse) * 0.8;
   const courseB = courseAptBonus(horse, race) * 0.7;
