@@ -2287,6 +2287,137 @@
   animation: arcTitleGlow 2.5s ease-in-out infinite;
 }
 
+
+/* Anonymous race poll */
+.poll-section {
+  margin: 14px 0 8px;
+  padding: 12px 10px;
+  border-radius: 12px;
+  background: linear-gradient(160deg, rgba(20,40,30,0.95), rgba(15,25,35,0.98));
+  border: 1px solid rgba(129,199,132,0.35);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+}
+.poll-section h4 {
+  margin: 0 0 6px;
+  font-size: 0.92rem;
+  color: #c8e6c9;
+  font-weight: 700;
+}
+.poll-q {
+  margin: 0 0 10px;
+  font-size: 0.84rem;
+  color: #ffe082;
+  font-weight: 600;
+}
+.poll-opts {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.poll-opt {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 6px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  width: 100%;
+}
+.poll-opt:hover:not(:disabled) {
+  background: rgba(129,199,132,0.18);
+  border-color: rgba(129,199,132,0.45);
+}
+.poll-opt:disabled { cursor: default; opacity: 0.95; }
+.poll-opt.voted {
+  border-color: #81c784;
+  background: rgba(76,175,80,0.2);
+}
+.poll-num {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.72rem; font-weight: 800;
+  background: #333; color: #fff;
+}
+.poll-name { font-size: 0.8rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.poll-meta { font-size: 0.72rem; color: #b0bec5; min-width: 52px; text-align: right; }
+.poll-bar-wrap {
+  grid-column: 1 / -1;
+  height: 4px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: -2px;
+}
+.poll-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #66bb6a, #ffd54f);
+  border-radius: 2px;
+  width: 0;
+  transition: width .5s ease;
+}
+.poll-foot {
+  margin: 8px 0 0;
+  font-size: 0.7rem;
+  color: #90a4ae;
+  line-height: 1.4;
+}
+.poll-total { color: #a5d6a7; font-weight: 600; }
+
+
+.frame-race-block .poll-section {
+  margin: 0;
+  max-width: 100%;
+}
+.frame-race-block .poll-section h4 {
+  font-size: 0.82rem;
+}
+.frame-race-block .poll-opts {
+  max-height: 180px;
+}
+
+
+.frame-card-poll {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(255,255,255,0.15);
+}
+.frame-card-poll .poll-section {
+  margin: 0;
+  padding: 8px 6px;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(129,199,132,0.25);
+  box-shadow: none;
+  border-radius: 10px;
+}
+.frame-card-poll .poll-section h4 {
+  font-size: 0.78rem;
+  margin-bottom: 4px;
+}
+.frame-card-poll .poll-q {
+  font-size: 0.75rem;
+  margin-bottom: 6px;
+}
+.frame-card-poll .poll-opts {
+  max-height: 160px;
+  gap: 4px;
+}
+.frame-card-poll .poll-opt {
+  padding: 4px 6px;
+  font-size: 0.75rem;
+}
+.frame-card-poll .poll-name { font-size: 0.74rem; }
+.frame-card-poll .poll-foot { font-size: 0.65rem; margin-top: 6px; }
+
 </style>
 </head>
 <body>
@@ -2944,8 +3075,8 @@
   <div class="bet-modal level-up-modal" style="max-width:560px">
     <div class="level-up-header">
       <div class="level-up-badge">CHANGE</div>
-      <h2 style="font-size:1.15rem;margin:8px 0 4px">⚡ 今週末レース結果で能力値変動</h2>
-      <p class="bet-sub" style="font-size:0.78rem;margin:0">9/26 シリウスS・9/27 スプリンターズS 1〜3着馬（初回のみ表示）</p>
+      <h2 style="font-size:1.15rem;margin:8px 0 4px">能力値変動（終了）</h2>
+      <p class="bet-sub" style="font-size:0.78rem;margin:0">このお知らせは終了しました</p>
     </div>
     <div id="levelUpBody" class="level-up-body"></div>
     <button type="button" class="btn btn-primary btn-close-modal" id="btnCloseLevelUp">確認した</button>
@@ -3421,28 +3552,29 @@ const SAMPLE_RACES = [
     id: "swan_s_20261012",
     name: "【2026/10/12 ＭＢＳ賞スワンS】",
     course: "京都", surface: "芝", distance: 1400, condition: "良",
-    note: "京都芝1400m外｜G2｜枠順未定（確定後に更新）",
+    note: "京都芝1400m外｜G2｜枠順確定・18頭",
     date: "2026-10-12", grade: "G2", yearSrc: "2026",
     raceName: "ＭＢＳ賞スワンS",
     pathType: "kyoto_1400_outer",
     horses: [
-      { name: "アイサンサン", frame: 1, number: 1, sexAge: "牝4", ranks: [11, 13, 1, 1, 6], starts: 5, classLevel: 1.28, timeIdx: 84, agariIdx: 82, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "—", weight: 55, trainer: "—", odds: 11, popular: 1, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['nige'], style: "nige", past: { note: "枠順未定", recent: ["近走反映済"] }, manualRank: 1, manualScore: 90, manualComment: "枠順未定" },
-      { name: "ウインマーベル", frame: 1, number: 2, sexAge: "牡7", ranks: [18, 4, 5, 2, 8], starts: 5, classLevel: 1.3, timeIdx: 85, agariIdx: 83, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "—", weight: 57, trainer: "—", odds: 12, popular: 2, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['senko'], style: "senko", past: { note: "枠順未定", recent: ["近走反映済"] }, manualRank: 2, manualScore: 90, manualComment: "枠順未定" },
-      { name: "エリカエクスプレス", frame: 2, number: 3, sexAge: "牝4", ranks: [4, 4, 4, 12, 2], starts: 5, classLevel: 1.35, timeIdx: 86, agariIdx: 84, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "—", weight: 55, trainer: "—", odds: 13, popular: 3, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['nige'], style: "nige", past: { note: "枠順未定", recent: ["近走反映済"] }, manualRank: 3, manualScore: 90, manualComment: "枠順未定" },
-      { name: "オフトレイル", frame: 2, number: 4, sexAge: "牡5", ranks: [6, 5, 10, 4, 1], starts: 5, classLevel: 1.4, timeIdx: 88, agariIdx: 86, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "—", weight: 57, trainer: "—", odds: 14, popular: 4, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['sashi'], style: "sashi", past: { note: "枠順未定", recent: ["近走反映済"] }, manualRank: 4, manualScore: 90, manualComment: "枠順未定" },
-      { name: "サンダーストラック", frame: 3, number: 5, sexAge: "牡3", ranks: [9, 7, 12, 1, 5], starts: 5, classLevel: 1.32, timeIdx: 85, agariIdx: 83, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "—", weight: 57, trainer: "—", odds: 15, popular: 5, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['sashi'], style: "sashi", past: { note: "枠順未定", recent: ["近走反映済"] }, manualRank: 5, manualScore: 90, manualComment: "枠順未定" },
-      { name: "ショウナンアデイブ", frame: 3, number: 6, sexAge: "牡7", ranks: [13, 15, 4, 3, 3], starts: 5, classLevel: 1.22, timeIdx: 80, agariIdx: 78, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "—", weight: 57, trainer: "—", odds: 16, popular: 6, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['senko'], style: "senko", past: { note: "枠順未定", recent: ["近走反映済"] }, manualRank: 6, manualScore: 90, manualComment: "枠順未定" },
-      { name: "ショウナンザナドゥ", frame: 4, number: 7, sexAge: "牝4", ranks: [1, 2, 13, 7, 15], starts: 5, classLevel: 1.3, timeIdx: 84, agariIdx: 82, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "—", weight: 55, trainer: "—", odds: 17, popular: 7, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['nige'], style: "nige", past: { note: "枠順未定", recent: ["近走反映済"] }, manualRank: 7, manualScore: 90, manualComment: "枠順未定" },
-      { name: "ジョイフルニュース", frame: 4, number: 8, sexAge: "牝4", ranks: [2, 2, 1, 2, 1], starts: 5, classLevel: 1.34, timeIdx: 85, agariIdx: 83, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "—", weight: 55, trainer: "—", odds: 18, popular: 8, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['senko'], style: "senko", past: { note: "枠順未定", recent: ["近走反映済"] }, manualRank: 8, manualScore: 90, manualComment: "枠順未定" },
-      { name: "スズハローム", frame: 5, number: 9, sexAge: "牡6", ranks: [17, 1, 1, 9, 11], starts: 5, classLevel: 1.28, timeIdx: 83, agariIdx: 81, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "—", weight: 57, trainer: "—", odds: 19, popular: 9, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['sashi'], style: "sashi", past: { note: "枠順未定", recent: ["近走反映済"] }, manualRank: 9, manualScore: 90, manualComment: "枠順未定" },
-      { name: "ダイヤモンドノット", frame: 5, number: 10, sexAge: "牡3", ranks: [8, 5, 1, 2, 1], starts: 5, classLevel: 1.42, timeIdx: 89, agariIdx: 87, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "—", weight: 57, trainer: "—", odds: 20, popular: 10, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['senko'], style: "senko", past: { note: "枠順未定", recent: ["近走反映済"] }, manualRank: 10, manualScore: 90, manualComment: "枠順未定" },
-      { name: "ネオトキオ", frame: 6, number: 11, sexAge: "牡6", ranks: [15, 14, 17, 17], starts: 4, classLevel: 1.05, timeIdx: 70, agariIdx: 68, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "—", weight: 57, trainer: "—", odds: 21, popular: 11, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['oikomi'], style: "oikomi", past: { note: "枠順未定", recent: ["近走反映済"] }, manualRank: 10, manualScore: 90, manualComment: "枠順未定" },
-      { name: "ビッグシーザー", frame: 6, number: 12, sexAge: "牡6", ranks: [13, 4, 11, 9, 12], starts: 5, classLevel: 1.25, timeIdx: 81, agariIdx: 79, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "—", weight: 57, trainer: "—", odds: 22, popular: 12, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['sashi'], style: "sashi", past: { note: "枠順未定", recent: ["近走反映済"] }, manualRank: 10, manualScore: 90, manualComment: "枠順未定" },
-      { name: "マイネルチケット", frame: 7, number: 13, sexAge: "牡4", ranks: [1, 3, 9, 2, 1], starts: 5, classLevel: 1.36, timeIdx: 86, agariIdx: 84, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "—", weight: 57, trainer: "—", odds: 23, popular: 12, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['sashi'], style: "sashi", past: { note: "枠順未定", recent: ["近走反映済"] }, manualRank: 10, manualScore: 90, manualComment: "枠順未定" },
-      { name: "ミトノオルフェ", frame: 7, number: 14, sexAge: "牡4", ranks: [1, 1], starts: 2, classLevel: 1.2, timeIdx: 80, agariIdx: 78, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "—", weight: 57, trainer: "—", odds: 24, popular: 12, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['senko'], style: "senko", past: { note: "枠順未定", recent: ["近走反映済"] }, manualRank: 10, manualScore: 90, manualComment: "枠順未定" },
-      { name: "ミニトランザット", frame: 7, number: 15, sexAge: "牡4", ranks: [2, 6, 1, 7], starts: 4, classLevel: 1.33, timeIdx: 85, agariIdx: 83, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "—", weight: 57, trainer: "—", odds: 25, popular: 12, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['sashi'], style: "sashi", past: { note: "枠順未定", recent: ["近走反映済"] }, manualRank: 10, manualScore: 90, manualComment: "枠順未定" },
-      { name: "ララマセラシオン", frame: 8, number: 16, sexAge: "牡5", ranks: [3, 13, 16, 2, 1], starts: 5, classLevel: 1.26, timeIdx: 82, agariIdx: 80, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "—", weight: 57, trainer: "—", odds: 26, popular: 12, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['sashi'], style: "sashi", past: { note: "枠順未定", recent: ["近走反映済"] }, manualRank: 10, manualScore: 90, manualComment: "枠順未定" },
-      { name: "ランフォーヴァウ", frame: 8, number: 17, sexAge: "牝4", ranks: [11], starts: 1, classLevel: 1.18, timeIdx: 78, agariIdx: 76, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "—", weight: 55, trainer: "—", odds: 27, popular: 12, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['sashi'], style: "sashi", past: { note: "枠順未定", recent: ["近走反映済"] }, manualRank: 10, manualScore: 90, manualComment: "枠順未定" }
+      { name: "ダイヤモンドノット", frame: 1, number: 1, sexAge: "牡3", ranks: [8, 5, 1, 2, 1], starts: 5, classLevel: 1.42, timeIdx: 89, agariIdx: 87, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "横山武史", weight: 57, trainer: "—", odds: 20, popular: 10, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['senko'], style: "senko", past: { note: "枠順確定", recent: ["近走反映済"] }, manualRank: 10, manualScore: 90, manualComment: "枠順未定" },
+      { name: "ショウナンザナドゥ", frame: 1, number: 2, sexAge: "牝4", ranks: [1, 2, 13, 7, 15], starts: 5, classLevel: 1.3, timeIdx: 84, agariIdx: 82, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "池添謙一", weight: 55, trainer: "—", odds: 17, popular: 7, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['nige'], style: "nige", past: { note: "枠順確定", recent: ["近走反映済"] }, manualRank: 7, manualScore: 90, manualComment: "枠順未定" },
+      { name: "レイベリング", frame: 2, number: 3, sexAge: "—", ranks: [0,0,0,0,0], starts: 0, classLevel: 1.2, timeIdx: 75, agariIdx: 75, distApt: 6, lastDist: 1400, restWeeks: 4, jockey: "鮫島克駿", weight: 56, trainer: "—", odds: 20, popular: 10, going: { firm: 75, soft: 72, heavy: 68 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], style: "sashi", past: { note: "枠順確定", recent: [] }, manualRank: 3, manualScore: 75, manualComment: "枠順確定" },
+      { name: "スズハローム", frame: 2, number: 4, sexAge: "牡6", ranks: [17, 1, 1, 9, 11], starts: 5, classLevel: 1.28, timeIdx: 83, agariIdx: 81, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "藤懸貴志", weight: 57, trainer: "—", odds: 19, popular: 9, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['sashi'], style: "sashi", past: { note: "枠順確定", recent: ["近走反映済"] }, manualRank: 9, manualScore: 90, manualComment: "枠順未定" },
+      { name: "ビッグシーザー", frame: 3, number: 5, sexAge: "牡6", ranks: [13, 4, 11, 9, 12], starts: 5, classLevel: 1.25, timeIdx: 81, agariIdx: 79, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "M.デムーロ", weight: 57, trainer: "—", odds: 22, popular: 12, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['sashi'], style: "sashi", past: { note: "枠順確定", recent: ["近走反映済"] }, manualRank: 10, manualScore: 90, manualComment: "枠順未定" },
+      { name: "ウインマーベル", frame: 3, number: 6, sexAge: "牡7", ranks: [18, 4, 5, 2, 8], starts: 5, classLevel: 1.3, timeIdx: 85, agariIdx: 83, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "松山弘平", weight: 57, trainer: "—", odds: 12, popular: 2, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['senko'], style: "senko", past: { note: "枠順確定", recent: ["近走反映済"] }, manualRank: 2, manualScore: 90, manualComment: "枠順未定" },
+      { name: "ネオトキオ", frame: 4, number: 7, sexAge: "牡6", ranks: [15, 14, 17, 17], starts: 4, classLevel: 1.05, timeIdx: 70, agariIdx: 68, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "安藤洋一", weight: 57, trainer: "—", odds: 21, popular: 11, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['oikomi'], style: "oikomi", past: { note: "枠順確定", recent: ["近走反映済"] }, manualRank: 10, manualScore: 90, manualComment: "枠順未定" },
+      { name: "サンダーストラック", frame: 4, number: 8, sexAge: "牡3", ranks: [9, 7, 12, 1, 5], starts: 5, classLevel: 1.32, timeIdx: 85, agariIdx: 83, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "吉村誠之助", weight: 57, trainer: "—", odds: 15, popular: 5, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['sashi'], style: "sashi", past: { note: "枠順確定", recent: ["近走反映済"] }, manualRank: 5, manualScore: 90, manualComment: "枠順未定" },
+      { name: "オフトレイル", frame: 5, number: 9, sexAge: "牡5", ranks: [6, 5, 10, 4, 1], starts: 5, classLevel: 1.4, timeIdx: 88, agariIdx: 86, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "菅原明良", weight: 57, trainer: "—", odds: 14, popular: 4, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['sashi'], style: "sashi", past: { note: "枠順確定", recent: ["近走反映済"] }, manualRank: 4, manualScore: 90, manualComment: "枠順未定" },
+      { name: "ララマセラシオン", frame: 5, number: 10, sexAge: "牡5", ranks: [3, 13, 16, 2, 1], starts: 5, classLevel: 1.26, timeIdx: 82, agariIdx: 80, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "横山琉人", weight: 57, trainer: "—", odds: 26, popular: 12, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['sashi'], style: "sashi", past: { note: "枠順確定", recent: ["近走反映済"] }, manualRank: 10, manualScore: 90, manualComment: "枠順未定" },
+      { name: "レザベーション", frame: 6, number: 11, sexAge: "—", ranks: [0,0,0,0,0], starts: 0, classLevel: 1.2, timeIdx: 75, agariIdx: 75, distApt: 6, lastDist: 1400, restWeeks: 4, jockey: "原優介", weight: 56, trainer: "—", odds: 20, popular: 10, going: { firm: 75, soft: 72, heavy: 68 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], style: "sashi", past: { note: "枠順確定", recent: [] }, manualRank: 11, manualScore: 75, manualComment: "枠順確定" },
+      { name: "アイサンサン", frame: 6, number: 12, sexAge: "牝4", ranks: [11, 13, 1, 1, 6], starts: 5, classLevel: 1.28, timeIdx: 84, agariIdx: 82, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "幸英明", weight: 55, trainer: "—", odds: 11, popular: 1, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['nige'], style: "nige", past: { note: "枠順確定", recent: ["近走反映済"] }, manualRank: 1, manualScore: 90, manualComment: "枠順未定" },
+      { name: "マイネルチケット", frame: 7, number: 13, sexAge: "牡4", ranks: [1, 3, 9, 2, 1], starts: 5, classLevel: 1.36, timeIdx: 86, agariIdx: 84, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "津村明秀", weight: 57, trainer: "—", odds: 23, popular: 12, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['sashi'], style: "sashi", past: { note: "枠順確定", recent: ["近走反映済"] }, manualRank: 10, manualScore: 90, manualComment: "枠順未定" },
+      { name: "ワイドラトゥール", frame: 7, number: 14, sexAge: "—", ranks: [0,0,0,0,0], starts: 0, classLevel: 1.2, timeIdx: 75, agariIdx: 75, distApt: 6, lastDist: 1400, restWeeks: 4, jockey: "北村友一", weight: 56, trainer: "—", odds: 20, popular: 10, going: { firm: 75, soft: 72, heavy: 68 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["sashi"], style: "sashi", past: { note: "枠順確定", recent: [] }, manualRank: 14, manualScore: 75, manualComment: "枠順確定" },
+      { name: "ジョイフルニュース", frame: 7, number: 15, sexAge: "牝4", ranks: [2, 2, 1, 2, 1], starts: 5, classLevel: 1.34, timeIdx: 85, agariIdx: 83, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "大野拓弥", weight: 55, trainer: "—", odds: 18, popular: 8, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['senko'], style: "senko", past: { note: "枠順確定", recent: ["近走反映済"] }, manualRank: 8, manualScore: 90, manualComment: "枠順未定" },
+      { name: "ランフォーヴァウ", frame: 8, number: 16, sexAge: "牝4", ranks: [11], starts: 1, classLevel: 1.18, timeIdx: 78, agariIdx: 76, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "石川裕紀人", weight: 55, trainer: "—", odds: 27, popular: 12, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['sashi'], style: "sashi", past: { note: "枠順確定", recent: ["近走反映済"] }, manualRank: 10, manualScore: 90, manualComment: "枠順未定" },
+      { name: "ミニトランザット", frame: 8, number: 17, sexAge: "牡4", ranks: [2, 6, 1, 7], starts: 4, classLevel: 1.33, timeIdx: 85, agariIdx: 83, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "西村淳也", weight: 57, trainer: "—", odds: 25, popular: 12, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['sashi'], style: "sashi", past: { note: "枠順確定", recent: ["近走反映済"] }, manualRank: 10, manualScore: 90, manualComment: "枠順未定" },
+      { name: "エリカエクスプレス", frame: 8, number: 18, sexAge: "牝4", ranks: [4, 4, 4, 12, 2], starts: 5, classLevel: 1.35, timeIdx: 86, agariIdx: 84, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "武豊", weight: 55, trainer: "—", odds: 13, popular: 3, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ['nige'], style: "nige", past: { note: "枠順確定", recent: ["近走反映済"] }, manualRank: 3, manualScore: 90, manualComment: "枠順未定" }
     ]
   },
 
@@ -5385,16 +5517,41 @@ function historyRaceLabel(title, raceId) {
 
 
 // ========== お知らせ・更新履歴 ==========
-const NEWS_VERSION = "2026-10-09b";
+const NEWS_VERSION = "2026-10-11b";
 const NEWS_SEEN_KEY = "keiba_sim_news_seen";
 const NEWS_ITEMS = [
+  {
+    ver: "2026-10-11b",
+    title: "【新機能】1着予想アンケート追加",
+    body: [
+      "お知らせに「どの馬が1着になりそうだと思いますか？」の匿名アンケートを追加",
+      "スワンS・アイルランドT・サウジアラビアRC が対象",
+      "回答後、他の閲覧者の集計結果も表示されます（1人1票）"
+    ],
+    showFrameUpdate: true,
+    flash: true
+  },
+
+  {
+    ver: "2026-10-11a",
+    title: "【枠順確定】ＭＢＳ賞スワンS",
+    body: [
+      "✅ ＭＢＳ賞スワンS（10/12 京都芝1400m G2）…枠順確定（18頭）",
+      "⑨オフトレイル（菅原明）連覇へ／①ダイヤモンドノット／⑱エリカエクスプレス（武豊）",
+      "✅ サウジアラビアRC・アイルランドTも枠順確定済み",
+      "出走表・能力値・レース映像に反映済み"
+    ],
+    showFrameUpdate: true,
+    flash: true
+  },
+
   {
     ver: "2026-10-09b",
     title: "【枠順更新】今週末の重賞",
     body: [
       "✅ サウジアラビアRC（10/10 東京芝1600m G3）…枠順確定（11頭）",
       "✅ アイルランドT（10/11 東京芝1800m G2）…枠順確定（16頭）",
-      "⏳ ＭＢＳ賞スワンS（10/12 京都芝1400m G2）…枠順はまだ未確定です",
+      "✅ ＭＢＳ賞スワンS（10/12 京都芝1400m G2）…枠順確定（18頭）",
       "出走表・能力値・レース映像に反映済み（確定分）"
     ],
     showFrameUpdate: true,
@@ -5420,8 +5577,8 @@ const NEWS_ITEMS = [
   {
     ver: "2026-10-06a",
     date: "2026/10/6",
-    title: "⚡⚡ 能力値変動！先週末3レース結果を反映",
-    showAbilityResult: true,
+    title: "能力値変動（先週末・終了）",
+    showAbilityResult: false,
     body: [
       "★★★【凱旋門賞 G1】ダリズ連覇 → 能力大幅アップ",
       "★★ 2着ベイシティローラー／3着ダイヤモンドネックレスも上昇",
@@ -5475,7 +5632,7 @@ const NEWS_ITEMS = [
   {
     ver: "2026-09-28a",
     date: "2026/9/28",
-    title: "⚡ 能力値変動！土日レース結果を反映",
+    title: "能力値変動（終了）土日レース結果",
     showAbilityResult: false,
     body: [
       "★★★【G1 スプリンターズS】ピューロマジックが逃げ切りV → 能力大幅アップ",
@@ -5500,7 +5657,7 @@ const NEWS_ITEMS = [
   {
     ver: "2026-09-07a",
     date: "2026/9/7",
-    title: "新潟記念の結果を能力値に反映",
+    title: "新潟記念の結果を能力値に反映（終了）",
     body: [
       "新潟記念（G3）の着順を各馬の近走先頭に追加",
       "ゾロアストロ1着・ロデオドライブ2着・ダノンシーマ3着などを反映",
@@ -5521,7 +5678,7 @@ const NEWS_ITEMS = [
   {
     ver: "2026-09-06i",
     date: "2026/9/6",
-    title: "今週開催レースの結果を能力値に反映",
+    title: "開催レース結果の能力値反映（終了）",
     body: [
       "京成杯AH・札幌2歳S・紫苑S・セントウルSの着順を近走の先頭に追加",
       "勝ち馬・好走馬はタイム指数・格付けを引き上げ、大敗馬は調整",
@@ -5982,51 +6139,180 @@ function weatherHighlightHtml() {
 
 
 function abilityResultHtml() {
-  return `<div class="frame-update-hero ability-result-hero">
-    <div class="frame-hero-title">
-      <span class="frame-hero-spark">⚡</span>
-      <span class="frame-hero-text">先週末レース結果 → 能力値変動</span>
-      <span class="frame-hero-spark">⚡</span>
-    </div>
-    <div class="frame-update-box" style="flex-wrap:wrap;justify-content:center">
-      <div class="frame-card frame-ok frame-card-anim" style="animation-delay:0.05s;border:2px solid #ffd54f;box-shadow:0 0 18px rgba(255,215,0,0.4)">
-        <div class="frame-card-badge pulse-ok" style="background:linear-gradient(135deg,#c62828,#6a1b9a)">G1</div>
-        <div class="frame-card-title">🇫🇷 凱旋門賞</div>
-        <div class="frame-card-sub">10/4 パリロンシャン・芝2400m</div>
-        <div class="frame-status-big ok">①ダリズ 連覇！</div>
-        <div class="frame-card-detail">2着ベイシティローラー／3着ダイヤモンドネックレス<br>日本馬：アドマイヤテラ11着・メイショウタバル14着</div>
-      </div>
-      <div class="frame-card frame-ok frame-card-anim" style="animation-delay:0.15s">
-        <div class="frame-card-badge pulse-ok">G2</div>
-        <div class="frame-card-title">毎日王冠</div>
-        <div class="frame-card-sub">10/4 東京・芝1800m・良</div>
-        <div class="frame-status-big ok">①セイウンハーデス V</div>
-        <div class="frame-card-detail">2着ホウオウビスケッツ／3着レディネス<br>人気薄の激走で重賞3勝目</div>
-      </div>
-      <div class="frame-card frame-ok frame-card-anim" style="animation-delay:0.25s">
-        <div class="frame-card-badge pulse-ok">G2</div>
-        <div class="frame-card-title">京都大賞典</div>
-        <div class="frame-card-sub">10/4 京都・芝2400m・稍重</div>
-        <div class="frame-status-big ok">①エコロディノス 大波乱V</div>
-        <div class="frame-card-detail">2着マイネルエンペラー／3着アクアヴァーナル<br>11番人気・重賞初制覇</div>
-      </div>
-    </div>
-    <p class="frame-update-foot" style="text-align:center;margin-top:10px;font-weight:700;color:#ffe082">
-      入着馬の能力値アップ＆大敗馬の見直しを反映済み！
-    </p>
+  // 能力値変動ポップアップは終了（先週末分）
+  return "";
+}
+
+
+
+
+/** 匿名1着予想アンケート */
+const POLL_NS = "keiba-sim-poll-v1";
+const POLL_VOTE_KEY = "keiba_sim_poll_votes_v1";
+
+function getPollVotes() {
+  try { return JSON.parse(localStorage.getItem(POLL_VOTE_KEY) || "{}"); } catch (e) { return {}; }
+}
+function setPollVote(raceId, number) {
+  const m = getPollVotes();
+  m[raceId] = Number(number);
+  try { localStorage.setItem(POLL_VOTE_KEY, JSON.stringify(m)); } catch (e) {}
+}
+function getPollVote(raceId) {
+  const m = getPollVotes();
+  return m[raceId] != null ? Number(m[raceId]) : null;
+}
+
+function pollHorseKey(raceId, number) {
+  return `${raceId}_n${number}`;
+}
+
+async function pollHitRemote(raceId, number) {
+  const key = pollHorseKey(raceId, number);
+  try {
+    const url = `https://abacus.jasoncameron.dev/hit/${POLL_NS}/${encodeURIComponent(key)}`;
+    const r = await fetch(url, { cache: "no-store" });
+    if (!r.ok) throw new Error("hit fail");
+    const j = await r.json();
+    return typeof j.value === "number" ? j.value : (typeof j.count === "number" ? j.count : 1);
+  } catch (e) {
+    return null;
+  }
+}
+
+async function pollGetRemote(raceId, number) {
+  const key = pollHorseKey(raceId, number);
+  try {
+    const url = `https://abacus.jasoncameron.dev/get/${POLL_NS}/${encodeURIComponent(key)}`;
+    const r = await fetch(url, { cache: "no-store" });
+    if (!r.ok) return 0;
+    const j = await r.json();
+    return typeof j.value === "number" ? j.value : (typeof j.count === "number" ? j.count : 0);
+  } catch (e) {
+    return 0;
+  }
+}
+
+function getPollRaceConfig(raceId) {
+  const race = (typeof SAMPLE_RACES !== "undefined" ? SAMPLE_RACES : []).find(r => r.id === raceId);
+  if (!race || !race.horses) return null;
+  const horses = race.horses.slice().sort((a, b) => (a.number || 0) - (b.number || 0));
+  return {
+    raceId,
+    title: (race.raceName || race.name || raceId).replace(/【|】/g, ""),
+    horses: horses.map(h => ({ number: h.number, name: h.name, frame: h.frame }))
+  };
+}
+
+function frameColorClass(frame) {
+  // reuse existing if any; fallback palette
+  const map = {1:"#f5f5f5",2:"#111",3:"#e53935",4:"#1e88e5",5:"#43a047",6:"#fdd835",7:"#fb8c00",8:"#f8bbd0"};
+  return map[frame] || "#666";
+}
+
+function pollOptionHtml(raceId, h, counts, total, votedNum) {
+  const c = counts[h.number] || 0;
+  const pct = total > 0 ? Math.round((c / total) * 100) : 0;
+  const voted = votedNum === h.number;
+  const disabled = votedNum != null;
+  const numBg = frameColorClass(h.frame);
+  const numColor = (h.frame === 1 || h.frame === 6) ? "#111" : "#fff";
+  const bar = disabled || votedNum != null
+    ? `<div class="poll-bar-wrap"><div class="poll-bar" style="width:${pct}%"></div></div>`
+    : "";
+  const meta = votedNum != null ? `${pct}% (${c})` : "投票";
+  return `<button type="button" class="poll-opt${voted ? " voted" : ""}" data-poll-race="${raceId}" data-poll-num="${h.number}" ${disabled ? "disabled" : ""}>
+    <span class="poll-num" style="background:${numBg};color:${numColor}">${h.number}</span>
+    <span class="poll-name">${h.name}</span>
+    <span class="poll-meta">${meta}</span>
+    ${bar}
+  </button>`;
+}
+
+function pollSectionPlaceholder(raceId) {
+  const cfg = getPollRaceConfig(raceId);
+  if (!cfg) return "";
+  return `<div class="poll-section" data-poll-box="${raceId}">
+    <h4>📊 1着予想アンケート</h4>
+    <p class="poll-q">どの馬が1着になりそうだと思いますか？（匿名）</p>
+    <div class="poll-opts" data-poll-opts="${raceId}"><div style="padding:8px;color:#90a4ae;font-size:0.8rem">読み込み中…</div></div>
+    <p class="poll-foot" data-poll-foot="${raceId}">匿名アンケートです。回答後に全体の集計結果が表示されます。</p>
   </div>`;
+}
+
+async function loadPollCounts(raceId) {
+  const cfg = getPollRaceConfig(raceId);
+  if (!cfg) return { counts: {}, total: 0, remote: false };
+  const counts = {};
+  let total = 0;
+  let remoteOk = true;
+  // parallel fetch
+  await Promise.all(cfg.horses.map(async h => {
+    const v = await pollGetRemote(raceId, h.number);
+    counts[h.number] = v || 0;
+    total += counts[h.number];
+    if (v == null) remoteOk = false;
+  }));
+  // local fallback boost: if user voted and remote is 0, show at least local
+  const voted = getPollVote(raceId);
+  if (voted != null && (counts[voted] || 0) === 0) {
+    counts[voted] = (counts[voted] || 0) + 1;
+    total += 1;
+  }
+  return { counts, total, remote: remoteOk };
+}
+
+async function renderPollBox(raceId) {
+  const box = document.querySelector(`[data-poll-box="${raceId}"]`);
+  const optsEl = document.querySelector(`[data-poll-opts="${raceId}"]`);
+  const foot = document.querySelector(`[data-poll-foot="${raceId}"]`);
+  const cfg = getPollRaceConfig(raceId);
+  if (!box || !optsEl || !cfg) return;
+  const votedNum = getPollVote(raceId);
+  const { counts, total, remote } = await loadPollCounts(raceId);
+  optsEl.innerHTML = cfg.horses.map(h => pollOptionHtml(raceId, h, counts, total, votedNum)).join("");
+  if (foot) {
+    if (votedNum != null) {
+      foot.innerHTML = `あなたの投票: <strong>${votedNum}番</strong>　｜　<span class="poll-total">合計 ${total} 票</span>${remote ? "" : "（オフライン集計）"}`;
+    } else {
+      foot.textContent = "匿名アンケートです。1人1票・回答後に全体の集計結果が表示されます。";
+    }
+  }
+  // bind votes
+  optsEl.querySelectorAll(".poll-opt:not(:disabled)").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const num = Number(btn.getAttribute("data-poll-num"));
+      if (!num || getPollVote(raceId) != null) return;
+      btn.disabled = true;
+      setPollVote(raceId, num);
+      await pollHitRemote(raceId, num);
+      await renderPollBox(raceId);
+    });
+  });
+}
+
+function mountPollsInNews() {
+  const ids = ["swan_s_20261012", "ireland_trophy_20261011", "saudi_arabia_rc_20261010"];
+  ids.forEach(id => {
+    if (document.querySelector(`[data-poll-box="${id}"]`)) {
+      renderPollBox(id);
+    }
+  });
 }
 
 
 function frameUpdateHtml() {
+  const pollSwan = (typeof pollSectionPlaceholder === "function") ? pollSectionPlaceholder("swan_s_20261012") : "";
+  const pollIre = (typeof pollSectionPlaceholder === "function") ? pollSectionPlaceholder("ireland_trophy_20261011") : "";
+  const pollSau = (typeof pollSectionPlaceholder === "function") ? pollSectionPlaceholder("saudi_arabia_rc_20261010") : "";
   return `<div class="frame-update-hero">
     <div class="frame-hero-title">
       <span class="frame-hero-spark">⚡</span>
       <span class="frame-hero-text">枠順更新！！今週末の重賞</span>
       <span class="frame-hero-spark">⚡</span>
     </div>
-    <div class="frame-update-box" style="flex-wrap:wrap;justify-content:center">
-      <div class="frame-card frame-ok frame-card-anim" style="border:2px solid #81c784;box-shadow:0 0 18px rgba(76,175,80,0.4)">
+    <div class="frame-update-box" style="flex-wrap:wrap;justify-content:center;align-items:stretch">
+      <div class="frame-card frame-ok frame-card-anim" style="border:2px solid #81c784;box-shadow:0 0 18px rgba(76,175,80,0.4);width:min(100%,300px);margin:4px">
         <div class="frame-card-badge pulse-ok">G3</div>
         <div class="frame-card-title">サウジアラビアRC</div>
         <div class="frame-card-sub">10/10(土) 東京・芝1600m・2歳</div>
@@ -6036,8 +6322,9 @@ function frameUpdateHtml() {
           <li>②デミアン・⑥ベルウッドディープ</li>
           <li class="frame-card-more">全11頭・枠順反映済み</li>
         </ul>
+        <div class="frame-card-poll">${pollSau}</div>
       </div>
-      <div class="frame-card frame-ok frame-card-anim delay">
+      <div class="frame-card frame-ok frame-card-anim delay" style="width:min(100%,300px);margin:4px">
         <div class="frame-card-badge pulse-ok">G2</div>
         <div class="frame-card-title">アイルランドT</div>
         <div class="frame-card-sub">10/11(日) 東京・芝1800m・牝馬</div>
@@ -6047,16 +6334,19 @@ function frameUpdateHtml() {
           <li>③クイーンズウォーク・⑪ラヴァンダ</li>
           <li class="frame-card-more">全16頭・枠順反映済み</li>
         </ul>
+        <div class="frame-card-poll">${pollIre}</div>
       </div>
-      <div class="frame-card frame-pending frame-card-anim delay" style="border:2px solid #ffb74d">
-        <div class="frame-card-badge" style="background:linear-gradient(135deg,#ef6c00,#f9a825)">G2</div>
+      <div class="frame-card frame-ok frame-card-anim delay" style="border:2px solid #81c784;box-shadow:0 0 18px rgba(76,175,80,0.4);width:min(100%,300px);margin:4px">
+        <div class="frame-card-badge pulse-ok">G2</div>
         <div class="frame-card-title">ＭＢＳ賞スワンS</div>
         <div class="frame-card-sub">10/12(月祝) 京都・芝1400m</div>
-        <div class="frame-status-big" style="color:#ffb74d">枠順 未確定</div>
+        <div class="frame-status-big ok">枠順 確定</div>
         <ul class="frame-card-list">
-          <li>オフトレイル・ダイヤモンドノット など</li>
-          <li class="frame-card-more">確定後に更新予定</li>
+          <li><strong>⑨オフトレイル</strong>（菅原明）連覇へ</li>
+          <li>①ダイヤモンドノット・⑱エリカエクスプレス</li>
+          <li class="frame-card-more">全18頭・枠順反映済み</li>
         </ul>
+        <div class="frame-card-poll">${pollSwan}</div>
       </div>
     </div>
     <p class="frame-update-foot" style="text-align:center;margin-top:10px;font-weight:700;color:#ffe082">
@@ -6064,6 +6354,9 @@ function frameUpdateHtml() {
     </p>
   </div>`;
 }
+
+
+
 
 
 
@@ -6187,6 +6480,7 @@ function openNewsModal(opts) {
   }
   try {
     body.innerHTML = formatNewsHtml(show);
+    try { mountPollsInNews(); } catch (e2) { console.warn("polls", e2); }
   } catch (e) {
     console.warn("formatNewsHtml", e);
     body.innerHTML = (show || []).map(it => `<div class="news-item"><strong>${it.title || ""}</strong><ul>${(it.body||[]).map(b=>"<li>"+b+"</li>").join("")}</ul></div>`).join("");
@@ -6198,11 +6492,7 @@ function openNewsModal(opts) {
 
 /** 週末入着レベルアップ（初回のみ） */
 const LEVELUP_SEEN_KEY = "keiba_sim_levelup_seen_v8_20261004";
-const LEVELUP_RACES = [
-  { raceId: "mainichi_okan_20261004", label: "毎日王冠 G2" },
-  { raceId: "kyoto_daishoten_20261004", label: "京都大賞典 G2" },
-  { raceId: "arc_de_triomphe_20261004", label: "凱旋門賞 G1" }
-];
+const LEVELUP_RACES = []; // 能力値変動ポップアップ終了
 
 function getLevelUpSeen() {
   try { return localStorage.getItem(LEVELUP_SEEN_KEY) === "1"; } catch (e) { return false; }
@@ -6223,17 +6513,7 @@ function calcAbilityTotalSnapshot(horse, ranksOverride) {
 }
 
 /** 能力変動ポップアップ：表示上の増減上書き（今回結果のプラス分） */
-const LEVELUP_DELTA_OVERRIDE = {
-  "セイウンハーデス": 2.4,
-  "ホウオウビスケッツ": 1.8,
-  "レディネス": 1.5,
-  "エコロディノス": 2.8,
-  "マイネルエンペラー": 2.0,
-  "アクアヴァーナル": 1.4,
-  "ダリズ": 3.0,
-  "ベイシティローラー": 2.2,
-  "ダイヤモンドネックレス": 1.8
-};
+const LEVELUP_DELTA_OVERRIDE = {};
 
 function buildLevelUpEntries() {
   const entries = [];
@@ -6330,20 +6610,11 @@ function hideLevelUpModal() {
 }
 
 function showLevelUpModalIfNeeded() {
-  try {
-    if (getLevelUpSeen()) return false;
-    const entries = buildLevelUpEntries();
-    if (!entries.length) {
-      setLevelUpSeen();
-      return false;
-    }
-    openLevelUpModal();
-    return true;
-  } catch (e) {
-    console.warn("levelUp", e);
-    return false;
-  }
+  // 能力値変動ポップアップは終了（毎日王冠・京都大賞典・凱旋門賞など）
+  try { setLevelUpSeen(); } catch (e) {}
+  return false;
 }
+
 
 
 function showNewsModalIfNeeded() {
