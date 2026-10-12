@@ -3237,6 +3237,16 @@ function getNakayama2200Img() {
 
 
 const COURSES = {
+  "盛岡": {
+    name: "盛岡競馬場", direction: "left", surfaceNote: "ダート左回り・地方ダートマイル",
+    turfStraight: 300, dirtStraight: 300,
+    frameTurf: [8, 9, 9, 8, 7, 7, 6, 5],
+    frameDirt: [8, 9, 9, 8, 7, 7, 6, 5],
+    mapRx: 0.40, mapRy: 0.30,
+    clockwise: false,
+    theme: { grass: "#5d4037", rail: "#efebe9", stand: "bottom", label: "盛岡", accent: "#8d6e63" }
+  },
+
   "東京": {
     name: "東京競馬場", direction: "left", surfaceNote: "芝は広大・直線長い",
     turfStraight: 525.9, dirtStraight: 501.6,
@@ -3577,6 +3587,30 @@ const SAMPLE_RACES = [
       { name: "エリカエクスプレス", frame: 8, number: 18, sexAge: "牝4", ranks: [8, 4, 4, 4, 12], starts: 5, classLevel: 1.35, timeIdx: 86, agariIdx: 84, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "武豊", weight: 55, trainer: "—", odds: 13, popular: 3, going: { firm: 78, soft: 75, heavy: 70 }, blood: { sire: "—", damsire: "—", dam: "—" }, styles: ["nige"], style: "nige", past: { note: "近走:8着→クイーンS4着→ヴィクトリアM4着→中山牝馬S4着→エリザベス女王杯12着→秋華賞2着", recent: [8, 4, 4, 4, 12] }, manualRank: 3, manualScore: 90, manualComment: "枠順未定" }
     ]
   },
+
+  {
+    id: "nanbu_hai_20261012",
+    name: "【2026/10/12 マイルCS南部杯】",
+    course: "盛岡", surface: "ダ", distance: 1600, condition: "良",
+    note: "盛岡ダ1600m｜Jpn1｜枠順確定・11頭｜Road to JBC",
+    date: "2026-10-12", grade: "G1", yearSrc: "2026",
+    raceName: "マイルチャンピオンシップ南部杯",
+    pathType: "generic_left",
+    horses: [
+      { name: "メイショウハチロー", frame: 1, number: 1, sexAge: "牡4", ranks: [2, 1, 1, 9, 2], starts: 5, classLevel: 1.55, timeIdx: 92, agariIdx: 90, distApt: 8, lastDist: 1400, restWeeks: 5, jockey: "吉原寛人", weight: 57, trainer: "福永祐一", odds: 7.6, popular: 3, going: { firm: 88, soft: 86, heavy: 82 }, blood: { sire: "シニスターミニスター", dam: "メイショウミハル", damsire: "ダイワメジャー" }, styles: ["senko"], style: "senko", past: { note: "近走:東海S2着→ほかダート好走", recent: [2, 1, 1, 9, 2] }, manualRank: 3, manualScore: 88, manualComment: "枠順確定" },
+      { name: "ウィルソンテソーロ", frame: 2, number: 2, sexAge: "牡7", ranks: [2, 1, 5, 1, 2], starts: 5, classLevel: 1.95, timeIdx: 98, agariIdx: 96, distApt: 9, lastDist: 1600, restWeeks: 8, jockey: "川田将雅", weight: 57, trainer: "高木登", odds: 1.7, popular: 1, going: { firm: 95, soft: 93, heavy: 90 }, blood: { sire: "キタサンブラック", dam: "チェストケローズ", damsire: "Uncle Mo" }, styles: ["sashi"], style: "sashi", past: { note: "近走:さきたま杯2着→かしわ記念1着→JBCクラシック5着→南部杯1着", recent: [2, 1, 5, 1, 2] }, manualRank: 1, manualScore: 96, manualComment: "枠順確定・連覇狙い" },
+      { name: "キタノズエッジ", frame: 3, number: 3, sexAge: "牡5", ranks: [6, 1, 3, 6, 2], starts: 5, classLevel: 1.35, timeIdx: 86, agariIdx: 85, distApt: 7, lastDist: 1600, restWeeks: 18, jockey: "古川吉洋", weight: 57, trainer: "畑端省吾", odds: 60.0, popular: 7, going: { firm: 82, soft: 80, heavy: 76 }, blood: { sire: "ジョーカプチーノ", dam: "ファルファラ", damsire: "キングカメハメハ" }, styles: ["sashi"], style: "sashi", past: { note: "近走:アハルテケS6着→ポラリスS1着→コーラルS3着", recent: [6, 1, 3, 6, 2] }, manualRank: 7, manualScore: 78, manualComment: "枠順確定" },
+      { name: "サクラトップキッド", frame: 4, number: 4, sexAge: "牡5", ranks: [2, 4, 3, 5, 1], starts: 5, classLevel: 1.15, timeIdx: 78, agariIdx: 76, distApt: 6, lastDist: 1600, restWeeks: 3, jockey: "高橋悠里", weight: 57, trainer: "伊藤和忍", odds: 447.3, popular: 9, going: { firm: 75, soft: 74, heavy: 72 }, blood: { sire: "ビーチパトロール", dam: "サクラトップクイン", damsire: "ジャングルポケット" }, styles: ["sashi"], style: "sashi", past: { note: "近走:青藍賞2着・地方重賞実績", recent: [2, 4, 3, 5, 1] }, manualRank: 9, manualScore: 68, manualComment: "枠順確定・地方" },
+      { name: "ルクソールカフェ", frame: 5, number: 5, sexAge: "牡4", ranks: [1, 1, 3, 2, 1], starts: 5, classLevel: 1.85, timeIdx: 96, agariIdx: 94, distApt: 9, lastDist: 1700, restWeeks: 6, jockey: "岩田望来", weight: 57, trainer: "堀宣行", odds: 2.9, popular: 2, going: { firm: 93, soft: 91, heavy: 88 }, blood: { sire: "American Pharoah", dam: "Mary's Follies", damsire: "More Than Ready" }, styles: ["senko"], style: "senko", past: { note: "近走:エルムS1着→武蔵野S1着などダート重賞好走", recent: [1, 1, 3, 2, 1] }, manualRank: 2, manualScore: 94, manualComment: "枠順確定" },
+      { name: "ストレングス", frame: 6, number: 6, sexAge: "牡5", ranks: [4, 1, 5, 3, 2], starts: 5, classLevel: 1.30, timeIdx: 84, agariIdx: 83, distApt: 7, lastDist: 1400, restWeeks: 8, jockey: "小崎綾也", weight: 57, trainer: "寺島良", odds: 54.4, popular: 6, going: { firm: 80, soft: 78, heavy: 75 }, blood: { sire: "シニスターミニスター", dam: "ローレライ", damsire: "ゴールドアリュール" }, styles: ["senko"], style: "senko", past: { note: "近走:サマーチャンピオン4着→ジュライS1着", recent: [4, 1, 5, 3, 2] }, manualRank: 6, manualScore: 76, manualComment: "枠順確定" },
+      { name: "バトルバーリライ", frame: 6, number: 7, sexAge: "牡10", ranks: [5, 6, 4, 8, 3], starts: 5, classLevel: 1.05, timeIdx: 74, agariIdx: 72, distApt: 5, lastDist: 1600, restWeeks: 3, jockey: "阿部英俊", weight: 57, trainer: "新田守", odds: 594.2, popular: 11, going: { firm: 72, soft: 70, heavy: 68 }, blood: { sire: "バトルプラン", dam: "ノワゼット", damsire: "ウォーニング" }, styles: ["oikomi"], style: "oikomi", past: { note: "近走:青藍賞5着・地方ベテラン", recent: [5, 6, 4, 8, 3] }, manualRank: 11, manualScore: 60, manualComment: "枠順確定・地方" },
+      { name: "ペリエール", frame: 7, number: 8, sexAge: "牡6", ranks: [2, 1, 4, 3, 2], starts: 5, classLevel: 1.65, timeIdx: 93, agariIdx: 91, distApt: 8, lastDist: 1700, restWeeks: 6, jockey: "佐々木大輔", weight: 57, trainer: "黒岩陽一", odds: 21.3, popular: 5, going: { firm: 90, soft: 88, heavy: 85 }, blood: { sire: "ヘニーヒューズ", dam: "ソフトライム", damsire: "フジキセキ" }, styles: ["sashi"], style: "sashi", past: { note: "近走:エルムS2着→前年エルムS1着など", recent: [2, 1, 4, 3, 2] }, manualRank: 5, manualScore: 88, manualComment: "枠順確定" },
+      { name: "リトルサムシング", frame: 7, number: 9, sexAge: "牡4", ranks: [11, 5, 3, 2, 4], starts: 5, classLevel: 1.08, timeIdx: 76, agariIdx: 74, distApt: 5, lastDist: 1400, restWeeks: 4, jockey: "菅原辰徳", weight: 57, trainer: "千葉幸喜", odds: 582.5, popular: 10, going: { firm: 73, soft: 71, heavy: 69 }, blood: { sire: "リアルスティール", dam: "フライングニンバス", damsire: "Awesome Again" }, styles: ["sashi"], style: "sashi", past: { note: "近走:長月特別11着・地方所属", recent: [11, 5, 3, 2, 4] }, manualRank: 10, manualScore: 62, manualComment: "枠順確定・地方" },
+      { name: "ヒロシクン", frame: 8, number: 10, sexAge: "セ7", ranks: [1, 3, 2, 4, 5], starts: 5, classLevel: 1.20, timeIdx: 80, agariIdx: 78, distApt: 6, lastDist: 1600, restWeeks: 3, jockey: "高松亮", weight: 57, trainer: "佐藤雅彦", odds: 108.7, popular: 8, going: { firm: 78, soft: 76, heavy: 74 }, blood: { sire: "ドレフォン", dam: "エスプリドパリ", damsire: "ハーツクライ" }, styles: ["senko"], style: "senko", past: { note: "近走:青藍賞1着・地元盛岡実績", recent: [1, 3, 2, 4, 5] }, manualRank: 8, manualScore: 72, manualComment: "枠順確定・地方" },
+      { name: "レーベンスティール", frame: 8, number: 11, sexAge: "牡6", ranks: [7, 1, 1, 3, 2], starts: 5, classLevel: 1.75, timeIdx: 94, agariIdx: 92, distApt: 7, lastDist: 1600, restWeeks: 16, jockey: "戸崎圭太", weight: 57, trainer: "田中博康", odds: 7.7, popular: 4, going: { firm: 85, soft: 80, heavy: 72 }, blood: { sire: "リアルスティール", dam: "—", damsire: "—" }, styles: ["sashi"], style: "sashi", past: { note: "近走:安田記念7着→中山記念1着・芝実績豊富・ダート初", recent: [7, 1, 1, 3, 2] }, manualRank: 4, manualScore: 86, manualComment: "枠順確定・ダート初挑戦" }
+    ]
+  },
+
 
 
   {
@@ -5523,9 +5557,20 @@ function historyRaceLabel(title, raceId) {
 
 
 // ========== お知らせ・更新履歴 ==========
-const NEWS_VERSION = "2026-10-11b";
+const NEWS_VERSION = "2026-10-12n";
 const NEWS_SEEN_KEY = "keiba_sim_news_seen";
 const NEWS_ITEMS = [
+  {
+    ver: "2026-10-12n",
+    date: "2026/10/12",
+    title: "マイルCS南部杯（Jpn1）を追加",
+    body: [
+      "盛岡ダート1600m・マイルチャンピオンシップ南部杯を登録",
+      "出走11頭・枠順確定済み（ウィルソンテソーロ・ルクソールカフェなど）",
+      "【レース映像】【まとめて予想】【AI予想】から選択可能"
+    ]
+  },
+
   {
     ver: "2026-10-11b",
     title: "【新機能】1着予想アンケート追加",
