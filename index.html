@@ -840,13 +840,100 @@
 
   .news-bar {
     display: flex; align-items: center; gap: 10px;
-    margin: 0 12px 8px; padding: 10px 14px;
+    margin: 8px 12px 6px; padding: 10px 14px;
     border-radius: 12px;
     background: linear-gradient(135deg, rgba(240,196,20,0.12), rgba(56,189,248,0.08));
     border: 1px solid rgba(240,196,20,0.35);
     cursor: pointer; user-select: none;
   }
   .news-bar:active { transform: scale(0.98); }
+
+  .poll-bar-wrap {
+    margin: 0 12px 8px !important;
+    position: relative !important;
+    z-index: 20 !important;
+    height: auto !important;
+    overflow: visible !important;
+    background: transparent !important;
+    grid-column: auto !important;
+  }
+  .poll-bar-wrap > .poll-bar {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 12px 14px !important;
+    border-radius: 12px !important;
+    background: linear-gradient(135deg, rgba(76,175,80,0.28), rgba(46,125,50,0.18)) !important;
+    border: 1px solid rgba(129,199,132,0.65) !important;
+    cursor: pointer !important;
+    user-select: none !important;
+    height: auto !important;
+    width: auto !important;
+    min-height: 48px !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  }
+  .poll-bar-wrap > .poll-bar:active { transform: scale(0.98); }
+  .poll-bar-icon { font-size: 1.15rem; }
+  .poll-bar-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+  .poll-bar-text strong { font-size: 0.95rem; color: #c8e6c9 !important; }
+  .poll-bar-sub { font-size: 0.8rem; color: var(--muted, #9e9e9e); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .poll-bar-chevron { font-size: 1.2rem; color: #a5d6a7 !important; transition: transform 0.2s; }
+  .poll-bar-wrap.open .poll-bar-chevron { transform: rotate(90deg); }
+  .poll-bar-panel {
+    margin-top: 6px; padding: 12px;
+    border-radius: 12px;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid rgba(129,199,132,0.25);
+    max-height: 55vh; overflow-y: auto;
+  }
+  .poll-bar-panel-body .poll-race-block { margin-bottom: 14px; }
+  .poll-bar-panel-body .poll-race-block:last-child { margin-bottom: 0; }
+  .poll-bar-panel-body h4 {
+    margin: 0 0 8px; font-size: 0.9rem; color: #c8e6c9;
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .poll-bar-panel-body .poll-race-meta { font-size: 0.75rem; color: var(--muted,#9e9e9e); font-weight: normal; }
+  .poll-bar-panel-body .poll-top {
+    font-size: 0.82rem; margin: 0 0 8px; padding: 6px 8px;
+    border-radius: 8px; background: rgba(129,199,132,0.12);
+  }
+  .poll-bar-panel-body .poll-row {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 6px; font-size: 0.8rem;
+  }
+  .poll-bar-panel-body .poll-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: 700; flex-shrink: 0;
+  }
+  .poll-bar-panel-body .poll-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .poll-bar-panel-body .poll-pct { width: 36px; text-align: right; font-variant-numeric: tabular-nums; color: #a5d6a7; }
+  .poll-bar-panel-body .poll-bar-mini {
+    flex: 1.2; height: 6px; border-radius: 3px; background: rgba(255,255,255,0.08); overflow: hidden;
+  }
+  .poll-bar-panel-body .poll-bar-mini > i {
+    display: block; height: 100%; border-radius: 3px;
+    background: linear-gradient(90deg, #66bb6a, #a5d6a7);
+  }
+  .poll-bar-panel-body .poll-empty { font-size: 0.8rem; color: var(--muted,#9e9e9e); padding: 4px 0; }
+
+  .poll-opt-bar-wrap {
+    grid-column: 1 / -1;
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: -2px;
+  }
+  .poll-opt-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #66bb6a, #ffd54f);
+    border-radius: 2px;
+    width: 0;
+    transition: width .5s ease;
+  }
+
+
   .news-bar-icon { font-size: 1.15rem; }
   .news-bar-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
   .news-bar-text strong { font-size: 0.95rem; color: var(--accent, #f0c414); }
@@ -2350,21 +2437,8 @@
 }
 .poll-name { font-size: 0.8rem; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .poll-meta { font-size: 0.72rem; color: #b0bec5; min-width: 52px; text-align: right; }
-.poll-bar-wrap {
-  grid-column: 1 / -1;
-  height: 4px;
-  background: rgba(255,255,255,0.08);
-  border-radius: 2px;
-  overflow: hidden;
-  margin-top: -2px;
-}
-.poll-bar {
-  height: 100%;
-  background: linear-gradient(90deg, #66bb6a, #ffd54f);
-  border-radius: 2px;
-  width: 0;
-  transition: width .5s ease;
-}
+/* moved to .poll-opt-bar-wrap / .lvup-bar-wrap */
+/* moved to .poll-opt-bar / .lvup-bar */
 .poll-foot {
   margin: 8px 0 0;
   font-size: 0.7rem;
@@ -2427,6 +2501,10 @@
 </header>
 
 
+
+
+
+
 <div class="news-bar" id="newsBarBtn" role="button" tabindex="0" title="更新履歴を表示">
   <span class="news-bar-icon">📢</span>
   <span class="news-bar-text">
@@ -2435,7 +2513,19 @@
   </span>
   <span class="news-bar-chevron">›</span>
 </div>
-
+<div class="poll-bar-wrap">
+  <div class="poll-bar" id="pollBarBtn" role="button" tabindex="0" title="1着予想アンケートの結果を表示">
+    <span class="poll-bar-icon">📊</span>
+    <span class="poll-bar-text">
+      <strong>1着予想アンケート</strong>
+      <span class="poll-bar-sub" id="pollBarSub">結果をいつでも確認</span>
+    </span>
+    <span class="poll-bar-chevron" id="pollBarChevron">›</span>
+  </div>
+  <div class="poll-bar-panel" id="pollBarPanel" hidden>
+    <div id="pollBarPanelBody" class="poll-bar-panel-body">読み込み中…</div>
+  </div>
+</div>
 <div class="tabs">
   <button class="tab active" data-tab="raceview">レース映像</button>
   <button class="tab" data-tab="predict">まとめて予想</button>
@@ -2449,6 +2539,9 @@
   <button class="tab" data-tab="zukan">競走馬名鑑</button>
   <button class="tab" data-tab="settings">設定</button>
   </div>
+
+
+
 
 <!-- ===== 予想 ===== -->
 <div id="panel-predict" class="panel">
@@ -6503,7 +6596,7 @@ function pollOptionHtml(raceId, h, counts, total, votedNum) {
   const numBg = frameColorClass(h.frame);
   const numColor = (h.frame === 1 || h.frame === 6) ? "#111" : "#fff";
   const bar = disabled || votedNum != null
-    ? `<div class="poll-bar-wrap"><div class="poll-bar" style="width:${pct}%"></div></div>`
+    ? `<div class="poll-opt-bar-wrap"><div class="poll-opt-bar" style="width:${pct}%"></div></div>`
     : "";
   const meta = votedNum != null ? `${pct}% (${c})` : "投票";
   return `<button type="button" class="poll-opt${voted ? " voted" : ""}" data-poll-race="${raceId}" data-poll-num="${h.number}" ${disabled ? "disabled" : ""}>
@@ -6525,36 +6618,70 @@ function pollSectionPlaceholder(raceId) {
   </div>`;
 }
 
-async function loadPollCounts(raceId) {
+/** アンケート集計キャッシュ（即時反映用） */
+const pollCountCache = {};
+
+function applyLocalVoteBoost(raceId, data) {
+  const counts = Object.assign({}, data.counts || {});
+  let total = data.total || 0;
+  const voted = getPollVote(raceId);
+  if (voted != null && (counts[voted] || 0) === 0) {
+    counts[voted] = (counts[voted] || 0) + 1;
+    total += 1;
+  }
+  return { counts, total, remote: !!data.remote };
+}
+
+async function loadPollCounts(raceId, opts) {
+  opts = opts || {};
   const cfg = getPollRaceConfig(raceId);
   if (!cfg) return { counts: {}, total: 0, remote: false };
+  // キャッシュ優先（投票直後の即時描画）
+  if (!opts.force && pollCountCache[raceId] && (Date.now() - (pollCountCache[raceId].ts || 0)) < 20000) {
+    return applyLocalVoteBoost(raceId, pollCountCache[raceId]);
+  }
+  if (opts.cacheOnly && pollCountCache[raceId]) {
+    return applyLocalVoteBoost(raceId, pollCountCache[raceId]);
+  }
   const counts = {};
   let total = 0;
   let remoteOk = true;
-  // parallel fetch
   await Promise.all(cfg.horses.map(async h => {
     const v = await pollGetRemote(raceId, h.number);
     counts[h.number] = v || 0;
     total += counts[h.number];
     if (v == null) remoteOk = false;
   }));
-  // local fallback boost: if user voted and remote is 0, show at least local
-  const voted = getPollVote(raceId);
-  if (voted != null && (counts[voted] || 0) === 0) {
-    counts[voted] = (counts[voted] || 0) + 1;
-    total += 1;
-  }
-  return { counts, total, remote: remoteOk };
+  pollCountCache[raceId] = { counts: Object.assign({}, counts), total, remote: remoteOk, ts: Date.now() };
+  return applyLocalVoteBoost(raceId, pollCountCache[raceId]);
 }
 
-async function renderPollBox(raceId) {
+function optimisticPollVote(raceId, num) {
+  setPollVote(raceId, num);
+  const base = pollCountCache[raceId] || { counts: {}, total: 0, remote: false, ts: Date.now() };
+  const counts = Object.assign({}, base.counts);
+  counts[num] = (counts[num] || 0) + 1;
+  const total = (base.total || 0) + 1;
+  pollCountCache[raceId] = { counts, total, remote: base.remote, ts: Date.now() };
+}
+
+async function renderPollBox(raceId, opts) {
+  opts = opts || {};
   const box = document.querySelector(`[data-poll-box="${raceId}"]`);
   const optsEl = document.querySelector(`[data-poll-opts="${raceId}"]`);
   const foot = document.querySelector(`[data-poll-foot="${raceId}"]`);
   const cfg = getPollRaceConfig(raceId);
   if (!box || !optsEl || !cfg) return;
   const votedNum = getPollVote(raceId);
-  const { counts, total, remote } = await loadPollCounts(raceId);
+  const loadOpts = opts.cacheOnly ? { cacheOnly: true } : (opts.force ? { force: true } : {});
+  // キャッシュがあれば待たない
+  let data;
+  if (pollCountCache[raceId] && !opts.force) {
+    data = applyLocalVoteBoost(raceId, pollCountCache[raceId]);
+  } else {
+    data = await loadPollCounts(raceId, loadOpts);
+  }
+  const { counts, total, remote } = data;
   optsEl.innerHTML = cfg.horses.map(h => pollOptionHtml(raceId, h, counts, total, votedNum)).join("");
   if (foot) {
     if (votedNum != null) {
@@ -6563,21 +6690,35 @@ async function renderPollBox(raceId) {
       foot.textContent = "匿名アンケートです。1人1票・回答後に全体の集計結果が表示されます。";
     }
   }
-  // bind votes
   optsEl.querySelectorAll(".poll-opt:not(:disabled)").forEach(btn => {
-    btn.addEventListener("click", async () => {
+    btn.addEventListener("click", () => {
       const num = Number(btn.getAttribute("data-poll-num"));
       if (!num || getPollVote(raceId) != null) return;
+      // 即時反映（ネットワーク待ちなし）
       btn.disabled = true;
-      setPollVote(raceId, num);
-      await pollHitRemote(raceId, num);
-      await renderPollBox(raceId);
+      optimisticPollVote(raceId, num);
+      renderPollBox(raceId, { cacheOnly: true });
+      try { refreshPollBarSummary(); } catch (e) {}
+      // サーバー送信は背面で
+      pollHitRemote(raceId, num).then(() => {
+        // 軽く再同期（失敗してもUIは維持）
+        loadPollCounts(raceId, { force: true }).then(() => {
+          renderPollBox(raceId, { cacheOnly: true });
+          try { refreshPollBarSummary(); } catch (e) {}
+        }).catch(() => {});
+      }).catch(() => {});
     });
   });
 }
 
 function mountPollsInNews() {
-  const ids = ["swan_s_20261012", "ireland_trophy_20261011", "saudi_arabia_rc_20261010"];
+  const ids = [
+    "fuji_s_20261017",
+    "shuka_sho_20261018",
+    "swan_s_20261012",
+    "ireland_trophy_20261011",
+    "saudi_arabia_rc_20261010"
+  ];
   ids.forEach(id => {
     if (document.querySelector(`[data-poll-box="${id}"]`)) {
       renderPollBox(id);
@@ -6585,8 +6726,108 @@ function mountPollsInNews() {
   });
 }
 
+/** 常時表示用アンケート対象レース */
+const ACTIVE_POLL_RACES = ["fuji_s_20261017", "shuka_sho_20261018"];
+
+async function refreshPollBarSummary() {
+  const sub = document.getElementById("pollBarSub");
+  if (!sub) return;
+  try {
+    const bits = [];
+    for (const rid of ACTIVE_POLL_RACES) {
+      const cfg = getPollRaceConfig(rid);
+      if (!cfg) continue;
+      const { counts, total } = await loadPollCounts(rid);
+      if (!total) {
+        bits.push((cfg.title || rid) + ": 投票受付中");
+        continue;
+      }
+      let topN = null, topC = -1;
+      Object.keys(counts).forEach(k => {
+        const c = counts[k] || 0;
+        if (c > topC) { topC = c; topN = Number(k); }
+      });
+      const h = cfg.horses.find(x => x.number === topN);
+      const pct = Math.round((topC / total) * 100);
+      const label = h ? (topN + "番" + h.name) : (topN + "番");
+      bits.push((cfg.title || "").replace(/富士ステークス/, "富士S").replace(/ステークス/, "S") + " 首位 " + label + " " + pct + "%");
+    }
+    sub.textContent = bits.length ? bits.join(" ／ ") : "結果をいつでも確認";
+  } catch (e) {
+    sub.textContent = "結果をいつでも確認";
+  }
+}
+
+async function renderPollBarPanel() {
+  const body = document.getElementById("pollBarPanelBody");
+  if (!body) return;
+  body.innerHTML = '<div class="poll-empty">読み込み中…</div>';
+  const parts = [];
+  for (const rid of ACTIVE_POLL_RACES) {
+    const cfg = getPollRaceConfig(rid);
+    if (!cfg) continue;
+    const { counts, total, remote } = await loadPollCounts(rid);
+    const voted = getPollVote(rid);
+    const ranked = cfg.horses.slice().sort((a, b) => (counts[b.number] || 0) - (counts[a.number] || 0));
+    let rows = "";
+    if (!total) {
+      rows = '<div class="poll-empty">まだ投票がありません。枠順確定のお知らせから投票できます。</div>';
+    } else {
+      rows = ranked.map(h => {
+        const c = counts[h.number] || 0;
+        const pct = total > 0 ? Math.round((c / total) * 100) : 0;
+        const bg = frameColorClass(h.frame);
+        const fg = (h.frame === 1 || h.frame === 6) ? "#111" : "#fff";
+        const you = voted === h.number ? ' style="outline:1px solid #81c784"' : "";
+        return `<div class="poll-row"${you}>
+          <span class="poll-num" style="background:${bg};color:${fg}">${h.number}</span>
+          <span class="poll-name">${h.name}${voted === h.number ? "（投票済）" : ""}</span>
+          <span class="poll-bar-mini"><i style="width:${pct}%"></i></span>
+          <span class="poll-pct">${pct}%</span>
+        </div>`;
+      }).join("");
+    }
+    const top = ranked[0];
+    const topC = top ? (counts[top.number] || 0) : 0;
+    const topPct = total ? Math.round((topC / total) * 100) : 0;
+    const topLine = total && top
+      ? `<div class="poll-top">現在首位: <strong>${top.number}番 ${top.name}</strong>（${topPct}%・${total}票中）${remote ? "" : " ※オフライン集計"}</div>`
+      : "";
+    parts.push(`<div class="poll-race-block">
+      <h4>${cfg.title} <span class="poll-race-meta">${total || 0}票</span></h4>
+      ${topLine}
+      ${rows}
+    </div>`);
+  }
+  body.innerHTML = parts.length ? parts.join("") : '<div class="poll-empty">対象レースがありません</div>';
+}
+
+function setupPollBar() {
+  const btn = document.getElementById("pollBarBtn");
+  const wrap = document.querySelector(".poll-bar-wrap");
+  const panel = document.getElementById("pollBarPanel");
+  if (!btn || !wrap || !panel) return;
+  const toggle = async () => {
+    const open = wrap.classList.toggle("open");
+    if (open) {
+      panel.hidden = false;
+      await renderPollBarPanel();
+    } else {
+      panel.hidden = true;
+    }
+  };
+  btn.addEventListener("click", toggle);
+  btn.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+  });
+  refreshPollBarSummary();
+}
+
+
 
 function frameUpdateHtml() {
+  const pollFuji = (typeof pollSectionPlaceholder === "function") ? pollSectionPlaceholder("fuji_s_20261017") : "";
+  const pollShuka = (typeof pollSectionPlaceholder === "function") ? pollSectionPlaceholder("shuka_sho_20261018") : "";
   return `<div class="frame-update-hero">
     <div class="frame-hero-title">
       <span class="frame-hero-spark">⚡</span>
@@ -6594,7 +6835,7 @@ function frameUpdateHtml() {
       <span class="frame-hero-spark">⚡</span>
     </div>
     <div class="frame-update-box" style="flex-wrap:wrap;justify-content:center;align-items:stretch">
-      <div class="frame-card frame-ok frame-card-anim" style="border:2px solid #81c784;box-shadow:0 0 18px rgba(76,175,80,0.45);width:min(100%,320px);margin:4px">
+      <div class="frame-card frame-ok frame-card-anim" style="border:2px solid #81c784;box-shadow:0 0 18px rgba(76,175,80,0.45);width:min(100%,340px);margin:4px">
         <div class="frame-card-badge pulse-ok">G2</div>
         <div class="frame-card-title">富士ステークス</div>
         <div class="frame-card-sub">10/17(土) 東京・芝1600m</div>
@@ -6605,8 +6846,9 @@ function frameUpdateHtml() {
           <li>⑩アンパドゥ　⑭エコロアルバ</li>
           <li class="frame-card-more">全14頭・枠順反映済み</li>
         </ul>
+        ${pollFuji}
       </div>
-      <div class="frame-card frame-ok frame-card-anim delay" style="border:2px solid #81c784;box-shadow:0 0 18px rgba(76,175,80,0.45);width:min(100%,320px);margin:4px">
+      <div class="frame-card frame-ok frame-card-anim delay" style="border:2px solid #81c784;box-shadow:0 0 18px rgba(76,175,80,0.45);width:min(100%,340px);margin:4px">
         <div class="frame-card-badge pulse-ok">G1</div>
         <div class="frame-card-title">秋華賞</div>
         <div class="frame-card-sub">10/18(日) 京都・芝2000m</div>
@@ -6617,6 +6859,7 @@ function frameUpdateHtml() {
           <li>⑬ドリームコア　⑭サムシングスイート</li>
           <li class="frame-card-more">全17頭・枠順反映済み</li>
         </ul>
+        ${pollShuka}
       </div>
     </div>
     <p class="frame-update-foot" style="text-align:center;margin-top:10px;font-weight:700;color:#c8e6c9">
@@ -7522,7 +7765,7 @@ const RACE_PACE_SCRIPTS = {
     c3:    [10, 1, 2, 8, 5, 9, 11, 12, 15, 16, 13, 3, 6, 7, 14, 17, 4],
     // 4角: ⑩①②⑧前目、中団⑬⑭⑮が進出、④は後方から
     c4:    [10, 1, 2, 8, 11, 5, 9, 12, 13, 15, 16, 14, 3, 6, 7, 17, 4],
-    note: "展開予想図を反映。逃げは⑩ナイスプレーアスク。先行に①ギャラボーグ・②テイエムアイラン・⑤タイセイボーグ・⑧モンローウォーク・⑨スウィートハピネス・⑪ガーネットフレア・⑫カナルサンマルタン・⑮フェスティバルヒル・⑯ハヤブササキチャン。中団に③マスターソアラ・⑥ラベルセーヌ・⑦バースデイフライト・⑬ドリームコア・⑭サムシングスイート・⑰ロザーンジュ。後方は④エンネ。"
+    note: "展開予想図＋過去10年枠傾向を反映。逃げ⑩。先行①②⑤⑧⑨⑪⑫⑮⑯、中団③⑥⑦⑬⑭⑰、後方④。枠データでは4枠(⑦⑧)が最良、3枠・6枠も好成績。1枠・8枠は連対ほぼなく割り引き。"
   },
 };
 
@@ -7673,10 +7916,34 @@ function generateAiRaceInsight(race, styles, paceLabel) {
     ? "ダート戦らしく、パワーとスタミナ、前半の位置取りが鍵になる。"
     : "芝戦では機敏な加速と直線の末脚が決め手になりやすい。";
 
+  // 秋華賞: 過去10年枠順傾向の見解
+  let frameNote = "";
+  if (race && (race.id === "shuka_sho_20261018" || race.raceName === "秋華賞")) {
+    const byFr = {};
+    horses.forEach(h => {
+      const fr = Number(h.frame) || 0;
+      if (!byFr[fr]) byFr[fr] = [];
+      byFr[fr].push(h.number);
+    });
+    const good = [];
+    const bad = [];
+    // 4枠・3枠・6枠を好枠、1枠・8枠を割り引き
+    [3, 4, 6].forEach(fr => {
+      if (byFr[fr] && byFr[fr].length) good.push(fr + "枠(" + byFr[fr].map(n => n + "番").join("・") + ")");
+    });
+    [1, 8].forEach(fr => {
+      if (byFr[fr] && byFr[fr].length) bad.push(fr + "枠(" + byFr[fr].map(n => n + "番").join("・") + ")");
+    });
+    frameNote = "過去10年の枠傾向では4枠が連対率30%・複勝率35%と突出し、3枠・6枠も勝ち星が多い一方、1枠・8枠は連対がほぼない。";
+    if (good.length) frameNote += "今年の好枠候補は" + good.join("、") + "。";
+    if (bad.length) frameNote += "一方" + bad.join("、") + "はデータ上割り引きたい。";
+  }
+
   const text = `【${name}】${course}${surface}${dist}m（${grade || "重賞"}）の一戦。`
     + paceView
     + `逃げ想定は${nige.length ? nige.map(n => n + "番").join("・") : "手薄"}、先行は${senko.length ? senko.slice(0, 5).map(n => n + "番").join("・") : "少なめ"}、差し・追込は${(sashi.length + oikomi.length)}頭前後と見る。`
     + surfaceNote
+    + frameNote
     + classNote
     + (leadNames.length ? `前残しなら${leadNames.join("、")}が中心。` : "")
     + (closerNames.length ? `流れが速くなった場合は${closerNames.join("、")}の末脚に注目。` : "")
@@ -14056,6 +14323,8 @@ if (!CanvasRenderingContext2D.prototype.roundRect) {
     this.closePath();
   };
 }
+
+try { if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function(){ try{setupPollBar();}catch(e){} }); else { try{setupPollBar();}catch(e){} } } catch (e) {}
 </script>
 </body>
 </html>
