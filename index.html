@@ -2492,6 +2492,21 @@
 .frame-card-poll .poll-name { font-size: 0.74rem; }
 .frame-card-poll .poll-foot { font-size: 0.65rem; margin-top: 6px; }
 
+
+  .poll-bar-panel-body .poll-row-clickable {
+    cursor: pointer;
+    border-radius: 8px;
+    padding: 4px 4px;
+    transition: background 0.15s;
+  }
+  .poll-bar-panel-body .poll-row-clickable:active {
+    background: rgba(129,199,132,0.2);
+  }
+  .poll-bar-panel-body .poll-row-voted .poll-name,
+  .poll-opt.voted .poll-name {
+    color: #ffeb3b !important;
+    font-weight: 700 !important;
+  }
 </style>
 </head>
 <body>
@@ -6533,7 +6548,11 @@ function getPollVotes() {
 }
 function setPollVote(raceId, number) {
   const m = getPollVotes();
-  m[raceId] = Number(number);
+  if (number == null || number === false) {
+    delete m[raceId];
+  } else {
+    m[raceId] = Number(number);
+  }
   try { localStorage.setItem(POLL_VOTE_KEY, JSON.stringify(m)); } catch (e) {}
 }
 function getPollVote(raceId) {
@@ -6592,16 +6611,18 @@ function pollOptionHtml(raceId, h, counts, total, votedNum) {
   const c = counts[h.number] || 0;
   const pct = total > 0 ? Math.round((c / total) * 100) : 0;
   const voted = votedNum === h.number;
-  const disabled = votedNum != null;
+  // 投票済みでも自分の馬は再タップで解除可。他馬のみ無効
+  const disabled = votedNum != null && !voted;
   const numBg = frameColorClass(h.frame);
   const numColor = (h.frame === 1 || h.frame === 6) ? "#111" : "#fff";
   const bar = disabled || votedNum != null
     ? `<div class="poll-opt-bar-wrap"><div class="poll-opt-bar" style="width:${pct}%"></div></div>`
     : "";
   const meta = votedNum != null ? `${pct}% (${c})` : "投票";
+  const nameStyle = voted ? ' style="color:#ffeb3b;font-weight:700"' : "";
   return `<button type="button" class="poll-opt${voted ? " voted" : ""}" data-poll-race="${raceId}" data-poll-num="${h.number}" ${disabled ? "disabled" : ""}>
     <span class="poll-num" style="background:${numBg};color:${numColor}">${h.number}</span>
-    <span class="poll-name">${h.name}</span>
+    <span class="poll-name"${nameStyle}>${h.name}${voted ? " ✓" : ""}</span>
     <span class="poll-meta">${meta}</span>
     ${bar}
   </button>`;
@@ -6620,6 +6641,28 @@ function pollSectionPlaceholder(raceId) {
 
 /** アンケート集計キャッシュ（即時反映用） */
 const pollCountCache = {};
+const POLL_COUNT_LS_KEY = "keiba_sim_poll_counts_v1";
+const POLL_CACHE_TTL = 5 * 60 * 1000;
+
+(function hydratePollCacheFromLS() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(POLL_COUNT_LS_KEY) || "{}");
+    Object.keys(raw || {}).forEach(rid => {
+      const d = raw[rid];
+      if (d && d.counts && (Date.now() - (d.ts || 0)) < POLL_CACHE_TTL * 3) {
+        pollCountCache[rid] = d;
+      }
+    });
+  } catch (e) {}
+})();
+
+function persistPollCache(raceId) {
+  try {
+    const all = JSON.parse(localStorage.getItem(POLL_COUNT_LS_KEY) || "{}");
+    if (pollCountCache[raceId]) all[raceId] = pollCountCache[raceId];
+    localStorage.setItem(POLL_COUNT_LS_KEY, JSON.stringify(all));
+  } catch (e) {}
+}
 
 function applyLocalVoteBoost(raceId, data) {
   const counts = Object.assign({}, data.counts || {});
@@ -6632,37 +6675,75 @@ function applyLocalVoteBoost(raceId, data) {
   return { counts, total, remote: !!data.remote };
 }
 
+function getCachedPollCounts(raceId) {
+  if (!pollCountCache[raceId]) return null;
+  return applyLocalVoteBoost(raceId, pollCountCache[raceId]);
+}
+
 async function loadPollCounts(raceId, opts) {
   opts = opts || {};
   const cfg = getPollRaceConfig(raceId);
   if (!cfg) return { counts: {}, total: 0, remote: false };
-  // キャッシュ優先（投票直後の即時描画）
-  if (!opts.force && pollCountCache[raceId] && (Date.now() - (pollCountCache[raceId].ts || 0)) < 20000) {
+  const age = pollCountCache[raceId] ? (Date.now() - (pollCountCache[raceId].ts || 0)) : Infinity;
+  if (!opts.force && pollCountCache[raceId] && age < POLL_CACHE_TTL) {
     return applyLocalVoteBoost(raceId, pollCountCache[raceId]);
   }
-  if (opts.cacheOnly && pollCountCache[raceId]) {
+  if ((opts.cacheOnly || !opts.force) && pollCountCache[raceId]) {
     return applyLocalVoteBoost(raceId, pollCountCache[raceId]);
   }
   const counts = {};
   let total = 0;
   let remoteOk = true;
   await Promise.all(cfg.horses.map(async h => {
-    const v = await pollGetRemote(raceId, h.number);
-    counts[h.number] = v || 0;
-    total += counts[h.number];
-    if (v == null) remoteOk = false;
+    try {
+      const v = await Promise.race([
+        pollGetRemote(raceId, h.number),
+        new Promise(res => setTimeout(() => res(null), 2200))
+      ]);
+      counts[h.number] = (v == null ? 0 : v) || 0;
+      total += counts[h.number];
+      if (v == null) remoteOk = false;
+    } catch (e) {
+      counts[h.number] = 0;
+      remoteOk = false;
+    }
   }));
   pollCountCache[raceId] = { counts: Object.assign({}, counts), total, remote: remoteOk, ts: Date.now() };
+  persistPollCache(raceId);
   return applyLocalVoteBoost(raceId, pollCountCache[raceId]);
 }
 
+function prefetchPollCounts(raceIds) {
+  const ids = raceIds || ACTIVE_POLL_RACES || [];
+  ids.forEach(rid => {
+    const age = pollCountCache[rid] ? (Date.now() - (pollCountCache[rid].ts || 0)) : Infinity;
+    if (age < POLL_CACHE_TTL) return;
+    loadPollCounts(rid, { force: true }).then(() => {
+      try { refreshPollBarSummary(); } catch (e) {}
+    }).catch(() => {});
+  });
+}
+
 function optimisticPollVote(raceId, num) {
-  setPollVote(raceId, num);
+  const prev = getPollVote(raceId);
   const base = pollCountCache[raceId] || { counts: {}, total: 0, remote: false, ts: Date.now() };
   const counts = Object.assign({}, base.counts);
+  let total = base.total || 0;
+  if (prev === num) {
+    setPollVote(raceId, null);
+    counts[num] = Math.max(0, (counts[num] || 0) - 1);
+    total = Math.max(0, total - 1);
+    pollCountCache[raceId] = { counts, total, remote: base.remote, ts: Date.now() };
+    persistPollCache(raceId);
+    return "unvote";
+  }
+  if (prev != null && prev !== num) return "blocked";
+  setPollVote(raceId, num);
   counts[num] = (counts[num] || 0) + 1;
-  const total = (base.total || 0) + 1;
+  total += 1;
   pollCountCache[raceId] = { counts, total, remote: base.remote, ts: Date.now() };
+  persistPollCache(raceId);
+  return "vote";
 }
 
 async function renderPollBox(raceId, opts) {
@@ -6673,13 +6754,13 @@ async function renderPollBox(raceId, opts) {
   const cfg = getPollRaceConfig(raceId);
   if (!box || !optsEl || !cfg) return;
   const votedNum = getPollVote(raceId);
-  const loadOpts = opts.cacheOnly ? { cacheOnly: true } : (opts.force ? { force: true } : {});
-  // キャッシュがあれば待たない
   let data;
   if (pollCountCache[raceId] && !opts.force) {
     data = applyLocalVoteBoost(raceId, pollCountCache[raceId]);
+  } else if (opts.cacheOnly && pollCountCache[raceId]) {
+    data = applyLocalVoteBoost(raceId, pollCountCache[raceId]);
   } else {
-    data = await loadPollCounts(raceId, loadOpts);
+    data = await loadPollCounts(raceId, opts.force ? { force: true } : {});
   }
   const { counts, total, remote } = data;
   optsEl.innerHTML = cfg.horses.map(h => pollOptionHtml(raceId, h, counts, total, votedNum)).join("");
@@ -6687,46 +6768,31 @@ async function renderPollBox(raceId, opts) {
     if (votedNum != null) {
       foot.innerHTML = `あなたの投票: <strong>${votedNum}番</strong>　｜　<span class="poll-total">合計 ${total} 票</span>${remote ? "" : "（オフライン集計）"}`;
     } else {
-      foot.textContent = "匿名アンケートです。1人1票・回答後に全体の集計結果が表示されます。";
+      foot.textContent = "匿名アンケートです。1人1票。同じ馬を再タップすると投票を解除できます。";
     }
   }
   optsEl.querySelectorAll(".poll-opt:not(:disabled)").forEach(btn => {
     btn.addEventListener("click", () => {
       const num = Number(btn.getAttribute("data-poll-num"));
-      if (!num || getPollVote(raceId) != null) return;
-      // 即時反映（ネットワーク待ちなし）
-      btn.disabled = true;
-      optimisticPollVote(raceId, num);
+      if (!num) return;
+      const prev = getPollVote(raceId);
+      if (prev != null && prev !== num) return;
+      const action = optimisticPollVote(raceId, num);
+      if (action === "blocked") return;
       renderPollBox(raceId, { cacheOnly: true });
       try { refreshPollBarSummary(); } catch (e) {}
-      // サーバー送信は背面で
-      pollHitRemote(raceId, num).then(() => {
-        // 軽く再同期（失敗してもUIは維持）
-        loadPollCounts(raceId, { force: true }).then(() => {
-          renderPollBox(raceId, { cacheOnly: true });
-          try { refreshPollBarSummary(); } catch (e) {}
+      if (action === "vote") {
+        pollHitRemote(raceId, num).then(() => {
+          loadPollCounts(raceId, { force: true }).then(() => {
+            renderPollBox(raceId, { cacheOnly: true });
+            try { refreshPollBarSummary(); } catch (e) {}
+          }).catch(() => {});
         }).catch(() => {});
-      }).catch(() => {});
+      }
     });
   });
 }
 
-function mountPollsInNews() {
-  const ids = [
-    "fuji_s_20261017",
-    "shuka_sho_20261018",
-    "swan_s_20261012",
-    "ireland_trophy_20261011",
-    "saudi_arabia_rc_20261010"
-  ];
-  ids.forEach(id => {
-    if (document.querySelector(`[data-poll-box="${id}"]`)) {
-      renderPollBox(id);
-    }
-  });
-}
-
-/** 常時表示用アンケート対象レース */
 const ACTIVE_POLL_RACES = ["fuji_s_20261017", "shuka_sho_20261018"];
 
 async function refreshPollBarSummary() {
@@ -6737,7 +6803,11 @@ async function refreshPollBarSummary() {
     for (const rid of ACTIVE_POLL_RACES) {
       const cfg = getPollRaceConfig(rid);
       if (!cfg) continue;
-      const { counts, total } = await loadPollCounts(rid);
+      // キャッシュ優先（ネットワーク待ちなし）
+      let data = getCachedPollCounts(rid);
+      if (!data) data = await loadPollCounts(rid, { cacheOnly: true });
+      if (!data) data = { counts: {}, total: 0 };
+      const { counts, total } = data;
       if (!total) {
         bits.push((cfg.title || rid) + ": 投票受付中");
         continue;
@@ -6758,48 +6828,108 @@ async function refreshPollBarSummary() {
   }
 }
 
+function buildPollBarRaceHtml(rid, data) {
+  const cfg = getPollRaceConfig(rid);
+  if (!cfg || !data) return "";
+  const { counts, total, remote } = data;
+  const voted = getPollVote(rid);
+  const ranked = cfg.horses.slice().sort((a, b) => {
+    const d = (counts[b.number] || 0) - (counts[a.number] || 0);
+    return d !== 0 ? d : (a.number || 0) - (b.number || 0);
+  });
+  const rows = ranked.map(h => {
+    const c = counts[h.number] || 0;
+    const pct = total > 0 ? Math.round((c / total) * 100) : 0;
+    const bg = frameColorClass(h.frame);
+    const fg = (h.frame === 1 || h.frame === 6) ? "#111" : "#fff";
+    const isYou = voted === h.number;
+    const allowTap = voted == null || isYou;
+    const clickable = allowTap
+      ? ` role="button" tabindex="0" data-poll-vote-race="${rid}" data-poll-vote-num="${h.number}" class="poll-row poll-row-clickable${isYou ? " poll-row-voted" : ""}"`
+      : ` class="poll-row"`;
+    const youMark = isYou ? " ✓ 投票済（再タップで解除）" : "";
+    const nameColor = isYou ? "#ffeb3b" : "inherit";
+    const nameWeight = isYou ? "700" : "normal";
+    return `<div${clickable}${isYou ? ' style="outline:1px solid rgba(255,235,59,0.5)"' : ""}>
+        <span class="poll-num" style="background:${bg};color:${fg}">${h.number}</span>
+        <span class="poll-name" style="color:${nameColor};font-weight:${nameWeight}">${h.name}${youMark}</span>
+        <span class="poll-bar-mini"><i style="width:${pct}%"></i></span>
+        <span class="poll-pct">${total ? pct + "%" : "—"}</span>
+      </div>`;
+  }).join("");
+  const top = ranked[0];
+  const topC = top ? (counts[top.number] || 0) : 0;
+  const topPct = total ? Math.round((topC / total) * 100) : 0;
+  const topLine = total && top
+    ? `<div class="poll-top">現在首位: <strong>${top.number}番 ${top.name}</strong>（${topPct}%・${total}票中）${remote ? "" : " ※オフライン集計"}</div>`
+    : `<div class="poll-top">${voted == null ? "馬をタップして1着予想に投票（匿名）。同じ馬を再タップで解除できます。" : "投票済みです。投票した馬を再タップすると解除できます。"}</div>`;
+  return `<div class="poll-race-block" data-poll-race-block="${rid}">
+    <h4>${cfg.title} <span class="poll-race-meta">${total || 0}票</span></h4>
+    ${topLine}
+    ${rows}
+  </div>`;
+}
+
+function bindPollBarVotes(body) {
+  if (!body) return;
+  body.querySelectorAll("[data-poll-vote-race]").forEach(el => {
+    const vote = () => {
+      const rid = el.getAttribute("data-poll-vote-race");
+      const num = Number(el.getAttribute("data-poll-vote-num"));
+      if (!rid || !num) return;
+      const prev = getPollVote(rid);
+      if (prev != null && prev !== num) return;
+      const action = optimisticPollVote(rid, num);
+      if (action === "blocked") return;
+      renderPollBarPanel();
+      try { refreshPollBarSummary(); } catch (e) {}
+      try { renderPollBox(rid, { cacheOnly: true }); } catch (e) {}
+      if (action === "vote") {
+        pollHitRemote(rid, num).then(() => {
+          loadPollCounts(rid, { force: true }).then(() => {
+            renderPollBarPanel();
+            try { refreshPollBarSummary(); } catch (e) {}
+          }).catch(() => {});
+        }).catch(() => {});
+      }
+    };
+    el.addEventListener("click", vote);
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); vote(); }
+    });
+  });
+}
+
 async function renderPollBarPanel() {
   const body = document.getElementById("pollBarPanelBody");
   if (!body) return;
-  body.innerHTML = '<div class="poll-empty">読み込み中…</div>';
-  const parts = [];
-  for (const rid of ACTIVE_POLL_RACES) {
-    const cfg = getPollRaceConfig(rid);
-    if (!cfg) continue;
-    const { counts, total, remote } = await loadPollCounts(rid);
-    const voted = getPollVote(rid);
-    const ranked = cfg.horses.slice().sort((a, b) => (counts[b.number] || 0) - (counts[a.number] || 0));
-    let rows = "";
-    if (!total) {
-      rows = '<div class="poll-empty">まだ投票がありません。枠順確定のお知らせから投票できます。</div>';
-    } else {
-      rows = ranked.map(h => {
-        const c = counts[h.number] || 0;
-        const pct = total > 0 ? Math.round((c / total) * 100) : 0;
-        const bg = frameColorClass(h.frame);
-        const fg = (h.frame === 1 || h.frame === 6) ? "#111" : "#fff";
-        const you = voted === h.number ? ' style="outline:1px solid #81c784"' : "";
-        return `<div class="poll-row"${you}>
-          <span class="poll-num" style="background:${bg};color:${fg}">${h.number}</span>
-          <span class="poll-name">${h.name}${voted === h.number ? "（投票済）" : ""}</span>
-          <span class="poll-bar-mini"><i style="width:${pct}%"></i></span>
-          <span class="poll-pct">${pct}%</span>
-        </div>`;
-      }).join("");
-    }
-    const top = ranked[0];
-    const topC = top ? (counts[top.number] || 0) : 0;
-    const topPct = total ? Math.round((topC / total) * 100) : 0;
-    const topLine = total && top
-      ? `<div class="poll-top">現在首位: <strong>${top.number}番 ${top.name}</strong>（${topPct}%・${total}票中）${remote ? "" : " ※オフライン集計"}</div>`
-      : "";
-    parts.push(`<div class="poll-race-block">
-      <h4>${cfg.title} <span class="poll-race-meta">${total || 0}票</span></h4>
-      ${topLine}
-      ${rows}
-    </div>`);
+  const races = ACTIVE_POLL_RACES || [];
+  const cachedParts = races.map(rid => {
+    const d = getCachedPollCounts(rid);
+    return d ? buildPollBarRaceHtml(rid, d) : "";
+  }).filter(Boolean);
+  if (cachedParts.length) {
+    body.innerHTML = cachedParts.join("");
+    bindPollBarVotes(body);
+  } else {
+    body.innerHTML = '<div class="poll-empty">読み込み中…</div>';
   }
-  body.innerHTML = parts.length ? parts.join("") : '<div class="poll-empty">対象レースがありません</div>';
+  const parts = await Promise.all(races.map(async rid => {
+    if (!getPollRaceConfig(rid)) return "";
+    const age = pollCountCache[rid] ? (Date.now() - (pollCountCache[rid].ts || 0)) : Infinity;
+    let data = getCachedPollCounts(rid);
+    if (!data || age > POLL_CACHE_TTL) {
+      data = await loadPollCounts(rid, { force: true });
+    }
+    return buildPollBarRaceHtml(rid, data);
+  }));
+  const ordered = parts.filter(Boolean);
+  if (ordered.length) {
+    body.innerHTML = ordered.join("");
+    bindPollBarVotes(body);
+  } else if (!cachedParts.length) {
+    body.innerHTML = '<div class="poll-empty">対象レースがありません</div>';
+  }
 }
 
 function setupPollBar() {
@@ -6811,7 +6941,8 @@ function setupPollBar() {
     const open = wrap.classList.toggle("open");
     if (open) {
       panel.hidden = false;
-      await renderPollBarPanel();
+      // キャッシュ即時表示（待ちなし）
+      renderPollBarPanel();
     } else {
       panel.hidden = true;
     }
@@ -6821,6 +6952,10 @@ function setupPollBar() {
     if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
   });
   refreshPollBarSummary();
+  // 起動直後に裏で先読み
+  setTimeout(() => {
+    try { prefetchPollCounts(ACTIVE_POLL_RACES); } catch (e) {}
+  }, 300);
 }
 
 
