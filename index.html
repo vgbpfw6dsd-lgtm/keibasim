@@ -6200,30 +6200,76 @@ function pollHorseKey(raceId, number) {
   return `${raceId}_n${number}`;
 }
 
-async function pollHitRemote(raceId, number) {
-  const key = pollHorseKey(raceId, number);
+async function pollAbacusRead(path) {
+  const direct = "https://abacus.jasoncameron.dev/" + path;
+  // 1) 直接（CORS対応時）
   try {
-    const url = `https://abacus.jasoncameron.dev/hit/${POLL_NS}/${encodeURIComponent(key)}`;
-    const r = await fetch(url, { cache: "no-store" });
-    if (!r.ok) throw new Error("hit fail");
+    const r = await Promise.race([
+      fetch(direct, { cache: "no-store" }),
+      new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 2800))
+    ]);
+    if (r && r.ok) {
+      const j = await r.json();
+      if (typeof j.value === "number") return j.value;
+      if (typeof j.count === "number") return j.count;
+      return 0;
+    }
+    if (r && r.status === 404) return 0;
+  } catch (e) { /* CORS / network */ }
+  // 2) CORSプロキシ経由
+  try {
+    const proxy = "https://api.allorigins.win/get?url=" + encodeURIComponent(direct);
+    const r = await Promise.race([
+      fetch(proxy, { cache: "no-store" }),
+      new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 9000))
+    ]);
+    if (!r || !r.ok) return null;
     const j = await r.json();
-    return typeof j.value === "number" ? j.value : (typeof j.count === "number" ? j.count : 1);
+    const code = j && j.status && j.status.http_code;
+    if (code === 404) return 0;
+    let contents = j && j.contents;
+    if (typeof contents === "string") {
+      try { contents = JSON.parse(contents); } catch (e2) { contents = null; }
+    }
+    if (contents && typeof contents.value === "number") return contents.value;
+    if (contents && typeof contents.count === "number") return contents.count;
+    return 0;
   } catch (e) {
     return null;
   }
 }
 
+async function pollHitRemote(raceId, number) {
+  const key = pollHorseKey(raceId, number);
+  const path = "hit/" + POLL_NS + "/" + encodeURIComponent(key);
+  const direct = "https://abacus.jasoncameron.dev/" + path;
+  // 直接JSON取得を試行
+  try {
+    const r = await Promise.race([
+      fetch(direct, { cache: "no-store" }),
+      new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 2800))
+    ]);
+    if (r && r.ok) {
+      const j = await r.json();
+      if (typeof j.value === "number") return j.value;
+      if (typeof j.count === "number") return j.count;
+      return 1;
+    }
+  } catch (e) { /* CORS */ }
+  // no-cors で送信（サーバー側は加算される）
+  try {
+    await fetch(direct, { mode: "no-cors", cache: "no-store" });
+  } catch (e2) {}
+  // 反映待ち後に GET
+  await new Promise(res => setTimeout(res, 400));
+  const after = await pollGetRemote(raceId, number);
+  return after == null ? null : after;
+}
+
 async function pollGetRemote(raceId, number) {
   const key = pollHorseKey(raceId, number);
-  try {
-    const url = `https://abacus.jasoncameron.dev/get/${POLL_NS}/${encodeURIComponent(key)}`;
-    const r = await fetch(url, { cache: "no-store" });
-    if (!r.ok) return 0;
-    const j = await r.json();
-    return typeof j.value === "number" ? j.value : (typeof j.count === "number" ? j.count : 0);
-  } catch (e) {
-    return 0;
-  }
+  const path = "get/" + POLL_NS + "/" + encodeURIComponent(key);
+  return pollAbacusRead(path);
 }
 
 function getPollRaceConfig(raceId) {
@@ -6256,9 +6302,10 @@ function pollOptionHtml(raceId, h, counts, total, votedNum) {
     : "";
   const meta = votedNum != null ? `${pct}% (${c})` : "投票";
   const nameStyle = voted ? ' style="color:#ffeb3b;font-weight:700"' : "";
-  return `<button type="button" class="poll-opt${voted ? " voted" : ""}" data-poll-race="${raceId}" data-poll-num="${h.number}" ${disabled ? "disabled" : ""}>
+  const voteBadge = voted ? '<span class="poll-you-badge">投票済</span>' : "";
+  return `<button type="button" class="poll-opt${voted ? " voted" : ""}" data-poll-race="${raceId}" data-poll-num="${h.number}" ${disabled ? "disabled" : ""} title="${voted ? "再タップで解除" : "投票"}">
     <span class="poll-num" style="background:${numBg};color:${numColor}">${h.number}</span>
-    <span class="poll-name"${nameStyle}>${h.name}${voted ? " ✓" : ""}</span>
+    <span class="poll-name"${nameStyle}>${h.name}${voteBadge}</span>
     <span class="poll-meta">${meta}</span>
     ${bar}
   </button>`;
@@ -6320,33 +6367,50 @@ async function loadPollCounts(raceId, opts) {
   opts = opts || {};
   const cfg = getPollRaceConfig(raceId);
   if (!cfg) return { counts: {}, total: 0, remote: false };
-  const age = pollCountCache[raceId] ? (Date.now() - (pollCountCache[raceId].ts || 0)) : Infinity;
-  if (!opts.force && pollCountCache[raceId] && age < POLL_CACHE_TTL) {
-    return applyLocalVoteBoost(raceId, pollCountCache[raceId]);
+  const prev = pollCountCache[raceId] || null;
+  const age = prev ? (Date.now() - (prev.ts || 0)) : Infinity;
+  if (!opts.force && prev && age < POLL_CACHE_TTL && (prev.total > 0 || prev.remote)) {
+    return applyLocalVoteBoost(raceId, prev);
   }
-  if ((opts.cacheOnly || !opts.force) && pollCountCache[raceId]) {
-    return applyLocalVoteBoost(raceId, pollCountCache[raceId]);
+  if (opts.cacheOnly && prev) {
+    return applyLocalVoteBoost(raceId, prev);
+  }
+  if ((opts.cacheOnly || !opts.force) && prev && prev.total > 0) {
+    return applyLocalVoteBoost(raceId, prev);
   }
   const counts = {};
   let total = 0;
   let remoteOk = true;
+  let anyRemote = false;
   await Promise.all(cfg.horses.map(async h => {
     try {
-      const v = await Promise.race([
-        pollGetRemote(raceId, h.number),
-        new Promise(res => setTimeout(() => res(null), 2200))
-      ]);
-      counts[h.number] = (v == null ? 0 : v) || 0;
-      total += counts[h.number];
-      if (v == null) remoteOk = false;
+      const v = await pollGetRemote(raceId, h.number);
+      if (v == null) {
+        // 失敗時は前回キャッシュを維持
+        const fallback = prev && prev.counts ? (prev.counts[h.number] || 0) : 0;
+        counts[h.number] = fallback;
+        remoteOk = false;
+      } else {
+        counts[h.number] = v || 0;
+        anyRemote = true;
+      }
+      total += counts[h.number] || 0;
     } catch (e) {
-      counts[h.number] = 0;
+      const fallback = prev && prev.counts ? (prev.counts[h.number] || 0) : 0;
+      counts[h.number] = fallback;
+      total += fallback;
       remoteOk = false;
     }
   }));
-  pollCountCache[raceId] = { counts: Object.assign({}, counts), total, remote: remoteOk, ts: Date.now() };
-  persistPollCache(raceId);
-  return applyLocalVoteBoost(raceId, pollCountCache[raceId]);
+  // 全て失敗かつ前回0なら、ゼロで上書きしない（短TTL）
+  if (!anyRemote && prev && (prev.total || 0) > 0) {
+    return applyLocalVoteBoost(raceId, prev);
+  }
+  const entry = { counts: Object.assign({}, counts), total, remote: anyRemote && remoteOk, ts: Date.now() };
+  pollCountCache[raceId] = entry;
+  // 失敗ゼロは長期保存しない
+  if (anyRemote || total > 0) persistPollCache(raceId);
+  return applyLocalVoteBoost(raceId, entry);
 }
 
 function prefetchPollCounts(raceIds) {
@@ -6483,14 +6547,14 @@ function buildPollBarRaceHtml(rid, data) {
     const clickable = allowTap
       ? ` role="button" tabindex="0" data-poll-vote-race="${rid}" data-poll-vote-num="${h.number}" class="poll-row poll-row-clickable${isYou ? " poll-row-voted" : ""}"`
       : ` class="poll-row"`;
-    const youMark = isYou ? " ✓ 投票済（再タップで解除）" : "";
+    const youBadge = isYou ? '<span class="poll-you-badge">投票済</span>' : "";
     const nameColor = isYou ? "#ffeb3b" : "inherit";
-    const nameWeight = isYou ? "700" : "normal";
-    return `<div${clickable}${isYou ? ' style="outline:1px solid rgba(255,235,59,0.5)"' : ""}>
+    const nameWeight = isYou ? "700" : "600";
+    return `<div${clickable} title="${isYou ? "再タップで投票解除" : (allowTap ? "タップして投票" : "")}">
         <span class="poll-num" style="background:${bg};color:${fg}">${h.number}</span>
-        <span class="poll-name" style="color:${nameColor};font-weight:${nameWeight}">${h.name}${youMark}</span>
-        <span class="poll-bar-mini"><i style="width:${pct}%"></i></span>
+        <span class="poll-name" style="color:${nameColor};font-weight:${nameWeight}">${h.name}${youBadge}</span>
         <span class="poll-pct">${total ? pct + "%" : "—"}</span>
+        <span class="poll-bar-mini"><i style="width:${pct}%"></i></span>
       </div>`;
   }).join("");
   const top = ranked[0];
@@ -6554,7 +6618,8 @@ async function renderPollBarPanel() {
     if (!getPollRaceConfig(rid)) return "";
     const age = pollCountCache[rid] ? (Date.now() - (pollCountCache[rid].ts || 0)) : Infinity;
     let data = getCachedPollCounts(rid);
-    if (!data || age > POLL_CACHE_TTL) {
+    const needForce = !data || age > POLL_CACHE_TTL || !data.total;
+    if (needForce) {
       data = await loadPollCounts(rid, { force: true });
     }
     return buildPollBarRaceHtml(rid, data);
