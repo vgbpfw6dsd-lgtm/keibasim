@@ -6382,26 +6382,31 @@ async function loadPollCounts(raceId, opts) {
   let total = 0;
   let remoteOk = true;
   let anyRemote = false;
-  await Promise.all(cfg.horses.map(async h => {
-    try {
-      const v = await pollGetRemote(raceId, h.number);
-      if (v == null) {
-        // 失敗時は前回キャッシュを維持
+  // 同時接続を抑えて2レース目がタイムアウトしないようにする
+  const horseList = cfg.horses.slice();
+  const batchSize = 4;
+  for (let i = 0; i < horseList.length; i += batchSize) {
+    const batch = horseList.slice(i, i + batchSize);
+    await Promise.all(batch.map(async h => {
+      try {
+        const v = await pollGetRemote(raceId, h.number);
+        if (v == null) {
+          const fallback = prev && prev.counts ? (prev.counts[h.number] || 0) : 0;
+          counts[h.number] = fallback;
+          remoteOk = false;
+        } else {
+          counts[h.number] = v || 0;
+          anyRemote = true;
+        }
+        total += counts[h.number] || 0;
+      } catch (e) {
         const fallback = prev && prev.counts ? (prev.counts[h.number] || 0) : 0;
         counts[h.number] = fallback;
+        total += fallback;
         remoteOk = false;
-      } else {
-        counts[h.number] = v || 0;
-        anyRemote = true;
       }
-      total += counts[h.number] || 0;
-    } catch (e) {
-      const fallback = prev && prev.counts ? (prev.counts[h.number] || 0) : 0;
-      counts[h.number] = fallback;
-      total += fallback;
-      remoteOk = false;
-    }
-  }));
+    }));
+  }
   // 全て失敗かつ前回0なら、ゼロで上書きしない（短TTL）
   if (!anyRemote && prev && (prev.total || 0) > 0) {
     return applyLocalVoteBoost(raceId, prev);
@@ -6603,34 +6608,50 @@ function bindPollBarVotes(body) {
 async function renderPollBarPanel() {
   const body = document.getElementById("pollBarPanelBody");
   if (!body) return;
-  const races = ACTIVE_POLL_RACES || [];
-  const cachedParts = races.map(rid => {
-    const d = getCachedPollCounts(rid);
-    return d ? buildPollBarRaceHtml(rid, d) : "";
-  }).filter(Boolean);
-  if (cachedParts.length) {
-    body.innerHTML = cachedParts.join("");
-    bindPollBarVotes(body);
-  } else {
-    body.innerHTML = '<div class="poll-empty">読み込み中…</div>';
-  }
-  const parts = await Promise.all(races.map(async rid => {
-    if (!getPollRaceConfig(rid)) return "";
-    const age = pollCountCache[rid] ? (Date.now() - (pollCountCache[rid].ts || 0)) : Infinity;
-    let data = getCachedPollCounts(rid);
-    const needForce = !data || age > POLL_CACHE_TTL || !data.total;
-    if (needForce) {
-      data = await loadPollCounts(rid, { force: true });
-    }
-    return buildPollBarRaceHtml(rid, data);
-  }));
-  const ordered = parts.filter(Boolean);
-  if (ordered.length) {
-    body.innerHTML = ordered.join("");
-    bindPollBarVotes(body);
-  } else if (!cachedParts.length) {
+  const races = (ACTIVE_POLL_RACES || []).filter(rid => !!getPollRaceConfig(rid));
+  if (!races.length) {
     body.innerHTML = '<div class="poll-empty">対象レースがありません</div>';
+    return;
   }
+  // 両レースを必ず先に枠表示（片方の取得待ちで消えないようにする）
+  body.innerHTML = races.map(rid => {
+    const cfg = getPollRaceConfig(rid);
+    const cached = getCachedPollCounts(rid);
+    if (cached) return buildPollBarRaceHtml(rid, cached);
+    return `<div class="poll-race-block" data-poll-race-block="${rid}">
+      <h4>${cfg.title}<span class="poll-race-meta">読込中…</span></h4>
+      <div class="poll-empty">票を取得しています…</div>
+    </div>`;
+  }).join("");
+  bindPollBarVotes(body);
+
+  // レースごとに独立して取得・差し替え（片方の遅延が他をブロックしない）
+  await Promise.all(races.map(async rid => {
+    try {
+      const age = pollCountCache[rid] ? (Date.now() - (pollCountCache[rid].ts || 0)) : Infinity;
+      let data = getCachedPollCounts(rid);
+      const needForce = !data || age > POLL_CACHE_TTL || !data.total;
+      if (needForce) {
+        data = await loadPollCounts(rid, { force: true });
+      }
+      if (!data) data = { counts: {}, total: 0, remote: false };
+      const html = buildPollBarRaceHtml(rid, data);
+      const slot = body.querySelector(`[data-poll-race-block="${rid}"]`);
+      if (slot && html) {
+        slot.outerHTML = html;
+      } else if (html) {
+        // ブロックが無い場合は追記
+        body.insertAdjacentHTML("beforeend", html);
+      }
+      bindPollBarVotes(body);
+    } catch (e) {
+      const cfg = getPollRaceConfig(rid);
+      const slot = body.querySelector(`[data-poll-race-block="${rid}"]`);
+      if (slot && cfg) {
+        slot.innerHTML = `<h4>${cfg.title}</h4><div class="poll-empty">取得に失敗しました。再度開いてください。</div>`;
+      }
+    }
+  }));
 }
 
 function setupPollBar() {
