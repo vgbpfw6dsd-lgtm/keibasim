@@ -880,12 +880,26 @@
   .poll-bar-chevron { font-size: 1.2rem; color: #a5d6a7 !important; transition: transform 0.2s; }
   .poll-bar-wrap.open .poll-bar-chevron { transform: rotate(90deg); }
   .poll-bar-panel {
+    display: none;
     margin-top: 6px; padding: 12px;
     border-radius: 12px;
     background: rgba(0,0,0,0.2);
     border: 1px solid rgba(129,199,132,0.25);
     max-height: 55vh; overflow-y: auto;
   }
+  .poll-bar-wrap.open .poll-bar-panel {
+    display: block !important;
+  }
+  .poll-bar-wrap.open .poll-bar-panel[hidden] {
+    display: block !important;
+  }
+  .poll-bar-panel[hidden] {
+    display: none !important;
+  }
+  .poll-bar-wrap.open .poll-bar-panel {
+    display: block !important;
+  }
+
   .poll-bar-panel-body .poll-race-block { margin-bottom: 14px; }
   .poll-bar-panel-body .poll-race-block:last-child { margin-bottom: 0; }
   .poll-bar-panel-body h4 {
@@ -6331,143 +6345,22 @@ function getPollVote(raceId) {
   return m[raceId] != null ? Number(m[raceId]) : null;
 }
 
+
 function pollHorseKey(raceId, number) {
   return `${raceId}_n${number}`;
 }
 
-async function pollAbacusRead(path) {
-  const direct = "https://abacus.jasoncameron.dev/" + path;
-  // 1) 直接（CORS対応時）
-  try {
-    const r = await Promise.race([
-      fetch(direct, { cache: "no-store" }),
-      new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 1200))
-    ]);
-    if (r && r.ok) {
-      const j = await r.json();
-      if (typeof j.value === "number") return j.value;
-      if (typeof j.count === "number") return j.count;
-      return 0;
-    }
-    if (r && r.status === 404) return 0;
-  } catch (e) { /* CORS / network */ }
-  // 2) CORSプロキシ経由
-  try {
-    const proxy = "https://api.allorigins.win/get?url=" + encodeURIComponent(direct);
-    const r = await Promise.race([
-      fetch(proxy, { cache: "no-store" }),
-      new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 3500))
-    ]);
-    if (!r || !r.ok) return null;
-    const j = await r.json();
-    const code = j && j.status && j.status.http_code;
-    if (code === 404) return 0;
-    let contents = j && j.contents;
-    if (typeof contents === "string") {
-      try { contents = JSON.parse(contents); } catch (e2) { contents = null; }
-    }
-    if (contents && typeof contents.value === "number") return contents.value;
-    if (contents && typeof contents.count === "number") return contents.count;
-    return 0;
-  } catch (e) {
-    return null;
-  }
-}
-
-async function pollHitRemote(raceId, number) {
-  const key = pollHorseKey(raceId, number);
-  const path = "hit/" + POLL_NS + "/" + encodeURIComponent(key);
-  const direct = "https://abacus.jasoncameron.dev/" + path;
-  // 直接JSON取得を試行
-  try {
-    const r = await Promise.race([
-      fetch(direct, { cache: "no-store" }),
-      new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 2800))
-    ]);
-    if (r && r.ok) {
-      const j = await r.json();
-      if (typeof j.value === "number") return j.value;
-      if (typeof j.count === "number") return j.count;
-      return 1;
-    }
-  } catch (e) { /* CORS */ }
-  // no-cors で送信（サーバー側は加算される）
-  try {
-    await fetch(direct, { mode: "no-cors", cache: "no-store" });
-  } catch (e2) {}
-  // 反映待ち後に GET
-  await new Promise(res => setTimeout(res, 400));
-  const after = await pollGetRemote(raceId, number);
-  return after == null ? null : after;
-}
-
-async function pollGetRemote(raceId, number) {
-  const key = pollHorseKey(raceId, number);
-  const path = "get/" + POLL_NS + "/" + encodeURIComponent(key);
-  return pollAbacusRead(path);
-}
-
-function getPollRaceConfig(raceId) {
-  const race = (typeof SAMPLE_RACES !== "undefined" ? SAMPLE_RACES : []).find(r => r.id === raceId);
-  if (!race || !race.horses) return null;
-  const horses = race.horses.slice().sort((a, b) => (a.number || 0) - (b.number || 0));
-  return {
-    raceId,
-    title: (race.raceName || race.name || raceId).replace(/【|】/g, ""),
-    horses: horses.map(h => ({ number: h.number, name: h.name, frame: h.frame }))
-  };
-}
-
-function frameColorClass(frame) {
-  // reuse existing if any; fallback palette
-  const map = {1:"#f5f5f5",2:"#111",3:"#e53935",4:"#1e88e5",5:"#43a047",6:"#fdd835",7:"#fb8c00",8:"#f8bbd0"};
-  return map[frame] || "#666";
-}
-
-function pollOptionHtml(raceId, h, counts, total, votedNum) {
-  const c = counts[h.number] || 0;
-  const pct = total > 0 ? Math.round((c / total) * 100) : 0;
-  const voted = votedNum === h.number;
-  // 投票済みでも自分の馬は再タップで解除可。他馬のみ無効
-  const disabled = votedNum != null && !voted;
-  const numBg = frameColorClass(h.frame);
-  const numColor = (h.frame === 1 || h.frame === 6) ? "#111" : "#fff";
-  const bar = disabled || votedNum != null
-    ? `<div class="poll-opt-bar-wrap"><div class="poll-opt-bar" style="width:${pct}%"></div></div>`
-    : "";
-  const meta = votedNum != null ? `${pct}% (${c})` : "投票";
-  const nameStyle = voted ? ' style="color:#ffeb3b;font-weight:700"' : "";
-  const voteBadge = voted ? '<span class="poll-you-badge">投票済</span>' : "";
-  return `<button type="button" class="poll-opt${voted ? " voted" : ""}" data-poll-race="${raceId}" data-poll-num="${h.number}" ${disabled ? "disabled" : ""} title="${voted ? "再タップで解除" : "投票"}">
-    <span class="poll-num" style="background:${numBg};color:${numColor}">${h.number}</span>
-    <span class="poll-name"${nameStyle}>${h.name}${voteBadge}</span>
-    <span class="poll-meta">${meta}</span>
-    ${bar}
-  </button>`;
-}
-
-function pollSectionPlaceholder(raceId) {
-  const cfg = getPollRaceConfig(raceId);
-  if (!cfg) return "";
-  return `<div class="poll-section" data-poll-box="${raceId}">
-    <h4>📊 1着予想アンケート</h4>
-    <p class="poll-q">どの馬が1着になりそうだと思いますか？（匿名）</p>
-    <div class="poll-opts" data-poll-opts="${raceId}"><div style="padding:8px;color:#90a4ae;font-size:0.8rem">読み込み中…</div></div>
-    <p class="poll-foot" data-poll-foot="${raceId}">匿名アンケートです。回答後に全体の集計結果が表示されます。</p>
-  </div>`;
-}
-
-/** アンケート集計キャッシュ（即時反映用） */
-const pollCountCache = {};
-const POLL_COUNT_LS_KEY = "keiba_sim_poll_counts_v1";
-const POLL_CACHE_TTL = 5 * 60 * 1000;
+/** アンケート集計キャッシュ */
+var pollCountCache = pollCountCache || {};
+var POLL_COUNT_LS_KEY = "keiba_sim_poll_counts_v1";
+var POLL_CACHE_TTL = 30 * 60 * 1000;
 
 (function hydratePollCacheFromLS() {
   try {
-    const raw = JSON.parse(localStorage.getItem(POLL_COUNT_LS_KEY) || "{}");
-    Object.keys(raw || {}).forEach(rid => {
-      const d = raw[rid];
-      if (d && d.counts && (Date.now() - (d.ts || 0)) < POLL_CACHE_TTL * 3) {
+    var raw = JSON.parse(localStorage.getItem(POLL_COUNT_LS_KEY) || "{}");
+    Object.keys(raw || {}).forEach(function(rid) {
+      var d = raw[rid];
+      if (d && d.counts && (Date.now() - (d.ts || 0)) < POLL_CACHE_TTL * 2) {
         pollCountCache[rid] = d;
       }
     });
@@ -6476,26 +6369,149 @@ const POLL_CACHE_TTL = 5 * 60 * 1000;
 
 function persistPollCache(raceId) {
   try {
-    const all = JSON.parse(localStorage.getItem(POLL_COUNT_LS_KEY) || "{}");
+    var all = JSON.parse(localStorage.getItem(POLL_COUNT_LS_KEY) || "{}");
     if (pollCountCache[raceId]) all[raceId] = pollCountCache[raceId];
     localStorage.setItem(POLL_COUNT_LS_KEY, JSON.stringify(all));
   } catch (e) {}
 }
 
 function applyLocalVoteBoost(raceId, data) {
-  const counts = Object.assign({}, data.counts || {});
-  let total = data.total || 0;
-  const voted = getPollVote(raceId);
+  var counts = Object.assign({}, (data && data.counts) || {});
+  var total = (data && data.total) || 0;
+  var voted = getPollVote(raceId);
   if (voted != null && (counts[voted] || 0) === 0) {
     counts[voted] = (counts[voted] || 0) + 1;
     total += 1;
   }
-  return { counts, total, remote: !!data.remote };
+  return { counts: counts, total: total, remote: !!(data && data.remote) };
 }
 
 function getCachedPollCounts(raceId) {
   if (!pollCountCache[raceId]) return null;
   return applyLocalVoteBoost(raceId, pollCountCache[raceId]);
+}
+
+function getPollRaceConfig(raceId) {
+  if (!raceId) return null;
+  if (!getPollRaceConfig._cache) getPollRaceConfig._cache = {};
+  if (getPollRaceConfig._cache[raceId]) return getPollRaceConfig._cache[raceId];
+  var race = null;
+  try {
+    var list = (typeof SAMPLE_RACES !== "undefined") ? SAMPLE_RACES : [];
+    for (var i = 0; i < list.length; i++) {
+      if (list[i] && list[i].id === raceId) { race = list[i]; break; }
+    }
+  } catch (e) { race = null; }
+  if (!race || !race.horses) return null;
+  var horses = race.horses.slice().sort(function(a, b) {
+    return (a.number || 0) - (b.number || 0);
+  });
+  var cfg = {
+    raceId: raceId,
+    title: String(race.raceName || race.name || raceId).replace(/【|】/g, ""),
+    horses: horses.map(function(h) {
+      return { number: h.number, name: h.name, frame: h.frame };
+    })
+  };
+  getPollRaceConfig._cache[raceId] = cfg;
+  return cfg;
+}
+
+function frameColorClass(frame) {
+  var map = {1:"#f5f5f5",2:"#111",3:"#e53935",4:"#1e88e5",5:"#43a047",6:"#fdd835",7:"#fb8c00",8:"#f8bbd0"};
+  return map[frame] || "#666";
+}
+
+function pollOptionHtml(raceId, h, counts, total, votedNum) {
+  var c = counts[h.number] || 0;
+  var pct = total > 0 ? Math.round((c / total) * 100) : 0;
+  var voted = votedNum === h.number;
+  var disabled = votedNum != null && !voted;
+  var numBg = frameColorClass(h.frame);
+  var numColor = (h.frame === 1 || h.frame === 6) ? "#111" : "#fff";
+  var bar = (disabled || votedNum != null)
+    ? '<div class="poll-opt-bar-wrap"><div class="poll-opt-bar" style="width:' + pct + '%"></div></div>'
+    : '';
+  return '<button type="button" class="poll-opt' + (voted ? ' voted' : '') + '"' +
+    (disabled ? ' disabled' : '') +
+    ' data-poll-num="' + h.number + '">' +
+    '<span class="poll-num" style="background:' + numBg + ';color:' + numColor + '">' + h.number + '</span>' +
+    '<span class="poll-name">' + h.name + '</span>' +
+    '<span class="poll-pct">' + (total ? pct + '%' : '—') + '</span>' +
+    bar +
+    '</button>';
+}
+
+
+async function pollAbacusRead(path, opts) {
+  opts = opts || {};
+  const direct = "https://abacus.jasoncameron.dev/" + path;
+  const timeoutMs = opts.timeoutMs != null ? opts.timeoutMs : 900;
+  try {
+    const ctrl = (typeof AbortController !== "undefined") ? new AbortController() : null;
+    const timer = setTimeout(function(){ try { if (ctrl) ctrl.abort(); } catch (e) {} }, timeoutMs);
+    const r = await fetch(direct, { cache: "no-store", mode: "cors", signal: ctrl ? ctrl.signal : undefined });
+    clearTimeout(timer);
+    if (r && r.ok) {
+      const j = await r.json();
+      if (typeof j.value === "number") return j.value;
+      if (typeof j.count === "number") return j.count;
+      return 0;
+    }
+    if (r && r.status === 404) return 0;
+  } catch (e) {}
+  return null;
+}
+
+
+async function pollHitRemote(raceId, number) {
+  const key = pollHorseKey(raceId, number);
+  const path = "hit/" + POLL_NS + "/" + encodeURIComponent(key);
+  const direct = "https://abacus.jasoncameron.dev/" + path;
+  // 1) CORS 付きで加算＆新値取得
+  try {
+    const r = await Promise.race([
+      fetch(direct, { cache: "no-store", mode: "cors" }),
+      new Promise((_, rej) => setTimeout(() => rej(new Error("timeout")), 4000))
+    ]);
+    if (r && r.ok) {
+      const j = await r.json();
+      const v = (typeof j.value === "number") ? j.value : (typeof j.count === "number" ? j.count : null);
+      if (v != null) {
+        // キャッシュ即時反映
+        const prev = pollCountCache[raceId] || { counts: {}, total: 0, remote: true, ts: Date.now() };
+        const counts = Object.assign({}, prev.counts || {});
+        const oldV = counts[number] || 0;
+        counts[number] = v;
+        const total = Math.max(0, (prev.total || 0) - oldV + v);
+        pollCountCache[raceId] = { counts, total, remote: true, ts: Date.now() };
+        persistPollCache(raceId);
+        return v;
+      }
+    }
+  } catch (e) { /* fallback */ }
+  // 2) no-cors で送信（加算のみ・レスポンス不可）
+  try {
+    await fetch(direct, { mode: "no-cors", cache: "no-store" });
+  } catch (e2) {}
+  await new Promise(res => setTimeout(res, 500));
+  const after = await pollGetRemote(raceId, number);
+  if (after != null) {
+    const prev = pollCountCache[raceId] || { counts: {}, total: 0, remote: true, ts: Date.now() };
+    const counts = Object.assign({}, prev.counts || {});
+    const oldV = counts[number] || 0;
+    counts[number] = after;
+    const total = Math.max(0, (prev.total || 0) - oldV + after);
+    pollCountCache[raceId] = { counts, total, remote: true, ts: Date.now() };
+    persistPollCache(raceId);
+  }
+  return after;
+}
+
+async function pollGetRemote(raceId, number, opts) {
+  const key = pollHorseKey(raceId, number);
+  const path = "get/" + POLL_NS + "/" + encodeURIComponent(key);
+  return pollAbacusRead(path, opts);
 }
 
 async function loadPollCounts(raceId, opts) {
@@ -6507,62 +6523,56 @@ async function loadPollCounts(raceId, opts) {
   if (!opts.force && prev && age < POLL_CACHE_TTL && (prev.total > 0 || prev.remote)) {
     return applyLocalVoteBoost(raceId, prev);
   }
-  if (opts.cacheOnly && prev) {
-    return applyLocalVoteBoost(raceId, prev);
+  if (opts.cacheOnly || !opts.force) {
+    if (prev) return applyLocalVoteBoost(raceId, prev);
+    if (opts.cacheOnly) {
+      const counts = {};
+      (cfg.horses || []).forEach(h => { counts[h.number] = 0; });
+      return { counts: counts, total: 0, remote: false };
+    }
   }
-  if ((opts.cacheOnly || !opts.force) && prev && prev.total > 0) {
-    return applyLocalVoteBoost(raceId, prev);
-  }
-  const counts = {};
-  let total = 0;
-  let remoteOk = true;
-  let anyRemote = false;
-  // 同時接続を抑えて2レース目がタイムアウトしないようにする
+
   const horseList = cfg.horses.slice();
-  const batchSize = 10;
-  for (let i = 0; i < horseList.length; i += batchSize) {
-    const batch = horseList.slice(i, i + batchSize);
-    await Promise.all(batch.map(async h => {
+  const counts = {};
+  let anyRemote = false;
+  let cursor = 0;
+  const concurrency = 3;
+  async function worker() {
+    while (cursor < horseList.length) {
+      const my = cursor++;
+      const h = horseList[my];
       try {
-        const v = await pollGetRemote(raceId, h.number);
-        if (v == null) {
-          const fallback = prev && prev.counts ? (prev.counts[h.number] || 0) : 0;
-          counts[h.number] = fallback;
-          remoteOk = false;
-        } else {
+        const v = await pollGetRemote(raceId, h.number, { timeoutMs: 900 });
+        if (v != null) {
           counts[h.number] = v || 0;
           anyRemote = true;
+        } else {
+          counts[h.number] = (prev && prev.counts) ? (prev.counts[h.number] || 0) : 0;
         }
-        total += counts[h.number] || 0;
       } catch (e) {
-        const fallback = prev && prev.counts ? (prev.counts[h.number] || 0) : 0;
-        counts[h.number] = fallback;
-        total += fallback;
-        remoteOk = false;
+        counts[h.number] = (prev && prev.counts) ? (prev.counts[h.number] || 0) : 0;
       }
-    }));
+    }
   }
-  // 全て失敗かつ前回0なら、ゼロで上書きしない（短TTL）
+  const workers = [];
+  for (let i = 0; i < concurrency; i++) workers.push(worker());
+  await Promise.all(workers);
+
+  const total = Object.keys(counts).reduce(function(s, k){ return s + (counts[k] || 0); }, 0);
   if (!anyRemote && prev && (prev.total || 0) > 0) {
     return applyLocalVoteBoost(raceId, prev);
   }
-  const entry = { counts: Object.assign({}, counts), total, remote: anyRemote && remoteOk, ts: Date.now() };
+  const entry = { counts: Object.assign({}, counts), total: total, remote: anyRemote, ts: Date.now() };
   pollCountCache[raceId] = entry;
-  // 失敗ゼロは長期保存しない
   if (anyRemote || total > 0) persistPollCache(raceId);
   return applyLocalVoteBoost(raceId, entry);
 }
 
+
 function prefetchPollCounts(raceIds) {
-  const ids = raceIds || ACTIVE_POLL_RACES || [];
-  ids.forEach(rid => {
-    const age = pollCountCache[rid] ? (Date.now() - (pollCountCache[rid].ts || 0)) : Infinity;
-    if (age < POLL_CACHE_TTL) return;
-    loadPollCounts(rid, { force: true }).then(() => {
-      try { refreshPollBarSummary(); } catch (e) {}
-    }).catch(() => {});
-  });
+  return;
 }
+
 
 function optimisticPollVote(raceId, num) {
   const prev = getPollVote(raceId);
@@ -6606,9 +6616,9 @@ async function renderPollBox(raceId, opts) {
   optsEl.innerHTML = cfg.horses.map(h => pollOptionHtml(raceId, h, counts, total, votedNum)).join("");
   if (foot) {
     if (votedNum != null) {
-      foot.innerHTML = `あなたの投票: <strong>${votedNum}番</strong>　｜　<span class="poll-total">合計 ${total} 票</span>${remote ? "" : "（オフライン集計）"}`;
+      foot.innerHTML = `あなたの投票: <strong>${votedNum}番</strong>　｜　<span class="poll-total">合計 ${total} 票</span>　<span class="poll-online-badge" style="margin-left:6px;padding:2px 8px;border-radius:999px;font-size:0.72rem;${remote ? "background:#e8f5e9;color:#2e7d32" : "background:#fff3e0;color:#ef6c00"}">${remote ? "● オンライン集計" : "○ ローカル集計"}</span>`;
     } else {
-      foot.textContent = "匿名アンケートです。1人1票。同じ馬を再タップすると投票を解除できます。";
+      foot.innerHTML = `匿名アンケートです。1人1票。同じ馬を再タップで解除。　<span class="poll-online-badge" style="padding:2px 8px;border-radius:999px;font-size:0.72rem;${remote ? "background:#e8f5e9;color:#2e7d32" : "background:#fff3e0;color:#ef6c00"}">${remote ? "● オンライン集計中" : "○ 接続確認中…"}</span>`;
     }
   }
   optsEl.querySelectorAll(".poll-opt:not(:disabled)").forEach(btn => {
@@ -6623,10 +6633,8 @@ async function renderPollBox(raceId, opts) {
       try { refreshPollBarSummary(); } catch (e) {}
       if (action === "vote") {
         pollHitRemote(raceId, num).then(() => {
-          loadPollCounts(raceId, { force: true }).then(() => {
-            renderPollBox(raceId, { cacheOnly: true });
-            try { refreshPollBarSummary(); } catch (e) {}
-          }).catch(() => {});
+          renderPollBox(raceId, { cacheOnly: true });
+          try { refreshPollBarSummary(); } catch (e) {}
         }).catch(() => {});
       }
     });
@@ -6635,38 +6643,36 @@ async function renderPollBox(raceId, opts) {
 
 const ACTIVE_POLL_RACES = ["kikka_sho_20261025"];
 
-async function refreshPollBarSummary() {
+function refreshPollBarSummary() {
   const sub = document.getElementById("pollBarSub");
   if (!sub) return;
   try {
     const bits = [];
-    for (const rid of ACTIVE_POLL_RACES) {
+    (ACTIVE_POLL_RACES || []).forEach(function(rid) {
       const cfg = getPollRaceConfig(rid);
-      if (!cfg) continue;
-      // キャッシュ優先（ネットワーク待ちなし）
-      let data = getCachedPollCounts(rid);
-      if (!data) data = await loadPollCounts(rid, { cacheOnly: true });
-      if (!data) data = { counts: {}, total: 0 };
-      const { counts, total } = data;
+      if (!cfg) return;
+      const data = getCachedPollCounts(rid) || { counts: {}, total: 0 };
+      const counts = data.counts || {};
+      const total = data.total || 0;
       if (!total) {
         bits.push((cfg.title || rid) + ": 投票受付中");
-        continue;
+        return;
       }
       let topN = null, topC = -1;
-      Object.keys(counts).forEach(k => {
+      Object.keys(counts).forEach(function(k) {
         const c = counts[k] || 0;
         if (c > topC) { topC = c; topN = Number(k); }
       });
-      const h = cfg.horses.find(x => x.number === topN);
+      const h = cfg.horses.find(function(x){ return x.number === topN; });
       const pct = Math.round((topC / total) * 100);
       const label = h ? (topN + "番" + h.name) : (topN + "番");
-      bits.push((cfg.title || "").replace(/富士ステークス/, "富士S").replace(/ステークス/, "S") + " 首位 " + label + " " + pct + "%");
-    }
+      const short = (cfg.title || "").replace(/富士ステークス/, "富士S").replace(/ステークス/, "S");
+      bits.push(short + " 首位 " + label + " " + pct + "%");
+    });
     sub.textContent = bits.length ? bits.join(" ／ ") : "結果をいつでも確認";
-  } catch (e) {
-    sub.textContent = "結果をいつでも確認";
-  }
+  } catch (e) {}
 }
+
 
 function buildPollBarRaceHtml(rid, data) {
   const cfg = getPollRaceConfig(rid);
@@ -6700,11 +6706,14 @@ function buildPollBarRaceHtml(rid, data) {
   const top = ranked[0];
   const topC = top ? (counts[top.number] || 0) : 0;
   const topPct = total ? Math.round((topC / total) * 100) : 0;
+  const onlineBadge = remote
+    ? '<span class="poll-online-badge" style="margin-left:6px;padding:2px 8px;border-radius:999px;font-size:0.72rem;background:#e8f5e9;color:#2e7d32;vertical-align:middle">● オンライン集計</span>'
+    : '<span class="poll-online-badge" style="margin-left:6px;padding:2px 8px;border-radius:999px;font-size:0.72rem;background:#fff3e0;color:#ef6c00;vertical-align:middle">○ 接続確認中</span>';
   const topLine = total && top
-    ? `<div class="poll-top">現在首位: <strong>${top.number}番 ${top.name}</strong>（${topPct}%・${total}票中）${remote ? "" : " ※オフライン集計"}</div>`
-    : `<div class="poll-top">${voted == null ? "馬をタップして1着予想に投票（匿名）。同じ馬を再タップで解除できます。" : "投票済みです。投票した馬を再タップすると解除できます。"}</div>`;
+    ? `<div class="poll-top">現在首位: <strong>${top.number}番 ${top.name}</strong>（${topPct}%・${total}票中）</div>`
+    : `<div class="poll-top">${voted == null ? "馬をタップして1着予想に投票（匿名・全体で集計）。同じ馬を再タップで解除できます。" : "投票済みです。投票した馬を再タップすると解除できます。"}</div>`;
   return `<div class="poll-race-block" data-poll-race-block="${rid}">
-    <h4>${cfg.title} <span class="poll-race-meta">${total || 0}票</span></h4>
+    <h4>${cfg.title} <span class="poll-race-meta">${total || 0}票</span>${onlineBadge}</h4>
     ${topLine}
     ${rows}
   </div>`;
@@ -6726,10 +6735,9 @@ function bindPollBarVotes(body) {
       try { renderPollBox(rid, { cacheOnly: true }); } catch (e) {}
       if (action === "vote") {
         pollHitRemote(rid, num).then(() => {
-          loadPollCounts(rid, { force: true }).then(() => {
-            renderPollBarPanel();
-            try { refreshPollBarSummary(); } catch (e) {}
-          }).catch(() => {});
+          // hit レスポンスでキャッシュ更新済み。全頭再取得はしない
+          renderPollBarPanel();
+          try { refreshPollBarSummary(); } catch (e) {}
         }).catch(() => {});
       }
     };
@@ -6740,79 +6748,138 @@ function bindPollBarVotes(body) {
   });
 }
 
-async function renderPollBarPanel() {
-  const body = document.getElementById("pollBarPanelBody");
+function renderPollBarPanel(opts) {
+  var body = document.getElementById("pollBarPanelBody");
   if (!body) return;
-  const races = (ACTIVE_POLL_RACES || []).filter(rid => !!getPollRaceConfig(rid));
+  var races = [];
+  try {
+    races = (ACTIVE_POLL_RACES || []).filter(function(rid) {
+      try { return typeof getPollRaceConfig === "function" && !!getPollRaceConfig(rid); }
+      catch (e) { return false; }
+    });
+  } catch (e) { races = []; }
   if (!races.length) {
     body.innerHTML = '<div class="poll-empty">対象レースがありません</div>';
     return;
   }
-  // 即時表示：キャッシュ or ゼロ票スケルトン（ネットワーク待ちなし）
-  body.innerHTML = races.map(rid => {
-    const cfg = getPollRaceConfig(rid);
-    let data = getCachedPollCounts(rid);
-    if (!data) {
-      const counts = {};
-      (cfg.horses || []).forEach(h => { counts[h.number] = 0; });
-      data = { counts, total: 0, remote: false };
+  var html = "";
+  for (var i = 0; i < races.length; i++) {
+    var rid = races[i];
+    try {
+      var cfg = getPollRaceConfig(rid);
+      var data = (typeof getCachedPollCounts === "function") ? getCachedPollCounts(rid) : null;
+      if (!data) {
+        var counts = {};
+        (cfg.horses || []).forEach(function(h){ counts[h.number] = 0; });
+        data = { counts: counts, total: 0, remote: false };
+      }
+      html += (typeof buildPollBarRaceHtml === "function")
+        ? buildPollBarRaceHtml(rid, data)
+        : '<div class="poll-empty">' + (cfg.title || rid) + '</div>';
+    } catch (err) {
+      html += '<div class="poll-empty">読込エラー</div>';
+      console.warn("[poll] render", rid, err);
     }
-    return buildPollBarRaceHtml(rid, data);
-  }).join("");
-  bindPollBarVotes(body);
-
-  // 裏で最新票を取得して差し替え（UIはブロックしない）
-  races.forEach(rid => {
-    Promise.resolve()
-      .then(() => loadPollCounts(rid, { force: true }))
-      .then(data => {
-        if (!data || !body.isConnected) return;
-        const html = buildPollBarRaceHtml(rid, data);
-        if (!html) return;
-        const slot = body.querySelector(`[data-poll-race-block="${rid}"]`);
-        if (slot) {
-          slot.outerHTML = html;
-        } else {
-          // buildPollBarRaceHtml が data-poll-race-block を含む前提で差し替え
-          const tmp = document.createElement("div");
-          tmp.innerHTML = html;
-          const fresh = tmp.firstElementChild;
-          const old = body.querySelector(`[data-poll-race="${rid}"], [data-poll-race-block="${rid}"]`);
-          if (old && fresh) old.outerHTML = fresh.outerHTML;
-          else if (fresh) body.appendChild(fresh);
-        }
-        bindPollBarVotes(body);
-        try { refreshPollBarSummary(); } catch (e) {}
-      })
-      .catch(() => {});
-  });
+  }
+  body.innerHTML = html;
+  try { if (typeof bindPollBarVotes === "function") bindPollBarVotes(body); } catch (e) {}
 }
+
+
 
 function setupPollBar() {
-  const btn = document.getElementById("pollBarBtn");
-  const wrap = document.querySelector(".poll-bar-wrap");
-  const panel = document.getElementById("pollBarPanel");
-  if (!btn || !wrap || !panel) return;
-  const toggle = async () => {
-    const open = wrap.classList.toggle("open");
-    if (open) {
-      panel.hidden = false;
-      // キャッシュ即時表示（待ちなし）
-      renderPollBarPanel();
-    } else {
-      panel.hidden = true;
+  var btn = document.getElementById("pollBarBtn");
+  var wrap = document.querySelector(".poll-bar-wrap");
+  var panel = document.getElementById("pollBarPanel");
+  if (!btn || !wrap || !panel) {
+    console.warn("[poll] elements missing", !!btn, !!wrap, !!panel);
+    return;
+  }
+  if (btn.dataset.pollBound === "1") return;
+  btn.dataset.pollBound = "1";
+  var fetching = false;
+
+  function paint() {
+    try {
+      if (typeof renderPollBarPanel === "function") renderPollBarPanel();
+    } catch (err) {
+      var body = document.getElementById("pollBarPanelBody");
+      if (body) body.innerHTML = '<div class="poll-empty">表示エラー: 再読み込みしてください</div>';
+      console.warn("[poll] paint", err);
     }
-  };
-  btn.addEventListener("click", toggle);
-  btn.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+  }
+
+  function softRefresh() {
+    if (fetching) return;
+    fetching = true;
+    setTimeout(function() {
+      var races = [];
+      try {
+        races = (ACTIVE_POLL_RACES || []).filter(function(rid) {
+          try { return typeof getPollRaceConfig === "function" && !!getPollRaceConfig(rid); }
+          catch (e) { return false; }
+        });
+      } catch (e) {}
+      Promise.all(races.map(function(rid) {
+        return (typeof loadPollCounts === "function")
+          ? loadPollCounts(rid, { force: true }).catch(function(){ return null; })
+          : Promise.resolve(null);
+      })).then(function() {
+        if (wrap.classList.contains("open")) paint();
+        try { if (typeof refreshPollBarSummary === "function") refreshPollBarSummary(); } catch (e) {}
+      }).finally(function(){ fetching = false; });
+    }, 30);
+  }
+
+  function setOpen(open) {
+    if (open) {
+      wrap.classList.add("open");
+      panel.hidden = false;
+      panel.removeAttribute("hidden");
+      panel.style.display = "block";
+      paint();
+      softRefresh();
+    } else {
+      wrap.classList.remove("open");
+      panel.hidden = true;
+      panel.setAttribute("hidden", "");
+      panel.style.display = "none";
+    }
+  }
+
+  var ignoreClickUntil = 0;
+  function onTap(e) {
+    if (e) {
+      try { e.preventDefault(); } catch (err) {}
+      try { e.stopPropagation(); } catch (err) {}
+    }
+    setOpen(!wrap.classList.contains("open"));
+  }
+
+  btn.addEventListener("click", function(e) {
+    if (Date.now() < ignoreClickUntil) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    onTap(e);
   });
-  refreshPollBarSummary();
-  // 起動直後に裏で先読み
-  setTimeout(() => {
-    try { prefetchPollCounts(ACTIVE_POLL_RACES); } catch (e) {}
-  }, 80);
+  btn.addEventListener("touchend", function(e) {
+    ignoreClickUntil = Date.now() + 400;
+    onTap(e);
+  }, { passive: false });
+  btn.addEventListener("keydown", function(e) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onTap(e);
+    }
+  });
+
+  panel.hidden = true;
+  panel.style.display = "none";
+  try { if (typeof refreshPollBarSummary === "function") refreshPollBarSummary(); } catch (e) {}
 }
+
 
 
 
