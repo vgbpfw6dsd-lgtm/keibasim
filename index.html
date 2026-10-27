@@ -12804,10 +12804,22 @@ function buildRaceCallText(order, remain, dist, raceTime, pace, finishedCount, n
         climax: false
       };
     }
-    const st = styleCallLabel(leader && leader.styleKey);
+    // 序盤の先頭説明は「いまの位置」を優先。
+    // 登録脚質が差し/追込でも、ハナを取っていれば逃げ・先手の表現にする
+    let leadPhrase = leadName + " が先手を取って前へ";
+    if (leader) {
+      if (leader.isBigEscape || leader.styleKey === "nige") {
+        leadPhrase = leadName + " が逃げて前へ";
+      } else if (leader.styleKey === "senko") {
+        leadPhrase = leadName + " が先行して前へ";
+      } else {
+        // 差し・追込登録馬でもスタート直後に先頭なら「逃げ」の位置取り
+        leadPhrase = leadName + " が逃げの体勢で前へ";
+      }
+    }
     return {
       stage: "序盤",
-      text: leadName + (st ? " が" + st : "") + "で前へ",
+      text: leadPhrase,
       sub: paceLabel + "ペースの見通し",
       remain: remainM,
       top: top,
