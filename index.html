@@ -396,99 +396,6 @@
   @media (min-width: 480px) {
     #raceCanvasWrap { min-height: 380px; max-height: 560px; }
   }
-
-  /* GOLDEN HORSE風 隊列シミュレーション */
-  .gh-overlay {
-    position: absolute; left: 0; right: 0; top: 0; bottom: 0;
-    pointer-events: none; z-index: 5;
-    display: flex; flex-direction: column;
-    font-family: "Hiragino Sans", "Noto Sans JP", sans-serif;
-  }
-  .gh-overlay.hidden { display: none !important; }
-  #ghOverlay { display: none !important; }
-  #raceCanvasWrap .race-rank-strip { display: none !important; }
-  #raceCanvasWrap .race-hud { display: none !important; }
-  #raceCanvasWrap:has(.gh-overlay:not(.hidden)) .race-rank-strip { display: none !important; }
-  #raceCanvasWrap:has(.gh-overlay:not(.hidden)) .race-hud { display: none !important; }
-  .gh-head {
-    background: linear-gradient(180deg, rgba(0,0,0,0.92), rgba(0,0,0,0.7));
-    padding: 8px 12px 6px;
-    text-align: center;
-    color: #f5e6a8;
-  }
-  .gh-head .gh-kicker {
-    font-size: 0.68rem; letter-spacing: 0.12em; color: #d4b84a; font-weight: 700;
-  }
-  .gh-head .gh-title {
-    font-size: 1.05rem; font-weight: 900; color: #f3e2a0;
-    text-shadow: 0 1px 2px #000;
-  }
-  .gh-head .gh-sub {
-    font-size: 0.68rem; color: rgba(255,255,255,0.65); margin-top: 2px;
-  }
-  .gh-progress-wrap {
-    background: rgba(0,0,0,0.82);
-    padding: 6px 12px 8px;
-  }
-  .gh-progress-meta {
-    display: flex; justify-content: space-between; align-items: center;
-    font-size: 0.72rem; color: #eee; margin-bottom: 4px; font-weight: 700;
-  }
-  .gh-progress-bar {
-    height: 8px; border-radius: 999px; background: rgba(255,255,255,0.12);
-    overflow: hidden;
-  }
-  .gh-progress-bar > i {
-    display: block; height: 100%; width: 0%;
-    background: linear-gradient(90deg, #eab308, #fde047);
-    border-radius: 999px;
-  }
-  .gh-mini-order {
-    display: flex; gap: 4px; flex-wrap: nowrap; overflow: hidden;
-    padding: 4px 10px 6px; background: rgba(0,0,0,0.75);
-    min-height: 28px; align-items: center;
-  }
-  .gh-mini-order .gh-dot {
-    width: 20px; height: 20px; border-radius: 50%;
-    display: inline-flex; align-items: center; justify-content: center;
-    font-size: 0.62rem; font-weight: 900; flex-shrink: 0;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.4);
-  }
-  .gh-rank-board {
-    margin-top: auto;
-    background: rgba(0,0,0,0.88);
-    border-top: 1px solid rgba(212,184,74,0.35);
-    padding: 6px 8px 8px;
-    max-height: 34%;
-    overflow: hidden;
-  }
-  .gh-rank-board .gh-rank-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2px 10px;
-    font-size: 0.68rem;
-    color: #f1f5f9;
-  }
-  .gh-rank-board .gh-rank-row {
-    display: flex; align-items: center; gap: 5px;
-    white-space: nowrap; overflow: hidden;
-    padding: 1px 0;
-  }
-  .gh-rank-board .gh-rk {
-    width: 14px; color: rgba(255,255,255,0.45); font-weight: 700; font-size: 0.62rem;
-  }
-  .gh-rank-board .gh-num {
-    width: 18px; height: 18px; border-radius: 4px;
-    display: inline-flex; align-items: center; justify-content: center;
-    font-size: 0.62rem; font-weight: 900; flex-shrink: 0;
-  }
-  .gh-rank-board .gh-name {
-    overflow: hidden; text-overflow: ellipsis; font-weight: 700;
-  }
-  .gh-rank-board .gh-pop {
-    margin-left: auto; color: rgba(255,255,255,0.4); font-size: 0.6rem;
-  }
-
   .race-hud {
     position: absolute; left: 0; right: 0; top: 0;
     display: flex; justify-content: space-between; align-items: center;
@@ -3063,7 +2970,7 @@
     </label>
   </div>
   <div id="raceCanvasWrap">
-    <canvas id="raceCanvas" width="900" height="640"></canvas>
+    <canvas id="raceCanvas" width="900" height="520"></canvas>
     <div class="race-hud">
       <span class="lap" id="raceStatus">待機中</span>
       <span id="raceDist">—</span>
@@ -3073,24 +2980,6 @@
       <span id="raceSplit">1000m: —</span>
     </div>
     <div class="race-rank-strip" id="raceRankStrip" aria-label="簡易順位速報"></div>
-    <div class="gh-overlay hidden" id="ghOverlay">
-      <div class="gh-head">
-        <div class="gh-kicker">予想 隊列シミュレーション</div>
-        <div class="gh-title" id="ghTitle">—</div>
-        <div class="gh-sub" id="ghSub">—</div>
-      </div>
-      <div class="gh-progress-wrap">
-        <div class="gh-progress-meta">
-          <span id="ghRemain">残り —</span>
-          <span id="ghClock">0:00.0</span>
-        </div>
-        <div class="gh-progress-bar"><i id="ghProgressFill"></i></div>
-      </div>
-      <div class="gh-mini-order" id="ghMiniOrder"></div>
-      <div class="gh-rank-board">
-        <div class="gh-rank-grid" id="ghRankGrid"></div>
-      </div>
-    </div>
   </div>
   <div class="race-call" id="raceCall">
       <div class="call-top"><span class="call-badge">実況</span><span class="call-stage">待機</span></div>
@@ -3940,24 +3829,24 @@ const SAMPLE_RACES = [
     pathType: "kyoto_3000_outer",
     courseRecordSec: 181.0,
     horses: [
-      { name: "アウダーシア", frame: 2, number: 3, sexAge: "牡3", ranks: [9, 3, 11, 1, 1], starts: 5, classLevel: 1.32, timeIdx: 84, agariIdx: 82, distApt: 9, lastDist: 2400, restWeeks: 4, jockey: "津村明秀", weight: 57, trainer: "—", odds: 20.0, popular: 5, going: { firm: 82, good: 80, heavy: 76 }, blood: { sire: "キズナ", dam: "リリーノーブル", damsire: "ルーラーシップ" }, styles: ["sashi"], style: "sashi", past: { note: "近走:セントライト3着→ダービー11着→スプリングS1着", recent: [9, 3, 11, 1, 1] }, manualRank: 5, manualScore: 78, manualComment: "枠順未定・登録馬" },
-      { name: "アスクエジンバラ", frame: 6, number: 11, sexAge: "牡3", ranks: [17, 4, 10, 4, 2], starts: 5, classLevel: 1.45, timeIdx: 89, agariIdx: 87, distApt: 8, lastDist: 2400, restWeeks: 4, jockey: "岩田康誠", weight: 57, trainer: "—", odds: 48.0, popular: 9, going: { firm: 87, good: 85, heavy: 81 }, blood: { sire: "リオンディーズ", dam: "ハニートリップ", damsire: "マンハッタンカフェ" }, styles: ["senko"], style: "senko", past: { note: "近走:セントライト4着→ダービー10着→皐月賞4着", recent: [17, 4, 10, 4, 2] }, manualRank: 9, manualScore: 80, manualComment: "枠順未定・登録馬" },
-      { name: "エムズビギン", frame: 1, number: 1, sexAge: "牡3", ranks: [13, 5, 14, 7, 2], starts: 5, classLevel: 1.44, timeIdx: 90, agariIdx: 91, distApt: 8, lastDist: 2400, restWeeks: 4, jockey: "岩田望来", weight: 57, trainer: "—", odds: 15.0, popular: 4, going: { firm: 88, good: 86, heavy: 82 }, blood: { sire: "キタサンブラック", dam: "デルフィニア２", damsire: "Galileo" }, styles: ["sashi"], style: "sashi", past: { note: "近走:神戸新聞杯5着→ダービー14着→京都新聞杯7着", recent: [13, 5, 14, 7, 2] }, manualRank: 4, manualScore: 84, manualComment: "枠順未定・登録馬" },
-      { name: "キンググローリー", frame: 7, number: 13, sexAge: "牡3", ranks: [15, 1, 2, 13, 13], starts: 5, classLevel: 1.12, timeIdx: 80, agariIdx: 79, distApt: 7, lastDist: 2400, restWeeks: 4, jockey: "丹内祐次", weight: 57, trainer: "—", odds: 120.0, popular: 15, going: { firm: 78, good: 76, heavy: 72 }, blood: { sire: "ダノンプレミアム", dam: "ハーフムーン２", damsire: "Duke of Marmalade" }, styles: ["senko"], style: "senko", past: { note: "近走:九十九里特別1着→信夫山特別2着→ラジNIK13着", recent: [15, 1, 2, 13, 13] }, manualRank: 15, manualScore: 70, manualComment: "枠順未定・登録馬" },
-      { name: "コンジェスタス", frame: 1, number: 2, sexAge: "牡3", ranks: [8, 6, 9, 1, 1], starts: 5, classLevel: 1.45, timeIdx: 90, agariIdx: 88, distApt: 9, lastDist: 2400, restWeeks: 4, jockey: "西村淳也", weight: 57, trainer: "—", odds: 16.0, popular: 4, going: { firm: 88, good: 86, heavy: 82 }, blood: { sire: "コントレイル", dam: "キラモサ", damsire: "Alamosa" }, styles: ["sashi"], style: "sashi", past: { note: "近走:神戸新聞杯6着→ダービー9着→京都新聞杯1着", recent: [8, 6, 9, 1, 1] }, manualRank: 4, manualScore: 82, manualComment: "枠順未定・登録馬" },
-      { name: "ゴーイントゥスカイ", frame: 5, number: 9, sexAge: "牡3", ranks: [1, 6, 4, 1, 6], starts: 5, classLevel: 1.87, timeIdx: 95.0, agariIdx: 89, distApt: 10, distanceApt: { short: "C", mile: "B", middle: "A", midLong: "S", longMiddle: "S", long: "S" }, lastDist: 3000, restWeeks: 4, jockey: "武豊", weight: 57, trainer: "—", odds: 12.0, popular: 3, going: { firm: 90, good: 88, heavy: 84 }, blood: { sire: "コントレイル", dam: "ゴーイントゥザウィンドウ", damsire: "Tapit" }, styles: ["senko"], style: "senko", past: { note: "近走:菊花賞1着→セントライト6着→ダービー4着→青葉賞1着", recent: [1, 6, 4, 1, 6] }, manualRank: 3, manualScore: 92.0, manualComment: "菊花賞G1勝ち・長距離S適性" },
-      { name: "サノノグレーター", frame: 6, number: 12, sexAge: "牡3", ranks: [4, 11, 1, 9, 5], starts: 5, classLevel: 1.38, timeIdx: 90, agariIdx: 87, distApt: 8, lastDist: 2400, restWeeks: 4, jockey: "田辺裕信", weight: 57, trainer: "—", odds: 90.0, popular: 13, going: { firm: 88, good: 86, heavy: 82 }, blood: { sire: "グレーターロンドン", dam: "メメクザリアーナ", damsire: "ジャングルポケット" }, styles: ["sashi"], style: "sashi", past: { note: "近走:セントライト11着→ラジNIK1着→皐月賞9着", recent: [4, 11, 1, 9, 5] }, manualRank: 13, manualScore: 76, manualComment: "枠順未定・登録馬" },
-      { name: "ジャスティンシカゴ", frame: 3, number: 5, sexAge: "牡3", ranks: [10, 1, 1, 2, 2], starts: 5, classLevel: 1.5, timeIdx: 85, agariIdx: 82, distApt: 9, lastDist: 2400, restWeeks: 4, jockey: "原優介", weight: 57, trainer: "—", odds: 38.0, popular: 8, going: { firm: 83, good: 81, heavy: 77 }, blood: { sire: "スワーヴリチャード", dam: "エリカブライト", damsire: "キングカメハメハ" }, styles: ["senko"], style: "senko", past: { note: "近走:セントライト1着→3歳上1勝1着→プリンシパル2着", recent: [10, 1, 1, 2, 2] }, manualRank: 8, manualScore: 84, manualComment: "枠順未定・登録馬" },
-      { name: "ショウナンガルフ", frame: 2, number: 4, sexAge: "牡3", ranks: [18, 11, 12, 17, 9], starts: 5, classLevel: 1.08, timeIdx: 78, agariIdx: 77, distApt: 7, lastDist: 2400, restWeeks: 4, jockey: "田山旺佑", weight: 57, trainer: "—", odds: 160.0, popular: 16, going: { firm: 76, good: 74, heavy: 70 }, blood: { sire: "ハービンジャー", dam: "ミカリーニョ", damsire: "ハーツクライ" }, styles: ["oikomi"], style: "oikomi", past: { note: "近走:ポートアイS11着→ラジNIK12着→ダービー17着", recent: [18, 11, 12, 17, 9] }, manualRank: 16, manualScore: 68, manualComment: "枠順未定・登録馬" },
-      { name: "ショウナンハヤナミ", frame: 8, number: 16, sexAge: "牡3", ranks: [6, 10, 1, 1], starts: 3, classLevel: 1.05, timeIdx: 77, agariIdx: 78, distApt: 7, lastDist: 2400, restWeeks: 4, jockey: "池添謙一", weight: 57, trainer: "—", odds: 180.0, popular: 17, going: { firm: 75, good: 73, heavy: 69 }, blood: { sire: "レイデオロ", dam: "ショウナンバーチ", damsire: "ディープインパクト" }, styles: ["senko"], style: "senko", past: { note: "近走:神戸新聞杯10着→若駒S1着→2歳新馬1着", recent: [6, 10, 1, 1, null] }, manualRank: 17, manualScore: 67, manualComment: "枠順未定・登録馬" },
-      { name: "シートゥサミット", frame: 8, number: 15, sexAge: "牡3", ranks: [5, 3, 2, 1, 2], starts: 5, classLevel: 1.23, timeIdx: 83, agariIdx: 80, distApt: 9, lastDist: 2400, restWeeks: 4, jockey: "酒井学", weight: 57, trainer: "—", odds: 76.0, popular: 11, going: { firm: 81, good: 79, heavy: 75 }, blood: { sire: "モーリス", dam: "フラワーバレイ", damsire: "Discreet Cat" }, styles: ["sashi"], style: "sashi", past: { note: "近走:神戸新聞杯3着→3歳上1勝2着→3歳未勝利1着", recent: [5, 3, 2, 1, 2] }, manualRank: 11, manualScore: 79, manualComment: "枠順未定・登録馬" },
-      { name: "ダノンヒストリー", frame: 5, number: 10, sexAge: "牡3", ranks: [3, 1, 1, 7, 1], starts: 4, classLevel: 1.46, timeIdx: 88.0, agariIdx: 86, distApt: 8, lastDist: 2400, restWeeks: 4, jockey: "C.ルメール", weight: 57, trainer: "—", odds: 3.5, popular: 2, going: { firm: 85, good: 83, heavy: 79 }, blood: { sire: "エピファネイア", dam: "コーステッド", damsire: "Tizway" }, styles: ["senko"], style: "senko", past: { note: "近走:阿寒湖特別1着→3歳上1勝1着→東スポ2歳S7着", recent: [3, 1, 1, 7, 1] }, manualRank: 2, manualScore: 87.0, manualComment: "枠順未定・登録馬" },
-      { name: "チャリングクロス", frame: 8, number: 17, sexAge: "牡3", ranks: [11, 7, 1, 1, 5], starts: 5, classLevel: 1.15, timeIdx: 81, agariIdx: 80, distApt: 7, lastDist: 2400, restWeeks: 4, jockey: "石川裕紀人", weight: 57, trainer: "—", odds: 100.0, popular: 14, going: { firm: 79, good: 77, heavy: 73 }, blood: { sire: "キタサンブラック", dam: "ライジングクロス", damsire: "Cape Cross" }, styles: ["sashi"], style: "sashi", past: { note: "近走:日本海S7着→町田特別1着→山藤賞1着", recent: [11, 7, 1, 1, 5] }, manualRank: 14, manualScore: 72, manualComment: "枠順未定・登録馬" },
-      { name: "ナリタエスペランサ", frame: 8, number: 18, sexAge: "牡3", ranks: [16, 12, 1, 1, 7], starts: 5, classLevel: 1.12, timeIdx: 80, agariIdx: 82, distApt: 7, lastDist: 2400, restWeeks: 4, jockey: "北村友一", weight: 57, trainer: "—", odds: 200.0, popular: 18, going: { firm: 78, good: 76, heavy: 72 }, blood: { sire: "キタサンブラック", dam: "ワンダーフィリー", damsire: "Invincible Spirit" }, styles: ["oikomi"], style: "oikomi", past: { note: "近走:Mキタサンブ12着→帆柱山特別1着→3歳上1勝1着", recent: [16, 12, 1, 1, 7] }, manualRank: 18, manualScore: 70, manualComment: "枠順未定・登録馬" },
-      { name: "バステール", frame: 3, number: 6, sexAge: "牡3", ranks: [2, 13, 3, 11, 1], starts: 5, classLevel: 1.8, timeIdx: 95.5, agariIdx: 91, distApt: 8, lastDist: 2400, restWeeks: 4, jockey: "川田将雅", weight: 57, trainer: "—", odds: 32.0, popular: 7, going: { firm: 92, good: 90, heavy: 86 }, blood: { sire: "キタサンブラック", dam: "マンビア", damsire: "Aldebaran" }, styles: ["sashi"], style: "sashi", past: { note: "近走:セントライト13着→ダービー3着→皐月賞11着", recent: [2, 13, 3, 11, 1] }, manualRank: 7, manualScore: 86.0, manualComment: "枠順未定・登録馬" },
-      { name: "マジョレルブルー", frame: 7, number: 14, sexAge: "牡3", ranks: [7, 1, 1, 1, 2], starts: 5, classLevel: 1.28, timeIdx: 84, agariIdx: 83, distApt: 8, lastDist: 2400, restWeeks: 4, jockey: "戸崎圭太", weight: 57, trainer: "—", odds: 65.0, popular: 10, going: { firm: 82, good: 80, heavy: 76 }, blood: { sire: "コントレイル", dam: "ブルーミングアレー", damsire: "シンボリクリスエス" }, styles: ["senko"], style: "senko", past: { note: "近走:能勢特別1着→3歳1勝1着→3歳未勝利1着", recent: [7, 1, 1, 1, 2] }, manualRank: 10, manualScore: 80, manualComment: "枠順未定・登録馬" },
-      { name: "ラージアンサンブル", frame: 4, number: 7, sexAge: "牡3", ranks: [12, 7, 8, 1, 6], starts: 5, classLevel: 1.28, timeIdx: 85, agariIdx: 83, distApt: 8, lastDist: 2400, restWeeks: 4, jockey: "坂井瑠星", weight: 57, trainer: "—", odds: 85.0, popular: 12, going: { firm: 83, good: 81, heavy: 77 }, blood: { sire: "ベンバトル", dam: "ナスノフォルテ", damsire: "ジャスタウェイ" }, styles: ["sashi"], style: "sashi", past: { note: "近走:セントライト7着→皐月賞8着→すみれS1着", recent: [12, 7, 8, 1, 6] }, manualRank: 12, manualScore: 75, manualComment: "枠順未定・登録馬" },
-      { name: "ロブチェン", frame: 4, number: 8, sexAge: "牡3", ranks: [14, 1, 1, 1, 3], starts: 5, classLevel: 1.8, timeIdx: 99, agariIdx: 96, distApt: 9, lastDist: 2400, restWeeks: 4, jockey: "松山弘平", weight: 57, trainer: "—", odds: 2.1, popular: 1, going: { firm: 97, good: 95, heavy: 91 }, blood: { sire: "ワールドプレミア", dam: "ソングライティング", damsire: "Giant's Causeway" }, styles: ["sashi"], style: "sashi", past: { note: "近走:神戸新聞杯1着→ダービー1着→皐月賞1着", recent: [14, 1, 1, 1, 3] }, manualRank: 1, manualScore: 96, manualComment: "枠順未定・登録馬" }
+      { name: "アウダーシア", frame: 2, number: 3, sexAge: "牡3", ranks: [3, 11, 1, 1, 2], starts: 5, classLevel: 1.32, timeIdx: 84, agariIdx: 82, distApt: 9, lastDist: 2400, restWeeks: 4, jockey: "津村明秀", weight: 57, trainer: "—", odds: 20.0, popular: 5, going: { firm: 82, good: 80, heavy: 76 }, blood: { sire: "キズナ", dam: "リリーノーブル", damsire: "ルーラーシップ" }, styles: ["sashi"], style: "sashi", past: { note: "近走:セントライト3着→ダービー11着→スプリングS1着", recent: [3, 11, 1, 1, 2] }, manualRank: 5, manualScore: 78, manualComment: "枠順未定・登録馬" },
+      { name: "アスクエジンバラ", frame: 6, number: 11, sexAge: "牡3", ranks: [4, 10, 4, 2, 3], starts: 5, classLevel: 1.45, timeIdx: 89, agariIdx: 87, distApt: 8, lastDist: 2400, restWeeks: 4, jockey: "岩田康誠", weight: 57, trainer: "—", odds: 48.0, popular: 9, going: { firm: 87, good: 85, heavy: 81 }, blood: { sire: "リオンディーズ", dam: "ハニートリップ", damsire: "マンハッタンカフェ" }, styles: ["senko"], style: "senko", past: { note: "近走:セントライト4着→ダービー10着→皐月賞4着", recent: [4, 10, 4, 2, 3] }, manualRank: 9, manualScore: 80, manualComment: "枠順未定・登録馬" },
+      { name: "エムズビギン", frame: 1, number: 1, sexAge: "牡3", ranks: [5, 14, 7, 2, 1], starts: 5, classLevel: 1.44, timeIdx: 90, agariIdx: 91, distApt: 8, lastDist: 2400, restWeeks: 4, jockey: "岩田望来", weight: 57, trainer: "—", odds: 15.0, popular: 4, going: { firm: 88, good: 86, heavy: 82 }, blood: { sire: "キタサンブラック", dam: "デルフィニア２", damsire: "Galileo" }, styles: ["sashi"], style: "sashi", past: { note: "近走:神戸新聞杯5着→ダービー14着→京都新聞杯7着", recent: [5, 14, 7, 2, 1] }, manualRank: 4, manualScore: 84, manualComment: "枠順未定・登録馬" },
+      { name: "キンググローリー", frame: 7, number: 13, sexAge: "牡3", ranks: [1, 2, 13, 13, 1], starts: 5, classLevel: 1.12, timeIdx: 80, agariIdx: 79, distApt: 7, lastDist: 2400, restWeeks: 4, jockey: "丹内祐次", weight: 57, trainer: "—", odds: 120.0, popular: 15, going: { firm: 78, good: 76, heavy: 72 }, blood: { sire: "ダノンプレミアム", dam: "ハーフムーン２", damsire: "Duke of Marmalade" }, styles: ["senko"], style: "senko", past: { note: "近走:九十九里特別1着→信夫山特別2着→ラジNIK13着", recent: [1, 2, 13, 13, 1] }, manualRank: 15, manualScore: 70, manualComment: "枠順未定・登録馬" },
+      { name: "コンジェスタス", frame: 1, number: 2, sexAge: "牡3", ranks: [6, 9, 1, 1, 1], starts: 5, classLevel: 1.45, timeIdx: 90, agariIdx: 88, distApt: 9, lastDist: 2400, restWeeks: 4, jockey: "西村淳也", weight: 57, trainer: "—", odds: 16.0, popular: 4, going: { firm: 88, good: 86, heavy: 82 }, blood: { sire: "コントレイル", dam: "キラモサ", damsire: "Alamosa" }, styles: ["sashi"], style: "sashi", past: { note: "近走:神戸新聞杯6着→ダービー9着→京都新聞杯1着", recent: [6, 9, 1, 1, 1] }, manualRank: 4, manualScore: 82, manualComment: "枠順未定・登録馬" },
+      { name: "ゴーイントゥスカイ", frame: 5, number: 9, sexAge: "牡3", ranks: [6, 4, 1, 6, 3], starts: 5, classLevel: 1.62, timeIdx: 92, agariIdx: 89, distApt: 8, lastDist: 2400, restWeeks: 4, jockey: "武豊", weight: 57, trainer: "—", odds: 12.0, popular: 3, going: { firm: 90, good: 88, heavy: 84 }, blood: { sire: "コントレイル", dam: "ゴーイントゥザウィンドウ", damsire: "Tapit" }, styles: ["senko"], style: "senko", past: { note: "近走:セントライト6着→ダービー4着→青葉賞1着", recent: [6, 4, 1, 6, 3] }, manualRank: 3, manualScore: 86, manualComment: "枠順未定・登録馬" },
+      { name: "サノノグレーター", frame: 6, number: 12, sexAge: "牡3", ranks: [11, 1, 9, 5, 6], starts: 5, classLevel: 1.38, timeIdx: 90, agariIdx: 87, distApt: 8, lastDist: 2400, restWeeks: 4, jockey: "田辺裕信", weight: 57, trainer: "—", odds: 90.0, popular: 13, going: { firm: 88, good: 86, heavy: 82 }, blood: { sire: "グレーターロンドン", dam: "メメクザリアーナ", damsire: "ジャングルポケット" }, styles: ["sashi"], style: "sashi", past: { note: "近走:セントライト11着→ラジNIK1着→皐月賞9着", recent: [11, 1, 9, 5, 6] }, manualRank: 13, manualScore: 76, manualComment: "枠順未定・登録馬" },
+      { name: "ジャスティンシカゴ", frame: 3, number: 5, sexAge: "牡3", ranks: [1, 1, 2, 2, 6], starts: 5, classLevel: 1.5, timeIdx: 85, agariIdx: 82, distApt: 9, lastDist: 2400, restWeeks: 4, jockey: "原優介", weight: 57, trainer: "—", odds: 38.0, popular: 8, going: { firm: 83, good: 81, heavy: 77 }, blood: { sire: "スワーヴリチャード", dam: "エリカブライト", damsire: "キングカメハメハ" }, styles: ["senko"], style: "senko", past: { note: "近走:セントライト1着→3歳上1勝1着→プリンシパル2着", recent: [1, 1, 2, 2, 6] }, manualRank: 8, manualScore: 84, manualComment: "枠順未定・登録馬" },
+      { name: "ショウナンガルフ", frame: 2, number: 4, sexAge: "牡3", ranks: [11, 12, 17, 9, 14], starts: 5, classLevel: 1.08, timeIdx: 78, agariIdx: 77, distApt: 7, lastDist: 2400, restWeeks: 4, jockey: "田山旺佑", weight: 57, trainer: "—", odds: 160.0, popular: 16, going: { firm: 76, good: 74, heavy: 70 }, blood: { sire: "ハービンジャー", dam: "ミカリーニョ", damsire: "ハーツクライ" }, styles: ["oikomi"], style: "oikomi", past: { note: "近走:ポートアイS11着→ラジNIK12着→ダービー17着", recent: [11, 12, 17, 9, 14] }, manualRank: 16, manualScore: 68, manualComment: "枠順未定・登録馬" },
+      { name: "ショウナンハヤナミ", frame: 8, number: 16, sexAge: "牡3", ranks: [10, 1, 1], starts: 3, classLevel: 1.05, timeIdx: 77, agariIdx: 78, distApt: 7, lastDist: 2400, restWeeks: 4, jockey: "池添謙一", weight: 57, trainer: "—", odds: 180.0, popular: 17, going: { firm: 75, good: 73, heavy: 69 }, blood: { sire: "レイデオロ", dam: "ショウナンバーチ", damsire: "ディープインパクト" }, styles: ["senko"], style: "senko", past: { note: "近走:神戸新聞杯10着→若駒S1着→2歳新馬1着", recent: [10, 1, 1, null, null] }, manualRank: 17, manualScore: 67, manualComment: "枠順未定・登録馬" },
+      { name: "シートゥサミット", frame: 8, number: 15, sexAge: "牡3", ranks: [3, 2, 1, 2, 7], starts: 5, classLevel: 1.23, timeIdx: 83, agariIdx: 80, distApt: 9, lastDist: 2400, restWeeks: 4, jockey: "酒井学", weight: 57, trainer: "—", odds: 76.0, popular: 11, going: { firm: 81, good: 79, heavy: 75 }, blood: { sire: "モーリス", dam: "フラワーバレイ", damsire: "Discreet Cat" }, styles: ["sashi"], style: "sashi", past: { note: "近走:神戸新聞杯3着→3歳上1勝2着→3歳未勝利1着", recent: [3, 2, 1, 2, 7] }, manualRank: 11, manualScore: 79, manualComment: "枠順未定・登録馬" },
+      { name: "ダノンヒストリー", frame: 5, number: 10, sexAge: "牡3", ranks: [1, 1, 7, 1], starts: 4, classLevel: 1.38, timeIdx: 87, agariIdx: 86, distApt: 8, lastDist: 2400, restWeeks: 4, jockey: "C.ルメール", weight: 57, trainer: "—", odds: 3.5, popular: 2, going: { firm: 85, good: 83, heavy: 79 }, blood: { sire: "エピファネイア", dam: "コーステッド", damsire: "Tizway" }, styles: ["senko"], style: "senko", past: { note: "近走:阿寒湖特別1着→3歳上1勝1着→東スポ2歳S7着", recent: [1, 1, 7, 1, null] }, manualRank: 2, manualScore: 85, manualComment: "枠順未定・登録馬" },
+      { name: "チャリングクロス", frame: 8, number: 17, sexAge: "牡3", ranks: [7, 1, 1, 5, 3], starts: 5, classLevel: 1.15, timeIdx: 81, agariIdx: 80, distApt: 7, lastDist: 2400, restWeeks: 4, jockey: "石川裕紀人", weight: 57, trainer: "—", odds: 100.0, popular: 14, going: { firm: 79, good: 77, heavy: 73 }, blood: { sire: "キタサンブラック", dam: "ライジングクロス", damsire: "Cape Cross" }, styles: ["sashi"], style: "sashi", past: { note: "近走:日本海S7着→町田特別1着→山藤賞1着", recent: [7, 1, 1, 5, 3] }, manualRank: 14, manualScore: 72, manualComment: "枠順未定・登録馬" },
+      { name: "ナリタエスペランサ", frame: 8, number: 18, sexAge: "牡3", ranks: [12, 1, 1, 7, 1], starts: 5, classLevel: 1.12, timeIdx: 80, agariIdx: 82, distApt: 7, lastDist: 2400, restWeeks: 4, jockey: "北村友一", weight: 57, trainer: "—", odds: 200.0, popular: 18, going: { firm: 78, good: 76, heavy: 72 }, blood: { sire: "キタサンブラック", dam: "ワンダーフィリー", damsire: "Invincible Spirit" }, styles: ["oikomi"], style: "oikomi", past: { note: "近走:Mキタサンブ12着→帆柱山特別1着→3歳上1勝1着", recent: [12, 1, 1, 7, 1] }, manualRank: 18, manualScore: 70, manualComment: "枠順未定・登録馬" },
+      { name: "バステール", frame: 3, number: 6, sexAge: "牡3", ranks: [13, 3, 11, 1, 1], starts: 5, classLevel: 1.68, timeIdx: 94, agariIdx: 91, distApt: 8, lastDist: 2400, restWeeks: 4, jockey: "川田将雅", weight: 57, trainer: "—", odds: 32.0, popular: 7, going: { firm: 92, good: 90, heavy: 86 }, blood: { sire: "キタサンブラック", dam: "マンビア", damsire: "Aldebaran" }, styles: ["sashi"], style: "sashi", past: { note: "近走:セントライト13着→ダービー3着→皐月賞11着", recent: [13, 3, 11, 1, 1] }, manualRank: 7, manualScore: 83, manualComment: "枠順未定・登録馬" },
+      { name: "マジョレルブルー", frame: 7, number: 14, sexAge: "牡3", ranks: [1, 1, 1, 2, 4], starts: 5, classLevel: 1.28, timeIdx: 84, agariIdx: 83, distApt: 8, lastDist: 2400, restWeeks: 4, jockey: "戸崎圭太", weight: 57, trainer: "—", odds: 65.0, popular: 10, going: { firm: 82, good: 80, heavy: 76 }, blood: { sire: "コントレイル", dam: "ブルーミングアレー", damsire: "シンボリクリスエス" }, styles: ["senko"], style: "senko", past: { note: "近走:能勢特別1着→3歳1勝1着→3歳未勝利1着", recent: [1, 1, 1, 2, 4] }, manualRank: 10, manualScore: 80, manualComment: "枠順未定・登録馬" },
+      { name: "ラージアンサンブル", frame: 4, number: 7, sexAge: "牡3", ranks: [7, 8, 1, 6, 1], starts: 5, classLevel: 1.28, timeIdx: 85, agariIdx: 83, distApt: 8, lastDist: 2400, restWeeks: 4, jockey: "坂井瑠星", weight: 57, trainer: "—", odds: 85.0, popular: 12, going: { firm: 83, good: 81, heavy: 77 }, blood: { sire: "ベンバトル", dam: "ナスノフォルテ", damsire: "ジャスタウェイ" }, styles: ["sashi"], style: "sashi", past: { note: "近走:セントライト7着→皐月賞8着→すみれS1着", recent: [7, 8, 1, 6, 1] }, manualRank: 12, manualScore: 75, manualComment: "枠順未定・登録馬" },
+      { name: "ロブチェン", frame: 4, number: 8, sexAge: "牡3", ranks: [1, 1, 1, 3, 1], starts: 5, classLevel: 1.8, timeIdx: 99, agariIdx: 96, distApt: 9, lastDist: 2400, restWeeks: 4, jockey: "松山弘平", weight: 57, trainer: "—", odds: 2.1, popular: 1, going: { firm: 97, good: 95, heavy: 91 }, blood: { sire: "ワールドプレミア", dam: "ソングライティング", damsire: "Giant's Causeway" }, styles: ["sashi"], style: "sashi", past: { note: "近走:神戸新聞杯1着→ダービー1着→皐月賞1着", recent: [1, 1, 1, 3, 1] }, manualRank: 1, manualScore: 96, manualComment: "枠順未定・登録馬" }
     ]
   },
   {
@@ -3970,19 +3859,19 @@ const SAMPLE_RACES = [
     frameConfirmed: true,
     pathType: "tokyo_1600",
     horses: [
-      { name: "カナデルペガサス", frame: 6, number: 11, sexAge: "牝2", ranks: [12, 1], starts: 1, classLevel: 0.87, timeIdx: 74, agariIdx: 72, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "今村聖奈", weight: 55, trainer: "—", odds: 10.0, popular: 1, going: { firm: 78, good: 76, heavy: 70 }, blood: { sire: "ステルヴィオ", dam: "ビクトリアペガサス", damsire: "ヨハネスブルグ" }, styles: ["sashi"], style: "sashi", past: { note: "近走:新潟新馬1着", recent: [12, 1, null, null, null] }, manualRank: 1, manualScore: 70, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
-      { name: "サトノスプレマシー", frame: 6, number: 12, sexAge: "牝2", ranks: [7, 1, 5], starts: 2, classLevel: 0.87, timeIdx: 74, agariIdx: 72, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "田辺裕信", weight: 55, trainer: "—", odds: 12.0, popular: 2, going: { firm: 78, good: 76, heavy: 70 }, blood: { sire: "シルバーステート", dam: "サマーソワレ", damsire: "War Front" }, styles: ["senko"], style: "senko", past: { note: "近走:新潟未勝利1着→新馬5着", recent: [7, 1, 5, null, null] }, manualRank: 2, manualScore: 70, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
-      { name: "シティオブドリーム", frame: 3, number: 5, sexAge: "牝2", ranks: [3, 2, 1], starts: 2, classLevel: 1.01, timeIdx: 81.0, agariIdx: 78, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "横山典弘", weight: 55, trainer: "—", odds: 8.0, popular: 3, going: { firm: 84, good: 82, heavy: 76 }, blood: { sire: "コントレイル", dam: "ビューティフルストリート", damsire: "Street Cry" }, styles: ["nige"], style: "nige", past: { note: "近走:野路菊S2着→札幌新馬1着", recent: [3, 2, 1, null, null] }, manualRank: 3, manualScore: 80.0, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
-      { name: "ジーティーキャリー", frame: 5, number: 10, sexAge: "牝2", ranks: [10, 1, 2], starts: 2, classLevel: 0.87, timeIdx: 74, agariIdx: 72, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "西村淳也", weight: 55, trainer: "—", odds: 18.0, popular: 8, going: { firm: 78, good: 76, heavy: 70 }, blood: { sire: "ブリックスアンドモルタル", dam: "ラトゥールレディー", damsire: "キンシャサノキセキ" }, styles: ["nige"], style: "nige", past: { note: "近走:中京未勝利1着→東京新馬2着", recent: [10, 1, 2, null, null] }, manualRank: 4, manualScore: 70, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
-      { name: "タプティ", frame: 1, number: 1, sexAge: "牝2", ranks: [5, 1, 5], starts: 2, classLevel: 0.87, timeIdx: 74, agariIdx: 72, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "小沢大仁", weight: 55, trainer: "—", odds: 25.0, popular: 10, going: { firm: 78, good: 76, heavy: 70 }, blood: { sire: "ダノンスマッシュ", dam: "パフェムリ", damsire: "ヴィクトワールピサ" }, styles: ["senko"], style: "senko", past: { note: "近走:札幌未勝利1着→札幌新馬5着", recent: [5, 1, 5, null, null] }, manualRank: 5, manualScore: 70, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
-      { name: "ピコベリー", frame: 2, number: 4, sexAge: "牝2", ranks: [11, 1], starts: 1, classLevel: 0.9, timeIdx: 76, agariIdx: 74, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "津村明秀", weight: 55, trainer: "—", odds: 11.0, popular: 4, going: { firm: 80, good: 78, heavy: 72 }, blood: { sire: "モーリス", dam: "アヴァール", damsire: "キングカメハメハ" }, styles: ["sashi"], style: "sashi", past: { note: "近走:新潟新馬1着", recent: [11, 1, null, null, null] }, manualRank: 6, manualScore: 78, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
-      { name: "ファミーリエ", frame: 2, number: 3, sexAge: "牝2", ranks: [4, 1], starts: 1, classLevel: 0.87, timeIdx: 74, agariIdx: 72, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "吉村誠之助", weight: 55, trainer: "—", odds: 16.0, popular: 7, going: { firm: 78, good: 76, heavy: 70 }, blood: { sire: "キズナ", dam: "ベルオロール", damsire: "Galileo" }, styles: ["sashi"], style: "sashi", past: { note: "近走:中京新馬1着", recent: [4, 1, null, null, null] }, manualRank: 7, manualScore: 70, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
-      { name: "プルヴィナル", frame: 5, number: 9, sexAge: "牝2", ranks: [1], starts: 1, classLevel: 1.2, timeIdx: 85.0, agariIdx: 80, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "ルメール", weight: 55, trainer: "—", odds: 4.5, popular: 2, going: { firm: 86, good: 84, heavy: 78 }, blood: { sire: "モーリス", dam: "クルミナル", damsire: "ディープインパクト" }, styles: ["senko"], style: "senko", past: { note: "近走:中山新馬1着", recent: [1, null, null, null, null] }, manualRank: 8, manualScore: 84.0, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
-      { name: "ベストプラージュ", frame: 4, number: 8, sexAge: "牝2", ranks: [13, 2, 1, 2, 6], starts: 4, classLevel: 0.8, timeIdx: 70, agariIdx: 68, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "山本政聡", weight: 55, trainer: "—", odds: 80.0, popular: 13, going: { firm: 74, good: 72, heavy: 66 }, blood: { sire: "ビーチパトロール", dam: "フィアレス", damsire: "スペシャルウィーク" }, styles: ["nige"], style: "nige", past: { note: "近走:ジュニアGP2着→フューチャー1着→若鮎賞2着→デビュー6着", recent: [13, 2, 1, 2, 6] }, manualRank: 9, manualScore: 70, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
-      { name: "ホウオウプレマ", frame: 4, number: 7, sexAge: "牝2", ranks: [9, 1], starts: 1, classLevel: 0.9, timeIdx: 76, agariIdx: 74, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "池添謙一", weight: 55, trainer: "—", odds: 14.0, popular: 5, going: { firm: 80, good: 78, heavy: 72 }, blood: { sire: "キタサンブラック", dam: "ホウオウピースフル", damsire: "オルフェーヴル" }, styles: ["senko"], style: "senko", past: { note: "近走:札幌新馬1着", recent: [9, 1, null, null, null] }, manualRank: 10, manualScore: 78, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
-      { name: "マリアンデール", frame: 1, number: 2, sexAge: "牝2", ranks: [6, 1, 3], starts: 2, classLevel: 0.9, timeIdx: 76, agariIdx: 74, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "横山武史", weight: 55, trainer: "—", odds: 15.0, popular: 6, going: { firm: 80, good: 78, heavy: 72 }, blood: { sire: "シルバーステート", dam: "スティーミーウィンドウズ", damsire: "Giant's Causeway" }, styles: ["sashi"], style: "sashi", past: { note: "近走:阪神未勝利1着→新潟新馬3着", recent: [6, 1, 3, null, null] }, manualRank: 11, manualScore: 78, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
-      { name: "リスグロワール", frame: 3, number: 6, sexAge: "牝2", ranks: [8, 1], starts: 1, classLevel: 0.96, timeIdx: 84, agariIdx: 82, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "坂井瑠星", weight: 55, trainer: "—", odds: 3.5, popular: 1, going: { firm: 88, good: 86, heavy: 80 }, blood: { sire: "サートゥルナーリア", dam: "リスグラシュー", damsire: "ハーツクライ" }, styles: ["senko"], style: "senko", past: { note: "近走:阪神新馬1着", recent: [8, 1, null, null, null] }, manualRank: 12, manualScore: 78, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
-      { name: "ローズサルーテ", frame: 7, number: 13, sexAge: "牝2", ranks: [2, 1], starts: 1, classLevel: 0.99, timeIdx: 75.5, agariIdx: 72, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "小林美駒", weight: 55, trainer: "—", odds: 22.0, popular: 9, going: { firm: 78, good: 76, heavy: 70 }, blood: { sire: "ロジャーバローズ", dam: "シーヴァージア", damsire: "クロフネ" }, styles: ["sashi"], style: "sashi", past: { note: "近走:中山新馬1着", recent: [2, 1, null, null, null] }, manualRank: 13, manualScore: 73.0, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" }
+      { name: "カナデルペガサス", frame: 6, number: 11, sexAge: "牝2", ranks: [1], starts: 1, classLevel: 0.87, timeIdx: 74, agariIdx: 72, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "今村聖奈", weight: 55, trainer: "—", odds: 10.0, popular: 1, going: { firm: 78, good: 76, heavy: 70 }, blood: { sire: "ステルヴィオ", dam: "ビクトリアペガサス", damsire: "ヨハネスブルグ" }, styles: ["sashi"], style: "sashi", past: { note: "近走:新潟新馬1着", recent: [1, null, null, null, null] }, manualRank: 1, manualScore: 70, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
+      { name: "サトノスプレマシー", frame: 6, number: 12, sexAge: "牝2", ranks: [1, 5], starts: 2, classLevel: 0.87, timeIdx: 74, agariIdx: 72, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "田辺裕信", weight: 55, trainer: "—", odds: 12.0, popular: 2, going: { firm: 78, good: 76, heavy: 70 }, blood: { sire: "シルバーステート", dam: "サマーソワレ", damsire: "War Front" }, styles: ["senko"], style: "senko", past: { note: "近走:新潟未勝利1着→新馬5着", recent: [1, 5, null, null, null] }, manualRank: 2, manualScore: 70, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
+      { name: "シティオブドリーム", frame: 3, number: 5, sexAge: "牝2", ranks: [2, 1], starts: 2, classLevel: 0.93, timeIdx: 80, agariIdx: 78, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "横山典弘", weight: 55, trainer: "—", odds: 8.0, popular: 3, going: { firm: 84, good: 82, heavy: 76 }, blood: { sire: "コントレイル", dam: "ビューティフルストリート", damsire: "Street Cry" }, styles: ["nige"], style: "nige", past: { note: "近走:野路菊S2着→札幌新馬1着", recent: [2, 1, null, null, null] }, manualRank: 3, manualScore: 78, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
+      { name: "ジーティーキャリー", frame: 5, number: 10, sexAge: "牝2", ranks: [1, 2], starts: 2, classLevel: 0.87, timeIdx: 74, agariIdx: 72, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "西村淳也", weight: 55, trainer: "—", odds: 18.0, popular: 8, going: { firm: 78, good: 76, heavy: 70 }, blood: { sire: "ブリックスアンドモルタル", dam: "ラトゥールレディー", damsire: "キンシャサノキセキ" }, styles: ["nige"], style: "nige", past: { note: "近走:中京未勝利1着→東京新馬2着", recent: [1, 2, null, null, null] }, manualRank: 4, manualScore: 70, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
+      { name: "タプティ", frame: 1, number: 1, sexAge: "牝2", ranks: [1, 5], starts: 2, classLevel: 0.87, timeIdx: 74, agariIdx: 72, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "小沢大仁", weight: 55, trainer: "—", odds: 25.0, popular: 10, going: { firm: 78, good: 76, heavy: 70 }, blood: { sire: "ダノンスマッシュ", dam: "パフェムリ", damsire: "ヴィクトワールピサ" }, styles: ["senko"], style: "senko", past: { note: "近走:札幌未勝利1着→札幌新馬5着", recent: [1, 5, null, null, null] }, manualRank: 5, manualScore: 70, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
+      { name: "ピコベリー", frame: 2, number: 4, sexAge: "牝2", ranks: [1], starts: 1, classLevel: 0.9, timeIdx: 76, agariIdx: 74, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "津村明秀", weight: 55, trainer: "—", odds: 11.0, popular: 4, going: { firm: 80, good: 78, heavy: 72 }, blood: { sire: "モーリス", dam: "アヴァール", damsire: "キングカメハメハ" }, styles: ["sashi"], style: "sashi", past: { note: "近走:新潟新馬1着", recent: [1, null, null, null, null] }, manualRank: 6, manualScore: 78, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
+      { name: "ファミーリエ", frame: 2, number: 3, sexAge: "牝2", ranks: [1], starts: 1, classLevel: 0.87, timeIdx: 74, agariIdx: 72, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "吉村誠之助", weight: 55, trainer: "—", odds: 16.0, popular: 7, going: { firm: 78, good: 76, heavy: 70 }, blood: { sire: "キズナ", dam: "ベルオロール", damsire: "Galileo" }, styles: ["sashi"], style: "sashi", past: { note: "近走:中京新馬1着", recent: [1, null, null, null, null] }, manualRank: 7, manualScore: 70, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
+      { name: "プルヴィナル", frame: 5, number: 9, sexAge: "牝2", ranks: [1], starts: 1, classLevel: 0.95, timeIdx: 82, agariIdx: 80, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "ルメール", weight: 55, trainer: "—", odds: 4.5, popular: 2, going: { firm: 86, good: 84, heavy: 78 }, blood: { sire: "モーリス", dam: "クルミナル", damsire: "ディープインパクト" }, styles: ["senko"], style: "senko", past: { note: "近走:中山新馬1着", recent: [1, null, null, null, null] }, manualRank: 8, manualScore: 78, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
+      { name: "ベストプラージュ", frame: 4, number: 8, sexAge: "牝2", ranks: [2, 1, 2, 6], starts: 4, classLevel: 0.8, timeIdx: 70, agariIdx: 68, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "山本政聡", weight: 55, trainer: "—", odds: 80.0, popular: 13, going: { firm: 74, good: 72, heavy: 66 }, blood: { sire: "ビーチパトロール", dam: "フィアレス", damsire: "スペシャルウィーク" }, styles: ["nige"], style: "nige", past: { note: "近走:ジュニアGP2着→フューチャー1着→若鮎賞2着→デビュー6着", recent: [2, 1, 2, 6, null] }, manualRank: 9, manualScore: 70, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
+      { name: "ホウオウプレマ", frame: 4, number: 7, sexAge: "牝2", ranks: [1], starts: 1, classLevel: 0.9, timeIdx: 76, agariIdx: 74, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "池添謙一", weight: 55, trainer: "—", odds: 14.0, popular: 5, going: { firm: 80, good: 78, heavy: 72 }, blood: { sire: "キタサンブラック", dam: "ホウオウピースフル", damsire: "オルフェーヴル" }, styles: ["senko"], style: "senko", past: { note: "近走:札幌新馬1着", recent: [1, null, null, null, null] }, manualRank: 10, manualScore: 78, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
+      { name: "マリアンデール", frame: 1, number: 2, sexAge: "牝2", ranks: [1, 3], starts: 2, classLevel: 0.9, timeIdx: 76, agariIdx: 74, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "横山武史", weight: 55, trainer: "—", odds: 15.0, popular: 6, going: { firm: 80, good: 78, heavy: 72 }, blood: { sire: "シルバーステート", dam: "スティーミーウィンドウズ", damsire: "Giant's Causeway" }, styles: ["sashi"], style: "sashi", past: { note: "近走:阪神未勝利1着→新潟新馬3着", recent: [1, 3, null, null, null] }, manualRank: 11, manualScore: 78, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
+      { name: "リスグロワール", frame: 3, number: 6, sexAge: "牝2", ranks: [1], starts: 1, classLevel: 0.96, timeIdx: 84, agariIdx: 82, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "坂井瑠星", weight: 55, trainer: "—", odds: 3.5, popular: 1, going: { firm: 88, good: 86, heavy: 80 }, blood: { sire: "サートゥルナーリア", dam: "リスグラシュー", damsire: "ハーツクライ" }, styles: ["senko"], style: "senko", past: { note: "近走:阪神新馬1着", recent: [1, null, null, null, null] }, manualRank: 12, manualScore: 78, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" },
+      { name: "ローズサルーテ", frame: 7, number: 13, sexAge: "牝2", ranks: [1], starts: 1, classLevel: 0.87, timeIdx: 74, agariIdx: 72, distApt: 7, lastDist: 1600, restWeeks: 4, jockey: "小林美駒", weight: 55, trainer: "—", odds: 22.0, popular: 9, going: { firm: 78, good: 76, heavy: 70 }, blood: { sire: "ロジャーバローズ", dam: "シーヴァージア", damsire: "クロフネ" }, styles: ["sashi"], style: "sashi", past: { note: "近走:中山新馬1着", recent: [1, null, null, null, null] }, manualRank: 13, manualScore: 70, manualComment: "出馬確定・枠順未定・登録馬", distAptGrade: "A" }
     ]
   },
   {
@@ -4351,7 +4240,7 @@ const SAMPLE_RACES = [
       { name: "アスクエジンバラ", frame: 3, number: 5, sexAge: "牡3", ranks: [4, 10, 4, 2, 3], starts: 5, classLevel: 1.45, timeIdx: 89, agariIdx: 87, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "岩田康誠", weight: 57, trainer: "-", odds: 18, popular: 9, going: { firm: 83, soft: 75, heavy: 71 }, blood: { sire: "リオンディーズ", damsire: "マンハッタンカフェ", dam: "ハニートリップ" }, styles: ["senko", "sashi"], past: { note: "日本ダービー10着", recent: [] }, manualRank: 1, manualScore: 96, manualComment: "G1で皐月賞4着・ホープフルS3着。中山実績と格を高評価。" },
       { name: "サヴォアフェール", frame: 3, number: 6, sexAge: "牡3", ranks: [2, 1, 1, 4, 3], starts: 5, classLevel: 1.34, timeIdx: 85, agariIdx: 83, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "松山弘平", weight: 57, trainer: "-", odds: 14, popular: 7, going: { firm: 85, soft: 77, heavy: 73 }, blood: { sire: "エピファネイア", damsire: "キングカメハメハ", dam: "ナニアヒアヒ" }, styles: ["senko"], past: { note: "木曽川特別1着", recent: [] }, manualRank: 6, manualScore: 87, manualComment: "京都新聞杯4着。近走の安定感と2200m対応力を評価。" , abilityBoost: 4, form: 4},
       { name: "ジャスティンシカゴ", frame: 4, number: 7, sexAge: "牡3", ranks: [1, 2, 2, 6, 12], starts: 5, classLevel: 1.50, timeIdx: 85, agariIdx: 82, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "原優介", weight: 57, trainer: "-", odds: 35, popular: 12, going: { firm: 80, soft: 72, heavy: 68 }, blood: { sire: "スワーヴリチャード", damsire: "キングカメハメハ", dam: "エリカブライト" }, styles: ["sashi"], past: { note: "1勝クラス1着", recent: [] }, manualRank: 10, manualScore: 85, manualComment: "近走1着・2着・2着と安定。重賞実績不足を割り引き。" },
-      { name: "ゴーイントゥスカイ", frame: 4, number: 8, sexAge: "牡3", ranks: [6, 4, 1, 6, 3], starts: 5, classLevel: 1.62, timeIdx: 92, agariIdx: 89, distApt: 10, distanceApt: { short: "C", mile: "B", middle: "A", midLong: "S", longMiddle: "S", long: "S" }, lastDist: 3000, restWeeks: 4, jockey: "武豊", weight: 57, trainer: "-", odds: 4.5, popular: 2, going: { firm: 92, soft: 84, heavy: 80 }, blood: { sire: "コントレイル", damsire: "Tapit", dam: "ゴーイントゥザウィンドウ" }, styles: ["sashi", "oikomi"], past: { note: "近走:菊花賞1着→セントライト6着→ダービー4着→青葉賞1着", recent: [] }, manualRank: 3, manualScore: 92, manualComment: "菊花賞G1勝ち・長距離S適性" },
+      { name: "ゴーイントゥスカイ", frame: 4, number: 8, sexAge: "牡3", ranks: [6, 4, 1, 6, 3], starts: 5, classLevel: 1.62, timeIdx: 92, agariIdx: 89, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "武豊", weight: 57, trainer: "-", odds: 4.5, popular: 2, going: { firm: 92, soft: 84, heavy: 80 }, blood: { sire: "コントレイル", damsire: "Tapit", dam: "ゴーイントゥザウィンドウ" }, styles: ["sashi", "oikomi"], past: { note: "日本ダービー4着", recent: [] }, manualRank: 3, manualScore: 92, manualComment: "日本ダービー4着＋青葉賞1着。2200mへの適性も高い。" },
       { name: "サノノグレーター", frame: 5, number: 9, sexAge: "牡3", ranks: [11, 1, 9, 5, 6], starts: 5, classLevel: 1.38, timeIdx: 90, agariIdx: 87, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "田辺裕信", weight: 57, trainer: "-", odds: 6.0, popular: 3, going: { firm: 90, soft: 82, heavy: 78 }, blood: { sire: "グレーターロンドン", damsire: "ジャングルポケット", dam: "メメクザリアーナ" }, styles: ["nige", "senko"], past: { note: "ラジオNIKKEI賞1着", recent: [] }, manualRank: 4, manualScore: 91, manualComment: "ラジオNIKKEI賞1着。中山2000mレコード勝ちの実績も魅力。" },
       { name: "バステール", frame: 5, number: 10, sexAge: "牡3", ranks: [13, 3, 11, 1, 1], starts: 5, classLevel: 1.68, timeIdx: 94, agariIdx: 91, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "川田将雅", weight: 57, trainer: "-", odds: 3.2, popular: 1, going: { firm: 94, soft: 86, heavy: 82 }, blood: { sire: "キタサンブラック", damsire: "アルデバランII", dam: "マンビア" }, styles: ["senko", "sashi"], past: { note: "日本ダービー3着", recent: [] }, manualRank: 2, manualScore: 93, manualComment: "日本ダービー3着＋弥生賞ディープインパクト記念1着。総合力上位。" },
       { name: "ミリオンクラウン", frame: 6, number: 11, sexAge: "牡3", ranks: [16, 1, 1, 7, 15], starts: 5, classLevel: 1.12, timeIdx: 84, agariIdx: 82, distApt: 7, lastDist: 2000, restWeeks: 4, jockey: "横山典弘", weight: 57, trainer: "-", odds: 16, popular: 8, going: { firm: 84, soft: 76, heavy: 72 }, blood: { sire: "リーチザクラウン", damsire: "パイロ", dam: "サンヘレナ" }, styles: ["nige", "senko"], past: { note: "WASJ第4戦1着", recent: [] }, manualRank: 15, manualScore: 80, manualComment: "条件戦連勝は魅力も、重賞での実績と距離適性を割り引き。" },
@@ -4637,39 +4526,6 @@ function calcStyleAptitude(horse) {
 }
 
 function calcDistAptitude(horse) {
-  const order = ["short", "mile", "middle", "midLong", "long"];
-  // 明示指定の距離適性を優先（longMiddle は midLong と同一扱い）
-  if (horse && horse.distanceApt && typeof horse.distanceApt === "object") {
-    const src = horse.distanceApt;
-    const grades = {};
-    order.forEach(band => {
-      let g = src[band];
-      if (band === "midLong" && g == null) g = src.longMiddle;
-      if (band === "middle" && g == null && src.mid) g = src.mid;
-      g = String(g || "").toUpperCase();
-      if (!/^[SABCDEF]$/.test(g)) g = "C";
-      grades[band] = g;
-    });
-    // 最高評価の帯を主適性に
-    const rankOf = { S: 5, A: 4, B: 3, C: 2, D: 1, E: 0, F: 0 };
-    let primary = "middle";
-    let best = -1;
-    order.forEach(b => {
-      const v = rankOf[grades[b]] != null ? rankOf[grades[b]] : 0;
-      if (v > best) { best = v; primary = b; }
-    });
-    // 同点なら長めを優先
-    const tops = order.filter(b => (rankOf[grades[b]] || 0) === best);
-    if (tops.length) primary = tops[tops.length - 1];
-    return {
-      primary,
-      primaryLabel: DIST_BAND_LABELS[primary] || primary,
-      grades,
-      line: order.map(b => DIST_BAND_LABELS[b] + formatGradeBadge(grades[b])).join(" / "),
-      linePlain: order.map(b => DIST_BAND_LABELS[b] + grades[b]).join(" / ")
-    };
-  }
-
   const ranks = typeof numericRanks === "function" ? numericRanks(horse.ranks || []) : [];
   const avg = ranks.length ? ranks.reduce((a, b) => a + b, 0) / ranks.length : 8;
   const formBoost = avg <= 2.2 ? 1.1 : avg <= 3.5 ? 0.7 : avg <= 5.5 ? 0.25 : avg <= 8 ? -0.2 : -0.6;
@@ -4678,6 +4534,7 @@ function calcDistAptitude(horse) {
   const last = Number(horse.lastDist) || 1600;
   const primary = distBandOf(last);
   const centers = { short: 1200, mile: 1600, middle: 2000, midLong: 2400, long: 3000 };
+  const order = ["short", "mile", "middle", "midLong", "long"];
   const grades = {};
   order.forEach(band => {
     const gap = Math.abs(last - centers[band]);
@@ -4690,9 +4547,6 @@ function calcDistAptitude(horse) {
     if (di >= 3) s -= 0.45;
     if (band === primary && ranks[0] === 1) s += 0.35;
     if (band === primary && ranks[0] && ranks[0] <= 3) s += 0.2;
-    // 長距離実績の底上げ
-    if (band === "long" && last >= 2800 && ranks[0] === 1) s += 0.5;
-    if (band === "midLong" && last >= 2400 && ranks[0] && ranks[0] <= 2) s += 0.25;
     grades[band] = scoreToGrade(s);
   });
   return {
@@ -5292,9 +5146,9 @@ function scoreHorseRaceOnce(h, race, opts) {
   try {
     if (h.distApt != null) distS = 50 + Number(h.distApt) * 8;
     if (h.distanceApt) {
-      const band = dist <= 1400 ? "short" : dist < 1800 ? "mile" : dist < 2200 ? "middle" : dist < 2800 ? "midLong" : "long";
+      const band = dist <= 1400 ? "short" : dist < 1800 ? "mile" : dist < 2200 ? "middle" : dist < 2800 ? "longMiddle" : "long";
       const map = { S: 96, A: 88, B: 76, C: 64, D: 52, E: 40 };
-      const key = h.distanceApt[band] || h.distanceApt.longMiddle || h.distanceApt.middle;
+      const key = h.distanceApt[band] || h.distanceApt.middle;
       if (key && map[key] != null) distS = map[key];
     }
   } catch (e4) {}
@@ -6251,22 +6105,9 @@ function historyRaceLabel(title, raceId) {
 
 
 // ========== お知らせ・更新履歴 ==========
-const NEWS_VERSION = "2026-10-26a";
+const NEWS_VERSION = "2026-10-22b";
 const NEWS_SEEN_KEY = "keiba_sim_news_seen";
 const NEWS_ITEMS = [
-  {
-    ver: "2026-10-26a",
-    date: "2026/10/26",
-    title: "【能力値変動】アルテミスS・菊花賞の結果反映",
-    flash: true,
-    body: [
-      "★★★ アルテミスS：プルヴィナルが重賞初V（無傷2連勝）",
-      "★★ 2着ローズサルーテ・3着シティオブドリーム",
-      "★★★ 菊花賞：ゴーイントゥスカイがG1初制覇（武豊・菊6勝目）",
-      "★★ 2着バステール・3着ダノンヒストリー／1番人気ロブチェンは14着",
-      "★ 1〜3着馬の能力値を更新。起動時に能力値変動演出を表示"
-    ]
-  },
   {
     ver: "2026-10-22b",
     title: "【枠順確定】菊花賞",
@@ -7396,19 +7237,8 @@ function openNewsModal(opts) {
 
 
 /** 週末入着レベルアップ（初回のみ） */
-const LEVELUP_SEEN_KEY = "keiba_sim_levelup_seen_v20261026a";
-const LEVELUP_RACES = [
-  {
-    raceId: "artemis_s_20261024",
-    label: "アルテミスステークス G3",
-    places: { "プルヴィナル": 1, "ローズサルーテ": 2, "シティオブドリーム": 3 }
-  },
-  {
-    raceId: "kikka_sho_20261025",
-    label: "菊花賞 G1",
-    places: { "ゴーイントゥスカイ": 1, "バステール": 2, "ダノンヒストリー": 3 }
-  }
-];
+const LEVELUP_SEEN_KEY = "keiba_sim_levelup_seen_v20261018d";
+const LEVELUP_RACES = [];
 
 function getLevelUpSeen() {
   try { return localStorage.getItem(LEVELUP_SEEN_KEY) === "1"; } catch (e) { return false; }
@@ -7430,12 +7260,12 @@ function calcAbilityTotalSnapshot(horse, ranksOverride) {
 
 /** 能力変動ポップアップ：表示上の増減上書き（今回結果のプラス分） */
 const LEVELUP_DELTA_OVERRIDE = {
-  "プルヴィナル": 2.8,
-  "ローズサルーテ": 1.6,
-  "シティオブドリーム": 1.2,
-  "ゴーイントゥスカイ": 3.5,
-  "バステール": 2.0,
-  "ダノンヒストリー": 1.5
+  "シュガークン": 3.8,
+  "アンパドゥ": 1.4,
+  "エコロアルバ": 1.0,
+  "モンローウォーク": 3.0,
+  "ギャラボーグ": 1.8,
+  "ドリームコア": 1.3
 };
 
 function buildLevelUpEntries() {
@@ -11724,7 +11554,6 @@ function drawMinimapTrack(ctx, w, h, cx, cy, rx, ry, courseName, surface, clockw
 }
 
 function stopRace() {
-  try { hideFormationHUD(); } catch (eGH0) {}
   if (raceAnim && raceAnim.raf) cancelAnimationFrame(raceAnim.raf);
   if (raceAnim && raceAnim._finishTimer) {
     try { clearTimeout(raceAnim._finishTimer); } catch (eT) {}
@@ -12023,446 +11852,6 @@ function updateAndDrawRaceFx(ctx, fx, w, h, dt) {
   }
 }
 
-
-
-
-
-
-/** 横視点の馬（競馬・スピード感） */
-function drawSideHorseGH(ctx, x, y, scale, frameIdx, number, isLead, animPhase, speedBoost) {
-  const colors = (typeof FRAME_COLORS !== "undefined") ? FRAME_COLORS : ["#f5f5f5","#111","#e53935","#1e88e5","#43a047","#fdd835","#fb8c00","#f8bbd0"];
-  const texts = (typeof FRAME_TEXT !== "undefined") ? FRAME_TEXT : ["#111","#fff","#fff","#fff","#fff","#111","#fff","#111"];
-  const fi = Math.min(7, Math.max(0, frameIdx|0));
-  const silk = colors[fi] || "#888";
-  const ink = texts[fi] || "#fff";
-  const coats = ["#8b5a2b", "#a0522d", "#6b3f1f", "#c07030", "#7a4a28", "#5c3a1e", "#9a6438", "#4a2f18"];
-  const coat = coats[fi % coats.length];
-  const phase = animPhase || 0;
-  const boost = speedBoost != null ? speedBoost : 1;
-  // 速いギャロップ
-  const a = Math.sin(phase);
-  const b = Math.sin(phase + 1.05);
-  const c = Math.sin(phase + 2.1);
-  const d = Math.sin(phase + 3.15);
-  const bob = Math.sin(phase * 2.2) * 1.3;
-  const lean = -0.14 - Math.min(0.1, boost * 0.02); // 前傾
-
-  ctx.save();
-  ctx.translate(x, y + bob);
-  ctx.rotate(lean);
-  ctx.scale(scale, scale);
-
-  // スピード線（馬の後方）
-  ctx.save();
-  ctx.strokeStyle = "rgba(255,255,255,0.28)";
-  ctx.lineWidth = 1.2;
-  for (let i = 0; i < 5; i++) {
-    const ly = -8 + i * 5 + Math.sin(phase + i) * 1.5;
-    const len = 18 + boost * 8 + (i % 2) * 6;
-    ctx.globalAlpha = 0.15 + i * 0.04;
-    ctx.beginPath();
-    ctx.moveTo(-18 - i * 3, ly);
-    ctx.lineTo(-18 - i * 3 - len, ly);
-    ctx.stroke();
-  }
-  ctx.restore();
-  ctx.globalAlpha = 1;
-
-  // 影（進行方向にやや伸ばす）
-  ctx.fillStyle = "rgba(0,0,0,0.28)";
-  ctx.beginPath();
-  ctx.ellipse(-2, 16, 28, 3.8, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  const drawLeg = (hx, hy, fx, fy, width) => {
-    ctx.strokeStyle = coat;
-    ctx.lineWidth = width;
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    ctx.beginPath();
-    ctx.moveTo(hx, hy);
-    ctx.quadraticCurveTo((hx + fx) / 2, (hy + fy) / 2 + 2, fx, fy);
-    ctx.stroke();
-    ctx.fillStyle = "#1f1810";
-    ctx.beginPath();
-    ctx.ellipse(fx, fy + 0.6, 2.3, 1.3, 0, 0, Math.PI * 2);
-    ctx.fill();
-  };
-
-  // 大きく開く脚（スピード感）
-  drawLeg(-10, 2, -18 - a * 7, 15, 3.5);
-  drawLeg(-2, 2, -6 - b * 6, 15, 3.3);
-  drawLeg(9, 1, 14 + c * 7, 15, 3.4);
-  drawLeg(15, 0, 23 + d * 6, 14, 3.2);
-
-  // 胴体
-  ctx.fillStyle = coat;
-  ctx.beginPath();
-  ctx.ellipse(1, -2, 21, 10, -0.08, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.ellipse(13, -1, 9, 9, 0.12, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = "rgba(0,0,0,0.14)";
-  ctx.beginPath();
-  ctx.ellipse(0, 3, 14, 5, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = "rgba(255,255,255,0.1)";
-  ctx.beginPath();
-  ctx.ellipse(1, -7, 12, 3.2, -0.06, 0, Math.PI * 2);
-  ctx.fill();
-
-  // 尻
-  ctx.fillStyle = coat;
-  ctx.beginPath();
-  ctx.ellipse(-15, -3, 9, 9, 0.18, 0, Math.PI * 2);
-  ctx.fill();
-
-  // しっぽ（流れる）
-  ctx.strokeStyle = "#2c1a0e";
-  ctx.lineWidth = 2.6;
-  ctx.lineCap = "round";
-  ctx.beginPath();
-  ctx.moveTo(-23, -4);
-  ctx.quadraticCurveTo(-34 - a * 3, -6, -36 - boost, 6);
-  ctx.stroke();
-  ctx.lineWidth = 1.8;
-  ctx.beginPath();
-  ctx.moveTo(-23, -3);
-  ctx.quadraticCurveTo(-33, 0, -34 - boost * 0.5, 9);
-  ctx.stroke();
-
-  // 首
-  ctx.fillStyle = coat;
-  ctx.beginPath();
-  ctx.ellipse(19, -11, 7, 9.5, -0.6, 0, Math.PI * 2);
-  ctx.fill();
-
-  // たてがみ（風になびく）
-  ctx.fillStyle = "#2c1a0e";
-  ctx.beginPath();
-  ctx.moveTo(14, -16);
-  ctx.quadraticCurveTo(16, -24 - a, 22, -19);
-  ctx.quadraticCurveTo(19, -14, 15, -12);
-  ctx.closePath();
-  ctx.fill();
-
-  // 頭
-  ctx.fillStyle = coat;
-  ctx.beginPath();
-  ctx.ellipse(29, -15, 9.5, 5.2, -0.28, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.ellipse(27, -12, 6, 3.4, -0.22, 0, Math.PI * 2);
-  ctx.fill();
-
-  // 耳（伏せ気味＝スピード）
-  ctx.beginPath();
-  ctx.moveTo(25, -19);
-  ctx.lineTo(22, -24);
-  ctx.lineTo(27, -20);
-  ctx.closePath();
-  ctx.fill();
-  ctx.beginPath();
-  ctx.moveTo(28, -19);
-  ctx.lineTo(27, -25);
-  ctx.lineTo(30, -19.5);
-  ctx.closePath();
-  ctx.fill();
-
-  // 目
-  ctx.fillStyle = "#1a1a1a";
-  ctx.beginPath();
-  ctx.ellipse(28, -16, 1.5, 1.15, -0.25, 0, Math.PI * 2);
-  ctx.fill();
-
-  // 鼻
-  ctx.fillStyle = "rgba(0,0,0,0.35)";
-  ctx.beginPath();
-  ctx.ellipse(35.5, -14, 1.3, 0.9, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  // 鞍・騎手
-  ctx.fillStyle = "#3b2a1a";
-  ctx.beginPath();
-  ctx.ellipse(2, -8, 9, 4, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = silk;
-  ctx.beginPath();
-  ctx.ellipse(3, -13, 6, 6.5, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(4, -19, 3.8, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = "rgba(0,0,0,0.22)";
-  ctx.fillRect(0, -19, 8, 1.8);
-  ctx.fillStyle = "#e6b899";
-  ctx.beginPath();
-  ctx.arc(4, -15, 2.6, 0, Math.PI * 2);
-  ctx.fill();
-
-  // ゼッケン
-  ctx.fillStyle = silk;
-  ctx.strokeStyle = "rgba(0,0,0,0.3)";
-  ctx.lineWidth = 1;
-  ctx.fillRect(-6, -6, 11, 9);
-  ctx.strokeRect(-6, -6, 11, 9);
-  ctx.fillStyle = ink;
-  ctx.font = "bold 9px sans-serif";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(String(number), -0.5, -1);
-
-  // 手綱
-  ctx.strokeStyle = "rgba(40,30,20,0.55)";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(8, -12);
-  ctx.lineTo(25, -14);
-  ctx.stroke();
-
-  ctx.restore();
-}
-
-function roundRectPathGH(ctx, x, y, w, h, r) {
-  const rr = Math.min(r, w/2, h/2);
-  ctx.beginPath();
-  ctx.moveTo(x+rr, y);
-  ctx.arcTo(x+w, y, x+w, y+h, rr);
-  ctx.arcTo(x+w, y+h, x, y+h, rr);
-  ctx.arcTo(x, y+h, x, y, rr);
-  ctx.arcTo(x, y, x+w, y, rr);
-  ctx.closePath();
-}
-
-/** 背景スクロール強め＋距離ポール＋砂煙 */
-function drawFormationField(ctx, w, h, runners, order, raceMeta, remain, dist) {
-  const d = Math.max(1, Number(dist) || 2000);
-  const rem = Math.max(0, Number(remain) || 0);
-  const progressed = Math.max(0, Math.min(d, d - rem));
-  const progRatio = progressed / d;
-  // スクロール高速化
-  let sp = 1;
-  try { if (typeof getRaceSpeed === "function") sp = getRaceSpeed(); } catch (e) {}
-  sp = Math.max(1, Math.min(40, Number(sp) || 1));
-  const scroll = (progressed / d) * w * (3.4 + Math.min(2, sp * 0.04));
-  const tNow = (typeof performance !== "undefined") ? performance.now() : Date.now();
-
-  // 空
-  const sky = ctx.createLinearGradient(0, 0, 0, h * 0.38);
-  sky.addColorStop(0, "#5eb4d8");
-  sky.addColorStop(0.6, "#9ad4f0");
-  sky.addColorStop(1, "#bfe8c4");
-  ctx.fillStyle = sky;
-  ctx.fillRect(0, 0, w, h);
-
-  // 流れる雲
-  ctx.fillStyle = "rgba(255,255,255,0.7)";
-  const cloudScroll = scroll * 0.35 + tNow * 0.02;
-  for (let i = -1; i < 6; i++) {
-    const cx = ((i * 160) - cloudScroll % 160 + w * 2) % (w + 160) - 50;
-    const cy = 22 + (i % 3) * 14;
-    ctx.beginPath();
-    ctx.arc(cx, cy, 11, 0, Math.PI * 2);
-    ctx.arc(cx + 16, cy - 5, 14, 0, Math.PI * 2);
-    ctx.arc(cx + 30, cy, 10, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  // 芝
-  const grassTop = h * 0.34;
-  const grass = ctx.createLinearGradient(0, grassTop, 0, h);
-  grass.addColorStop(0, "#8fd45f");
-  grass.addColorStop(0.5, "#62b844");
-  grass.addColorStop(1, "#458f32");
-  ctx.fillStyle = grass;
-  ctx.fillRect(0, grassTop, w, h - grassTop);
-
-  // 高速芝ストライプ
-  ctx.save();
-  ctx.beginPath();
-  ctx.rect(0, grassTop, w, h - grassTop);
-  ctx.clip();
-  const stripeW = 28;
-  for (let i = -3; i < 24; i++) {
-    const x = ((i * stripeW) - (scroll * 1.35) % stripeW);
-    ctx.fillStyle = i % 2 === 0 ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.05)";
-    ctx.fillRect(x, grassTop, stripeW * 0.55, h - grassTop);
-  }
-  // トラック白破線（流れる）
-  ctx.strokeStyle = "rgba(255,255,255,0.45)";
-  ctx.lineWidth = 2.5;
-  ctx.setLineDash([16, 12]);
-  ctx.lineDashOffset = scroll * 1.2;
-  ctx.beginPath();
-  ctx.moveTo(0, h * 0.64);
-  ctx.lineTo(w, h * 0.64);
-  ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.restore();
-
-  // 白柵（高速）
-  const railY = grassTop + 10;
-  ctx.strokeStyle = "rgba(255,255,255,0.95)";
-  ctx.lineWidth = 5;
-  ctx.beginPath();
-  ctx.moveTo(0, railY);
-  ctx.lineTo(w, railY);
-  ctx.stroke();
-  ctx.lineWidth = 2.5;
-  for (let i = -1; i < 28; i++) {
-    const x = ((i * 40) - (scroll * 1.25) % 40);
-    ctx.beginPath();
-    ctx.moveTo(x, railY);
-    ctx.lineTo(x, railY - 18);
-    ctx.stroke();
-  }
-
-  // 全体のスピード線（画面）
-  ctx.save();
-  ctx.strokeStyle = "rgba(255,255,255,0.12)";
-  ctx.lineWidth = 1;
-  for (let i = 0; i < 10; i++) {
-    const yy = grassTop + 20 + i * ((h - grassTop) / 11);
-    const off = (scroll * (1.5 + i * 0.05) + i * 40) % (w + 80);
-    ctx.beginPath();
-    ctx.moveTo(w - off, yy);
-    ctx.lineTo(w - off - 40 - sp * 2, yy);
-    ctx.stroke();
-  }
-  ctx.restore();
-
-  // 距離ポール
-  const candidates = [2000, 1800, 1600, 1400, 1200, 1000, 800, 600, 400, 300, 200, 100];
-  candidates.forEach(pm => {
-    if (pm >= d || pm <= 0) return;
-    const poleProg = d - pm;
-    const dx = (poleProg - progressed) / d * w * 2.0 + w * 0.58;
-    if (dx < -50 || dx > w + 50) return;
-    ctx.fillStyle = "#f8fafc";
-    ctx.fillRect(dx - 3, railY - 54, 6, 54);
-    ctx.fillStyle = pm <= 200 ? "#ef4444" : "#eab308";
-    ctx.fillRect(dx - 3, railY - 54, 6, 15);
-    ctx.fillStyle = "rgba(15,23,42,0.9)";
-    roundRectPathGH(ctx, dx + 6, railY - 56, 46, 18, 6);
-    ctx.fill();
-    ctx.fillStyle = "#fef9c3";
-    ctx.font = "bold 11px sans-serif";
-    ctx.textAlign = "left";
-    ctx.textBaseline = "middle";
-    ctx.fillText(pm + "m", dx + 10, railY - 46);
-  });
-
-  // 砂煙・芝しぶき（先頭付近）
-  const list = (runners || []).slice().sort((a, b) => (a.drawPos || 0) - (b.drawPos || 0));
-  let maxPos = 0.001;
-  list.forEach(r => { if ((r.drawPos || 0) > maxPos) maxPos = r.drawPos; });
-
-  list.forEach((r, idx) => {
-    const pos = r.drawPos != null ? r.drawPos : (r.pos || 0);
-    const rel = maxPos > 0 ? (pos - maxPos) : 0;
-    const baseX = w * 0.66 + rel * w * 1.15;
-    const lane = (typeof r.lane === "number") ? r.lane : ((r._styleJitter || 0) * 0.5);
-    const y = railY + 50 + (idx % 6) * 11 + lane * 7;
-    const sc = 1.55 - Math.min(0.32, idx * 0.011);
-    const fi = Math.min(7, Math.max(0, ((r.horse && r.horse.frame) || 1) - 1));
-    const num = r.horse ? r.horse.number : "?";
-    const isLead = order && order[0] && order[0] === r;
-    // 脚アニメ高速
-    const phase = tNow / (55 / Math.min(2.2, 0.85 + sp * 0.04)) + idx * 0.65 + (pos || 0) * 28;
-    // 足元の砂煙
-    ctx.fillStyle = "rgba(180,160,100,0.25)";
-    for (let k = 0; k < 3; k++) {
-      const px = baseX - 18 - k * 8 - (phase * 3 + k * 5) % 12;
-      const py = Math.min(h - 20, y) + 10 + (k % 2) * 3;
-      ctx.beginPath();
-      ctx.ellipse(px, py, 6 + k, 2.5, 0, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    drawSideHorseGH(ctx, baseX, Math.min(h - 40, y), sc, fi, num, isLead, phase, sp);
-  });
-
-  // 画面端のモーションブラー風ヴィネット
-  const vig = ctx.createLinearGradient(0, 0, w * 0.2, 0);
-  vig.addColorStop(0, "rgba(0,0,0,0.2)");
-  vig.addColorStop(1, "rgba(0,0,0,0)");
-  ctx.fillStyle = vig;
-  ctx.fillRect(0, grassTop, w * 0.2, h - grassTop);
-}
-
-function updateFormationHUD(order, remain, dist, raceMeta, raceTime) {
-  try {
-    // 馬のイラスト以外のHUD・アイコンは非表示（映像を優先）
-    const ov = document.getElementById("ghOverlay");
-    if (ov) ov.classList.add("hidden");
-    try {
-      const strip = document.getElementById("raceRankStrip");
-      if (strip) strip.style.display = "none";
-    } catch (e0) {}
-    try {
-      document.querySelectorAll("#raceCanvasWrap .race-hud").forEach(el => { el.style.display = "none"; });
-    } catch (e1) {}
-    return; // 以降のオーバーレイ更新は行わない
-    if (!ov) return;
-    ov.classList.remove("hidden");
-    const title = document.getElementById("ghTitle");
-    const sub = document.getElementById("ghSub");
-    const rem = document.getElementById("ghRemain");
-    const clock = document.getElementById("ghClock");
-    const fill = document.getElementById("ghProgressFill");
-    const mini = document.getElementById("ghMiniOrder");
-    const grid = document.getElementById("ghRankGrid");
-    const rname = (raceMeta && (raceMeta.raceName || raceMeta.name)) ? String(raceMeta.raceName || raceMeta.name).replace(/【|】/g, "") : "レース";
-    const grade = (raceMeta && raceMeta.grade) ? (" " + raceMeta.grade) : "";
-    if (title) title.textContent = rname + grade;
-    if (sub) {
-      const course = (raceMeta && raceMeta.course) || "";
-      const surface = (raceMeta && raceMeta.surface) || "";
-      const d = (raceMeta && raceMeta.distance) || dist || "";
-      const n = (raceMeta && raceMeta.horses) ? raceMeta.horses.length : (order ? order.length : "");
-      sub.textContent = course + " " + surface + d + "m" + (n ? (" " + n + "頭") : "") + " ｜ 隊列シミュレーション";
-    }
-    const remainM = Math.max(0, Math.round(remain || 0));
-    if (rem) rem.textContent = remainM <= 0 ? "GOAL" : ("残り " + remainM + "m");
-    if (clock && typeof formatRaceTime === "function") clock.textContent = formatRaceTime(raceTime || 0);
-    const prog = dist > 0 ? Math.max(0, Math.min(1, 1 - (remain / dist))) : 0;
-    if (fill) fill.style.width = (prog * 100).toFixed(1) + "%";
-    const colors = (typeof FRAME_COLORS !== "undefined") ? FRAME_COLORS : ["#f5f5f5","#111","#e53935","#1e88e5","#43a047","#fdd835","#fb8c00","#f8bbd0"];
-    const textsC = (typeof FRAME_TEXT !== "undefined") ? FRAME_TEXT : ["#111","#fff","#fff","#fff","#fff","#111","#fff","#111"];
-    if (mini) {
-      let html = "";
-      (order || []).forEach(r => {
-        if (!r || !r.horse) return;
-        const fi = Math.min(7, Math.max(0, (r.horse.frame || 1) - 1));
-        html += '<span class="gh-dot" style="background:' + (colors[fi]||"#666") + ';color:' + (textsC[fi]||"#fff") + '">' +
-          (r.horse.number != null ? r.horse.number : "?") + "</span>";
-      });
-      mini.innerHTML = html;
-    }
-    if (grid) {
-      let html = "";
-      (order || []).forEach((r, i) => {
-        if (!r || !r.horse) return;
-        const fi = Math.min(7, Math.max(0, (r.horse.frame || 1) - 1));
-        const pop = r.horse.popular != null ? (r.horse.popular + "人気") : "";
-        html += '<div class="gh-rank-row">' +
-          '<span class="gh-rk">' + (i + 1) + "</span>" +
-          '<span class="gh-num" style="background:' + (colors[fi]||"#666") + ';color:' + (textsC[fi]||"#fff") + '">' +
-          (r.horse.number != null ? r.horse.number : "?") + "</span>" +
-          '<span class="gh-name">' + (r.horse.name || "") + "</span>" +
-          (pop ? '<span class="gh-pop">' + pop + "</span>" : "") +
-          "</div>";
-      });
-      grid.innerHTML = html;
-    }
-  } catch (e) {}
-}
-function hideFormationHUD() {
-  try {
-    const ov = document.getElementById("ghOverlay");
-    if (ov) ov.classList.add("hidden");
-  } catch (e) {}
-}
 
 function drawRunnerSimple(ctx, pt, num, fi, leadPos, r) {
   const size = 15;
@@ -13731,6 +13120,8 @@ function startRace(horses, raceMeta) {
     }
 
     ctx.clearRect(0, 0, w, h);
+    const tc = ensureTrackCache();
+    ctx.drawImage(tc, 0, 0);
 
     // 描画用: 表示位置を滑らかに使用
     runners.forEach(r => {
@@ -13755,17 +13146,25 @@ function startRace(horses, raceMeta) {
     const leadPos = leadRunner ? leadRunner.drawPos : 1;
     if (!raceAnim._fx) raceAnim._fx = createRaceFx();
     const fx = raceAnim._fx;
-
-    // GOLDEN HORSE風：横視点隊列シミュレーション
-    const orderFront = [...runners].sort((a, b) => (b.drawPos || 0) - (a.drawPos || 0));
-    const remainEst = Math.max(0, Math.round((dist || 0) * (1 - Math.min(1, Math.max(0, leadPos || 0)))));
-    if (typeof drawFormationField === "function") {
-      drawFormationField(ctx, w, h, runners, orderFront, raceMeta, remainEst, dist);
-      try { updateFormationHUD(orderFront, remainEst, dist, raceMeta, raceTime); } catch (eGH) {}
-    } else {
-      const tc = ensureTrackCache();
-      ctx.drawImage(tc, 0, 0);
-    }
+    drawOrder.forEach(r => {
+      const laneUse = (pathType === "nakayama_1600_outer" || pathType === "sapporo_1800" || pathType === "hanshin_2000_inner" || pathType === "hanshin_1800_outer" || pathType === "nakayama_2200_outer" || pathType === "nakayama_1200_outer" || pathType === "hanshin_2400_outer" || pathType === "hanshin_dirt_2000" || pathType === "kyoto_2400_outer" || pathType === "kyoto_1400_outer" || pathType === "tokyo_1800" || pathType === "tokyo_1600" || pathType === "longchamp_2400") ? 0 : (r.displayLane != null ? r.displayLane : r.lane);
+      const pt = trackPoint(r.drawPos != null ? r.drawPos : r.pos, cx, cy, rx, ry, laneUse, clockwise, pathType, w, h, raceMeta.course);
+      // 軌跡（無効）
+      r._trail = null;
+      const num = r.horse.number || 0;
+      const fi = Math.min(7, Math.max(0, (r.horse.frame || 1) - 1));
+      const fakeLeadPos = (r === leadRunner) ? (r.drawPos || r.pos) : -1;
+      // ゴール通過演出
+      if (r.finished && !r._fxFinished) {
+        r._fxFinished = true;
+        spawnConfetti(fx, pt.x, pt.y, r === leadRunner ? 28 : 12);
+        if (runners.filter(x => x.finished).length === 1) {
+          fx.finishBurst = 1.0;
+          spawnFlash(fx, "rgba(250,204,21,0.5)");
+        }
+      }
+      drawRunnerSimple(ctx, pt, num, fi, fakeLeadPos, r);
+    });
     updateAndDrawRaceFx(ctx, fx, w, h, dtWall);
 
     const nRun = runners.length;
