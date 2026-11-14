@@ -6738,7 +6738,7 @@ const NEWS_ITEMS = [
     ver: "2026-11-13c",
     date: "2026/11/13",
     title: "【枠順確定】今週末3重賞",
-    showFrameUpdate: true,
+    showFrameUpdate: false,
     flash: true,
     body: [
       "★★★ 今週末3重賞の枠順が確定しました ★★★",
@@ -8148,13 +8148,21 @@ function showLevelUpModalIfNeeded() {
 
 function showNewsModalIfNeeded() {
   _newsPopupQueue = getNewsPopupQueue();
+  // 緑の枠順告知ポップアップは終了（自動表示しない）
+  const latest = (NEWS_ITEMS || []).find(it => it.ver === NEWS_VERSION);
+  if (latest && latest.ver === "2026-11-13c") {
+    setSeenNewsVer(NEWS_VERSION);
+    markNewsItemSeen(NEWS_VERSION);
+    updateNewsBar();
+    return;
+  }
   if (!_newsPopupQueue.length) {
     // 個別演出が全て既読なら、バージョン全体も既読に
     if (getSeenNewsVer() !== NEWS_VERSION) {
       // 最新のみ未読で演出なしの場合
-      const latest = (NEWS_ITEMS || []).find(it => it.ver === NEWS_VERSION);
-      if (latest && !isNewsItemSeen(latest.ver)) {
-        openNewsModal({ item: latest });
+      const latest2 = (NEWS_ITEMS || []).find(it => it.ver === NEWS_VERSION);
+      if (latest2 && !isNewsItemSeen(latest2.ver)) {
+        openNewsModal({ item: latest2 });
         updateNewsBar();
         return;
       }
